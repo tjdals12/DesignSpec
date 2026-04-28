@@ -5,6 +5,8 @@ import path from "node:path";
 import fs from "node:fs/promises";
 
 import { getSupportedToolIds } from "../core/tool-detection.js";
+import dedent from "dedent";
+import ora from "ora";
 
 const program = new Command();
 const require = createRequire(import.meta.url);
@@ -21,18 +23,17 @@ program
   .option("--tools <tools>", toolsOptionDescription)
   .addHelpText(
     "after",
-    `
-Examples:
-  $ design-spec init
-  $ design-spec init ./path/to
-  $ design-spec init --tools=codex,claude
+    dedent`
+    Examples:
+      $ design-spec init
+      $ design-spec init ./path/to
+      $ design-spec init --tools=codex,claude
   `,
   )
   .action(async (targetPath = ".", options: { tools?: string }) => {
     try {
       const resolvedPath = path.resolve(targetPath);
 
-      // TODO
       try {
         const stats = await fs.stat(resolvedPath);
         if (!stats.isDirectory()) {
@@ -44,6 +45,7 @@ Examples:
             console.log(
               `Directory "${targetPath}" doesn't exist, it will be created.`,
             );
+            await fs.mkdir(resolvedPath, { recursive: true });
           } else {
             throw error;
           }
@@ -57,9 +59,49 @@ Examples:
       await initCommand.execute(targetPath);
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
-      console.error(`Error: ${message}`);
+      ora().fail(`Error: ${message}`);
       process.exit(1);
     }
   });
+
+program
+  .command("status [path]")
+  .description("Display artifact completion status for a change")
+  .option("--change <id>", "Change name to show status for")
+  .option("--json", "Output as JSON")
+  .action(
+    async (targetPath = ".", options: { change: string; json: boolean }) => {
+      try {
+        const resolvedPath = path.resolve(targetPath);
+
+        try {
+          const stats = await fs.stat(resolvedPath);
+          if (!stats.isDirectory()) {
+            throw new Error(`Path "${targetPath}" is not directory`);
+          }
+        } catch (error) {
+          if (
+            error instanceof Error &&
+            "code" in error &&
+            error.code === "ENOENT"
+          ) {
+            throw new Error(
+              "DesignSpec is not initialized. Run: design-spec init",
+            );
+          }
+          throw error;
+        }
+
+        const { StatusCommand } =
+          await import("../workflows/commands/status.js");
+        const statusCommand = new StatusCommand(options);
+        await statusCommand.execute(targetPath);
+      } catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
+        ora().fail(`Error: ${message}`);
+        process.exit(1);
+      }
+    },
+  );
 
 program.parse();

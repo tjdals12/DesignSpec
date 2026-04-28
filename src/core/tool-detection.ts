@@ -4,7 +4,7 @@ import path from "node:path";
 import fsSync from "node:fs";
 
 import { AI_TOOLS, type AIToolOption, SKILL_IDS } from "./config.js";
-import { FileSytemUtils } from "../utils/file-system.utils.js";
+import { FileSystemUtils } from "../utils/file-system.utils.js";
 
 export interface ToolSkillStatus {
   configured: boolean;
@@ -32,7 +32,7 @@ export async function getInstalledTools(
     if (tool.skillsDir) {
       const dirPath = path.resolve(projectPath, tool.skillsDir);
 
-      const dirExists = await FileSytemUtils.directoryExists(dirPath);
+      const dirExists = await FileSystemUtils.directoryExists(dirPath);
       if (dirExists) {
         installedTools.push(tool);
       }

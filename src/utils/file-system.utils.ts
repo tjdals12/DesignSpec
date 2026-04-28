@@ -1,7 +1,7 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 
-export class FileSytemUtils {
+export class FileSystemUtils {
   static async createDirectory(dirPath: string): Promise<void> {
     await fs.mkdir(dirPath, { recursive: true });
   }
@@ -76,5 +76,17 @@ export class FileSytemUtils {
     const dirPath = path.dirname(filePath);
     await this.createDirectory(dirPath);
     await fs.writeFile(filePath, content, "utf-8");
+  }
+
+  static async toCanonicalPath(targetPath: string): Promise<string> {
+    try {
+      return await fs.realpath(targetPath);
+    } catch {
+      return path.resolve(targetPath);
+    }
+  }
+
+  static toPoxisPath(targetPath: string): string {
+    return targetPath.replace(/\\/g, "/");
   }
 }

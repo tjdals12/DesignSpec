@@ -10,7 +10,7 @@ import {
   type AIToolInfo,
   type AIToolOption,
 } from "../config.js";
-import { FileSytemUtils } from "../../utils/file-system.utils.js";
+import { FileSystemUtils } from "../../utils/file-system.utils.js";
 import {
   getInstalledTools,
   getSupportedToolIds,
@@ -49,12 +49,12 @@ export class InitCommand {
     const designSpecPath = path.join(projectPath, DESIGN_SPEC_DIR_NAME);
 
     const hasPermissions =
-      await FileSytemUtils.ensureWritePermissions(projectPath);
+      await FileSystemUtils.ensureWritePermissions(projectPath);
     if (!hasPermissions) {
       throw new Error(`Insufficient permissions to write to ${projectPath}`);
     }
 
-    const extendMode = await FileSytemUtils.directoryExists(designSpecPath);
+    const extendMode = await FileSystemUtils.directoryExists(designSpecPath);
 
     const installedTools = await getInstalledTools(projectPath);
 
@@ -182,7 +182,7 @@ export class InitCommand {
 
     if (extendMode) {
       for (const dir of directories) {
-        await FileSytemUtils.createDirectory(dir);
+        await FileSystemUtils.createDirectory(dir);
       }
     } else {
       const spinner = ora({
@@ -193,7 +193,7 @@ export class InitCommand {
       }).start();
 
       for (const dir of directories) {
-        await FileSytemUtils.createDirectory(dir);
+        await FileSystemUtils.createDirectory(dir);
       }
 
       spinner.stopAndPersist({
@@ -231,7 +231,7 @@ export class InitCommand {
           const skillFile = path.join(skillDir, "SKILL.md");
           const skillContent = generateSkillContent(template);
 
-          await FileSytemUtils.writeFile(skillFile, skillContent);
+          await FileSystemUtils.writeFile(skillFile, skillContent);
         }
 
         const adapter = SlashCommandAdatperRegistry.get(tool.value);
@@ -243,7 +243,7 @@ export class InitCommand {
               : path.join(projectPath, slashCommandFilePath);
             const slashCommandContent = adapter.formatFile(template);
 
-            await FileSytemUtils.writeFile(
+            await FileSystemUtils.writeFile(
               slashCommandFile,
               slashCommandContent,
             );

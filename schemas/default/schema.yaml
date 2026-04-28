@@ -1,0 +1,11 @@
+name: default
+version: 1
+description: Default DesignSpec workflow
+artifacts:
+  - id: proposal
+    generates: proposal.md
+    description: Initial proposal document outlining the change
+    template: proposal.md
+    instruction: |
+      Do something
+    requires: []
