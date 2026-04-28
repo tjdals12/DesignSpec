@@ -71,7 +71,12 @@ export class InitCommand {
 
     await this.createDirectoryStructure(designSpecPath, extendMode);
 
-    await this.generateSkillsAndCommands(projectPath, validatedTools);
+    const results = await this.generateSkillsAndCommands(
+      projectPath,
+      validatedTools,
+    );
+
+    this.displaySuccessMessage(results);
   }
 
   private resolveTools(): string[] {
@@ -272,5 +277,74 @@ export class InitCommand {
       failedTools,
       commandSkipped,
     };
+  }
+
+  private displaySuccessMessage(results: {
+    createdTools: Array<AIToolInfo>;
+    refreshedTools: Array<AIToolInfo>;
+    failedTools: Array<{ name: string; error: string }>;
+    commandSkipped: Array<AIToolInfo["value"]>;
+  }) {
+    console.log();
+    console.log(chalk.bold("DesignSpec Setup Complete"));
+    console.log();
+
+    const { createdTools, refreshedTools, failedTools, commandSkipped } =
+      results;
+    if (createdTools.length > 0) {
+      console.log(
+        `Created: ${createdTools.map((tool) => tool.name).join(", ")}`,
+      );
+    }
+    if (refreshedTools) {
+      console.log(
+        `Refreshed: ${refreshedTools.map((tool) => tool.name).join(", ")}`,
+      );
+    }
+
+    const successfulTools = [...createdTools, ...refreshedTools];
+    if (successfulTools.length > 0) {
+      const toolDirs = [
+        ...new Set(
+          successfulTools.map((tool) => path.join(tool.skillsDir, "/")),
+        ),
+      ].join(", ");
+      const skillCount = getSkillTemplates().length;
+      const commandCount = getSlashCommandTemplates().length;
+      if (skillCount > 0 && commandCount > 0) {
+        console.log(
+          `${skillCount} skills and ${commandCount} commands in ${toolDirs}`,
+        );
+      } else if (skillCount > 0) {
+        console.log(`${skillCount} skills in ${toolDirs}`);
+      } else if (commandCount > 0) {
+        console.log(`${commandCount} commands in ${toolDirs}`);
+      }
+    }
+
+    if (failedTools.length > 0) {
+      console.log(
+        chalk.red(
+          `Failed: ${failedTools.map((tool) => `${tool.name} (${tool.error})`).join(", ")}`,
+        ),
+      );
+    }
+
+    if (commandSkipped.length > 0) {
+      console.log(
+        chalk.dim(
+          `Commands skipped for: ${commandSkipped.join(", ")} (no adapter)`,
+        ),
+      );
+    }
+
+    if (createdTools.length > 0 || refreshedTools.length > 0) {
+      console.log();
+      console.log(
+        chalk.white("Restart your IDE for slash commands to take effect."),
+      );
+    }
+
+    console.log();
   }
 }
