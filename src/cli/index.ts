@@ -104,4 +104,41 @@ program
     },
   );
 
+program
+  .command("new [path]")
+  .description("Create a new change directory")
+  .option("--change <id>", "Name for new change")
+  .action(async (targetPath: string = ".", options: { change: string }) => {
+    try {
+      const resolvedPath = path.resolve(targetPath);
+
+      try {
+        const stats = await fs.stat(resolvedPath);
+        if (!stats.isDirectory()) {
+          throw new Error(`Path "${targetPath}" is not directory`);
+        }
+      } catch (error) {
+        if (
+          error instanceof Error &&
+          "code" in error &&
+          error.code === "ENOENT"
+        ) {
+          throw new Error(
+            "DesignSpec is not initialized. Run: design-spec init",
+          );
+        }
+        throw error;
+      }
+
+      const { NewChangeCommand } =
+        await import("../workflows/commands/new-change.js");
+      const newChangeCommand = new NewChangeCommand(options);
+      await newChangeCommand.execute(targetPath);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      ora().fail(`Error: ${message}`);
+      process.exit(1);
+    }
+  });
+
 program.parse();

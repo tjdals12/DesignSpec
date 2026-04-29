@@ -1,4 +1,5 @@
 export const DESIGN_SPEC_DIR_NAME = "design-spec";
+export const METADATA_FILENAME = ".design-spec.yaml";
 
 export const SKILL_IDS = ["designspec-new-change"] as const;
 export type SkillIds = (typeof SKILL_IDS)[number];
