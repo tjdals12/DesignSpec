@@ -153,6 +153,26 @@ export class StatusCommand {
     const { changeName, schemaName, artifactStatuses, isComplete } =
       changeStatus;
 
+    if (this._json) {
+      const doneCount = artifactStatuses.filter(
+        (s) => s.status === "done",
+      ).length;
+      console.log(
+        JSON.stringify(
+          {
+            changeName,
+            schemaName,
+            progress: { done: doneCount, total: artifactStatuses.length },
+            artifacts: artifactStatuses,
+            isComplete,
+          },
+          null,
+          2,
+        ),
+      );
+      return;
+    }
+
     console.log(`Change: ${changeName}`);
     console.log(`Schema: ${schemaName}`);
 
