@@ -9,3 +9,12 @@ artifacts:
     instruction: |
       Do something
     requires: []
+
+  - id: screens
+    generates: screens.md
+    description: Screens
+    template: screens.md
+    instruction: |
+      Do something
+    requires:
+      - proposal

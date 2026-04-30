@@ -200,7 +200,15 @@ export class InstructionsCommand {
     if (this._json) {
       const { schemaName, changeName, changeDirPath, artifact } =
         artifactInstructions;
-      const { id, description, dependencies, generates, instruction, template, dependents } = artifact;
+      const {
+        id,
+        description,
+        dependencies,
+        generates,
+        instruction,
+        template,
+        dependents,
+      } = artifact;
       const missingDependencies = dependencies
         .filter((d) => d.done === false)
         .map((d) => d.id);
@@ -269,6 +277,7 @@ export class InstructionsCommand {
       );
       console.log(`Missing: ${missingDependencies.join(", ")}`);
       console.log("</warning>");
+      console.log();
     }
 
     // Task
