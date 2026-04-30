@@ -19,3 +19,10 @@ export interface ChangeStatus {
   artifactStatuses: ArtifactStatus[];
   isComplete: boolean;
 }
+
+export interface ChangeInfo {
+  changeName: string;
+  totalTask: number;
+  completedTask: number;
+  lastModified: Date;
+}

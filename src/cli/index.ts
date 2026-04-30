@@ -65,6 +65,44 @@ program
   });
 
 program
+  .command("list [path]")
+  .description("List changes.")
+  .option("--json", "Output as JSON")
+  .action(async (targetPath: string = ".", options: { json: boolean }) => {
+    try {
+      const resolvedPath = path.resolve(targetPath);
+
+      try {
+        const stats = await fs.stat(resolvedPath);
+        if (!stats.isDirectory()) {
+          throw new Error(`Path "${targetPath}" is not a directory`);
+        }
+      } catch (error) {
+        if (error instanceof Error && "code" in error) {
+          if (error.code === "ENOENT") {
+            console.log(
+              `Directory "${targetPath}" doesn't exist, it will be created.`,
+            );
+            await fs.mkdir(resolvedPath, { recursive: true });
+          } else {
+            throw error;
+          }
+        } else {
+          throw error;
+        }
+      }
+
+      const { ListCommand } = await import("../core/commands/list.js");
+      const listCommand = new ListCommand(options);
+      await listCommand.execute(targetPath);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      ora().fail(`Error: ${message}`);
+      process.exit(1);
+    }
+  });
+
+program
   .command("status [path]")
   .description("Display artifact completion status for a change")
   .option("--change <id>", "Change name to show status for")

@@ -71,3 +71,40 @@ export async function loadChangeContext(
     completedArtifacts,
   };
 }
+
+export async function getChangeLastModified(
+  projectPath: string,
+  changeName: string,
+): Promise<Date> {
+  let latest: Date | null = null;
+
+  const traverseFiles = async (currentDirPath: string) => {
+    const entries = await fs.readdir(currentDirPath, { withFileTypes: true });
+    for (const entry of entries) {
+      const fullPath = path.join(entry.parentPath, entry.name);
+      if (entry.isDirectory()) {
+        await traverseFiles(fullPath);
+      } else {
+        const stats = await fs.stat(fullPath);
+        if (latest === null || stats.mtime > latest) {
+          latest = stats.mtime;
+        }
+      }
+    }
+  };
+
+  const changeDirPath = path.join(
+    projectPath,
+    DESIGN_SPEC_DIR_NAME,
+    "changes",
+    changeName,
+  );
+  await traverseFiles(changeDirPath);
+
+  if (latest === null) {
+    const stats = await fs.stat(changeDirPath);
+    latest = stats.mtime;
+  }
+
+  return latest;
+}
