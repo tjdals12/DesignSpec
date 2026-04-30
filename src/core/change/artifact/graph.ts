@@ -1,5 +1,12 @@
 import type { Artifact, SchemaYaml } from "./schema/schema.js";
 
+export interface ArtifactDependency {
+  id: string;
+  description: string | undefined;
+  generates: string;
+  done: boolean;
+}
+
 export class ArtifactGraph {
   private _schema: SchemaYaml;
   private _artifacts: Map<string, Artifact>;
@@ -17,6 +24,10 @@ export class ArtifactGraph {
 
   getAllArtifacts(): Artifact[] {
     return Array.from(this._artifacts.values());
+  }
+
+  getArtifact(id: string): Artifact | undefined {
+    return this._artifacts.get(id);
   }
 
   getNextArtifacts(completedArtifacts: Set<string>): string[] {
@@ -43,6 +54,39 @@ export class ArtifactGraph {
     return ready;
   }
 
+  getArtifactDependencies(
+    id: string,
+    completedArtifacts: Set<string>,
+  ): ArtifactDependency[] {
+    const schemaName = this._schema.name;
+
+    const artifact = this.getArtifact(id);
+    if (!artifact) {
+      throw new Error(`Artifact '${id}' not found in schema '${schemaName}'`);
+    }
+
+    const dependencies = artifact.requires.map((require) => {
+      const dependency = this.getArtifact(require);
+      if (!dependency) {
+        throw new Error(
+          `Artifact '${require}' not found in schema '${schemaName}'`,
+        );
+      }
+
+      const { id, description, generates } = dependency;
+      const done = completedArtifacts.has(dependency.id);
+
+      return {
+        id,
+        description,
+        generates,
+        done,
+      };
+    });
+
+    return dependencies;
+  }
+
   getMissingDependencies(
     completedArtifacts: Set<string>,
   ): Map<string, string[]> {
@@ -64,6 +108,20 @@ export class ArtifactGraph {
     }, new Map<string, string[]>());
 
     return map;
+  }
+
+  getArtifactDependents(id: string): string[] {
+    const artifacts = this.getAllArtifacts();
+    const dependents = artifacts.reduce<string[]>((acc, cur) => {
+      const { requires } = cur;
+
+      if (requires.includes(id)) {
+        acc.push(cur.id);
+      }
+
+      return acc;
+    }, []);
+    return dependents;
   }
 
   getBuildOrder(): string[] {

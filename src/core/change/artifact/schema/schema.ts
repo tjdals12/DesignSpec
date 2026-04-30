@@ -5,7 +5,7 @@ export const ArtifactSchema = z.object({
   generates: z.string().min(1, { error: "generates field is required" }),
   description: z.string().optional(),
   template: z.string().min(1, { error: "template is required" }),
-  instruction: z.string().optional(),
+  instruction: z.string(),
   requires: z.array(z.string()).default([]),
 });
 export type Artifact = z.infer<typeof ArtifactSchema>;

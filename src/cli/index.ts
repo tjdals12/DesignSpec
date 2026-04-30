@@ -141,4 +141,47 @@ program
     }
   });
 
+program
+  .command("instructions [path]")
+  .option("--change <id>", "Change name")
+  .option("--artifact <id>", "Artifact name")
+  .option("--json", "Output as JSON")
+  .action(
+    async (
+      targetPath: string = ".",
+      options: { change: string; artifact: string; json: boolean },
+    ) => {
+      try {
+        const resolvedPath = path.resolve(targetPath);
+
+        try {
+          const stats = await fs.stat(resolvedPath);
+          if (!stats.isDirectory()) {
+            throw new Error(`Path "${targetPath}" is not directory`);
+          }
+        } catch (error) {
+          if (
+            error instanceof Error &&
+            "code" in error &&
+            error.code === "ENOENT"
+          ) {
+            throw new Error(
+              "DesignSpec is not initialized. Run: design-spec init",
+            );
+          }
+          throw error;
+        }
+
+        const { InstructionsCommand } =
+          await import("../workflows/commands/instructions.js");
+        const instructionsCommand = new InstructionsCommand(options);
+        await instructionsCommand.execute(targetPath);
+      } catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
+        ora().fail(`Error: ${message}`);
+        process.exit(1);
+      }
+    },
+  );
+
 program.parse();
