@@ -6,6 +6,10 @@ export function buildChangesDirPath(projectPath: string): string {
   return path.join(projectPath, DESIGN_SPEC_DIR_NAME, "changes");
 }
 
+export function buildArchivesDirPath(projectPath: string): string {
+  return path.join(buildChangesDirPath(projectPath), "archive");
+}
+
 export function buildChangeDirPath(
   projectPath: string,
   changeName: string,

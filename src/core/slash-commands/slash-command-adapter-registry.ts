@@ -3,7 +3,7 @@ import { ClaudeAdapter } from "./adapters/claude.adapter.js";
 import { CodexAdapter } from "./adapters/codex.adapter.js";
 import type { SlashCommandAdapter } from "./slash-command-adapter.js";
 
-export class SlashCommandAdatperRegistry {
+export class SlashCommandAdapterRegistry {
   private static adapters: Map<string, SlashCommandAdapter> = new Map();
 
   static {

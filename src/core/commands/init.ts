@@ -22,19 +22,20 @@ import {
   getSkillTemplates,
 } from "../skills/skill-generation.js";
 import { getSlashCommandTemplates } from "../slash-commands/slash-command-generation.js";
-import { SlashCommandAdatperRegistry } from "../slash-commands/slash-command-adapter-registry.js";
+import { SlashCommandAdapterRegistry } from "../slash-commands/slash-command-adapter-registry.js";
+import {
+  buildArchivesDirPath,
+  buildChangesDirPath,
+} from "../change/paths.js";
+import { buildSpecsDirPath } from "../spec/paths.js";
+import { PALETTE, PROGRESS_SPINNER } from "../ui.js";
 
-export const PALETTE = {
-  white: chalk.hex("#f4f4f4"),
-  lightGray: chalk.hex("#c8c8c8"),
-  midGray: chalk.hex("#8a8a8a"),
-  darkGray: chalk.hex("#4a4a4a"),
-};
-
-const PROGRESS_SPINNER = {
-  interval: 80,
-  frames: ["░░░", "▒░░", "▒▒░", "▒▒▒", "▓▒▒", "▓▓▒", "▓▓▓", "▒▓▓", "░▒▓"],
-};
+interface SetupResults {
+  createdTools: Array<AIToolInfo>;
+  refreshedTools: Array<AIToolInfo>;
+  failedTools: Array<{ name: string; error: string }>;
+  commandSkipped: Array<AIToolInfo["value"]>;
+}
 
 export class InitCommand {
   private readonly _tools?: string | undefined;
@@ -68,14 +69,14 @@ export class InitCommand {
 
     const validatedTools = this.validateTools(toolStates, selectedToolIds);
 
-    await this.createDirectoryStructure(designSpecPath, extendMode);
+    await this.createDirectoryStructure(projectPath, extendMode);
 
     const results = await this.generateSkillsAndCommands(
       projectPath,
       validatedTools,
     );
 
-    this.displaySuccessMessage(results);
+    this.printResults(results);
   }
 
   private resolveTools(): string[] {
@@ -147,14 +148,7 @@ export class InitCommand {
     const validatedTools: AIToolInfo[] = [];
 
     for (const toolId of toolIds) {
-      const tool = getToolById(toolId);
-
-      if (isUndefined(tool)) {
-        const supportedToolIds = getSupportedToolIds();
-        throw new Error(
-          `Unknown tool '${toolId}'. Valid tools:\n  ${supportedToolIds.join("\n  ")}`,
-        );
-      }
+      const tool = getToolById(toolId)!;
 
       if (isUndefined(tool.skillsDir)) {
         const supportedToolIds = getSupportedToolIds();
@@ -174,48 +168,39 @@ export class InitCommand {
   }
 
   private async createDirectoryStructure(
-    designSpecPath: string,
+    projectPath: string,
     extendMode: boolean,
   ): Promise<void> {
     const directories = [
-      designSpecPath,
-      path.join(designSpecPath, "changes"),
-      path.join(designSpecPath, "changes", "archive"),
-      path.join(designSpecPath, "specs"),
+      path.join(projectPath, DESIGN_SPEC_DIR_NAME),
+      buildChangesDirPath(projectPath),
+      buildArchivesDirPath(projectPath),
+      buildSpecsDirPath(projectPath),
     ];
 
-    if (extendMode) {
-      for (const dir of directories) {
-        await FileSystemUtils.createDirectory(dir);
-      }
-    } else {
-      const spinner = ora({
-        text: "Creating DesignSpec structure...",
-        stream: process.stdout,
-        color: "gray",
-        spinner: PROGRESS_SPINNER,
-      }).start();
+    const spinner = extendMode
+      ? null
+      : ora({
+          text: "Creating DesignSpec structure...",
+          stream: process.stdout,
+          color: "gray",
+          spinner: PROGRESS_SPINNER,
+        }).start();
 
-      for (const dir of directories) {
-        await FileSystemUtils.createDirectory(dir);
-      }
-
-      spinner.stopAndPersist({
-        symbol: PALETTE.white("▌"),
-        text: PALETTE.white("DesignSpec structure created"),
-      });
+    for (const dir of directories) {
+      await FileSystemUtils.createDirectory(dir);
     }
+
+    spinner?.stopAndPersist({
+      symbol: PALETTE.white("▌"),
+      text: PALETTE.white("DesignSpec structure created"),
+    });
   }
 
   private async generateSkillsAndCommands(
     projectPath: string,
     tools: Array<AIToolInfo>,
-  ): Promise<{
-    createdTools: Array<AIToolInfo>;
-    refreshedTools: Array<AIToolInfo>;
-    failedTools: Array<{ name: string; error: string }>;
-    commandSkipped: Array<AIToolInfo["value"]>;
-  }> {
+  ): Promise<SetupResults> {
     const createdTools: Array<AIToolInfo> = [];
     const refreshedTools: Array<AIToolInfo> = [];
     const failedTools: Array<{ name: string; error: string }> = [];
@@ -238,7 +223,7 @@ export class InitCommand {
           await FileSystemUtils.writeFile(skillFile, skillContent);
         }
 
-        const adapter = SlashCommandAdatperRegistry.get(tool.value);
+        const adapter = SlashCommandAdapterRegistry.get(tool.value);
         if (adapter) {
           for (const { id, template } of slashCommandTemplates) {
             const slashCommandFilePath = adapter.getFilePath(id);
@@ -278,12 +263,7 @@ export class InitCommand {
     };
   }
 
-  private displaySuccessMessage(results: {
-    createdTools: Array<AIToolInfo>;
-    refreshedTools: Array<AIToolInfo>;
-    failedTools: Array<{ name: string; error: string }>;
-    commandSkipped: Array<AIToolInfo["value"]>;
-  }) {
+  private printResults(results: SetupResults) {
     console.log();
     console.log(chalk.bold("DesignSpec Setup Complete"));
     console.log();
@@ -295,7 +275,7 @@ export class InitCommand {
         `Created: ${createdTools.map((tool) => tool.name).join(", ")}`,
       );
     }
-    if (refreshedTools) {
+    if (refreshedTools.length > 0) {
       console.log(
         `Refreshed: ${refreshedTools.map((tool) => tool.name).join(", ")}`,
       );
