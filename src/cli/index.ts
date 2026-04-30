@@ -66,7 +66,7 @@ program
 
 program
   .command("list [path]")
-  .description("List changes.")
+  .description("List all active changes")
   .option("--json", "Output as JSON")
   .action(async (targetPath: string = ".", options: { json: boolean }) => {
     try {
@@ -144,7 +144,7 @@ program
 
 program
   .command("new [path]")
-  .description("Create a new change directory")
+  .description("Create a new change")
   .option("--change <id>", "Name for new change")
   .action(async (targetPath: string = ".", options: { change: string }) => {
     try {
@@ -181,6 +181,7 @@ program
 
 program
   .command("instructions [path]")
+  .description("Show instructions for a specific artifact in a change")
   .option("--change <id>", "Change name")
   .option("--artifact <id>", "Artifact name")
   .option("--json", "Output as JSON")
