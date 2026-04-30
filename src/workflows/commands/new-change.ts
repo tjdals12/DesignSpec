@@ -35,7 +35,7 @@ export class NewChangeCommand {
         `Created change '${changeName}' at design-spec/changes/${changeName}/ (schema: default)`,
       );
     } catch (error) {
-      spinner.fail(`Failed to create change '${changeName}'`);
+      spinner.stop();
       throw error;
     }
   }

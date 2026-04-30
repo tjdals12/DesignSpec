@@ -1,11 +1,5 @@
 import type { Artifact } from "./schema.js";
-
-export class SchemaValidationError extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = "SchemaValidationError";
-  }
-}
+import { SchemaValidationError } from "./error.js";
 
 export function validateNoDuplicateArtifactIds(artifacts: Artifact[]): void {
   const set = new Set<string>();

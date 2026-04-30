@@ -2,14 +2,12 @@ import path from "node:path";
 import fs from "node:fs/promises";
 
 import { DESIGN_SPEC_DIR_NAME } from "../../config.js";
+import type { TaskProgress } from "./types.js";
+
+export type { TaskProgress };
 
 const TASK_PATTERN = /^[-*]\s+\[[\sx]\]/i;
 const COMPLETED_TASK_PATTERN = /^[-*]\s+\[x\]/i;
-
-export interface TaskProgress {
-  total: number;
-  completed: number;
-}
 
 export async function getTaskProgress(
   projectPath: string,

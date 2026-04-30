@@ -10,6 +10,7 @@ import {
   getTaskProgress,
   type TaskProgress,
 } from "../change/artifact/tasks.js";
+import { validateChangesDir } from "../change/validation.js";
 
 export class ListCommand {
   private readonly _json: boolean;
@@ -20,17 +21,7 @@ export class ListCommand {
 
   async execute(targetPath: string) {
     const projectPath = path.resolve(targetPath);
-
-    const changesDirPath = path.join(
-      projectPath,
-      DESIGN_SPEC_DIR_NAME,
-      "changes",
-    );
-    const changesDirExists =
-      await FileSystemUtils.directoryExists(changesDirPath);
-    if (!changesDirExists) {
-      throw new Error("DesignSpec is not initialized. Run: design-spec init");
-    }
+    await validateChangesDir(projectPath);
 
     try {
       const changeInfos: Array<ChangeInfo> = [];

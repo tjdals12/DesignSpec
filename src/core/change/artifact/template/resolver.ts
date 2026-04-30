@@ -2,13 +2,7 @@ import path from "node:path";
 import fs from "node:fs/promises";
 
 import { DEFAULT_SCHEMA_DIR } from "../../../../utils/package-paths.js";
-
-export class TemplateLoadError extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = "TemplateLoadError";
-  }
-}
+import { TemplateLoadError } from "./error.js";
 
 export async function resolveTemplate(template: string): Promise<string> {
   const templatePath = path.join(DEFAULT_SCHEMA_DIR, "templates", template);

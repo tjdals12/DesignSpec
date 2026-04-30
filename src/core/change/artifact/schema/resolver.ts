@@ -5,25 +5,11 @@ import fs from "node:fs";
 import { DEFAULT_SCHEMA } from "../../../../utils/package-paths.js";
 import { SchemaYamlSchema, type SchemaYaml } from "./schema.js";
 import {
-  SchemaValidationError,
   validateArtifactRequiresReferences,
   validateNoArtifactDependencyCycles,
   validateNoDuplicateArtifactIds,
 } from "./validation.js";
-
-export class SchemaLoadError extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = "SchemaLoadError";
-  }
-}
-
-export class SchemaParseError extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = "SchemaParseError";
-  }
-}
+import { SchemaLoadError, SchemaParseError, SchemaValidationError } from "./error.js";
 
 export function parseSchema(content: string): SchemaYaml {
   let parsed;

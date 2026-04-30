@@ -1,52 +1,26 @@
 import yaml from "yaml";
 
-import path from "node:path";
-import fs from "node:fs/promises";
-
-import { validateChangeName } from "./validation.js";
-import { DESIGN_SPEC_DIR_NAME, METADATA_FILENAME } from "../config.js";
+import { validateChangeName, validateChangesDir } from "./validation.js";
 import { FileSystemUtils } from "../../utils/file-system.utils.js";
+import { doesChangeExist } from "./query.js";
+import { buildChangeDirPath, buildMetadataPath } from "./paths.js";
 
 export async function createChange(projectPath: string, changeName: string) {
-  const changesDirPath = path.join(
-    projectPath,
-    DESIGN_SPEC_DIR_NAME,
-    "changes",
-  );
-  const changesDirExists =
-    await FileSystemUtils.directoryExists(changesDirPath);
-  if (!changesDirExists) {
-    throw new Error("DesignSpec is not intialized. Run: design-spec init");
-  }
+  await validateChangesDir(projectPath);
+  await validateChangeName(changeName);
 
-  const changeDirPath = path.join(changesDirPath, changeName);
-  const changeDirExists = await FileSystemUtils.directoryExists(changeDirPath);
+  const changeDirExists = await doesChangeExist(projectPath, changeName);
   if (changeDirExists) {
-    throw new Error(
-      `Change '${changeName}' already exists at ${changeDirPath}`,
-    );
+    throw new Error(`Change '${changeName}' already exists.`);
   }
 
-  try {
-    await validateChangeName(changeName);
-  } catch (error) {
-    const message = error instanceof Error ? error.message : String(error);
-    throw new Error(`Invalid change name '${changeName}': ${message}`);
-  }
-
+  const changeDirPath = buildChangeDirPath(projectPath, changeName);
   await FileSystemUtils.createDirectory(changeDirPath);
 
-  const metadataPath = path.join(changeDirPath, METADATA_FILENAME);
-  const metadata = {
+  const metadataPath = buildMetadataPath(projectPath, changeName);
+  const metadata = yaml.stringify({
     schema: "default",
     created: new Date().toISOString().split("T")[0],
-  };
-
-  const content = yaml.stringify(metadata);
-  try {
-    await fs.writeFile(metadataPath, content, "utf-8");
-  } catch (error) {
-    const message = error instanceof Error ? error.message : String(error);
-    throw new Error(`Failed to write metadata: ${message}`);
-  }
+  });
+  await FileSystemUtils.writeFile(metadataPath, metadata);
 }

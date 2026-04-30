@@ -1,11 +1,5 @@
 import type { Artifact, SchemaYaml } from "./schema/schema.js";
-
-export interface ArtifactDependency {
-  id: string;
-  description: string | undefined;
-  generates: string;
-  done: boolean;
-}
+import type { ArtifactDependency } from "./types.js";
 
 export class ArtifactGraph {
   private _schema: SchemaYaml;

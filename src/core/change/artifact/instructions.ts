@@ -3,18 +3,9 @@ import path from "node:path";
 import type { ChangeContext } from "../types.js";
 import { resolveTemplate } from "./template/resolver.js";
 import { DESIGN_SPEC_DIR_NAME } from "../../config.js";
-import type { Artifact } from "./schema/schema.js";
-import type { ArtifactDependency } from "./graph.js";
+import type { ArtifactInstructions } from "./types.js";
 
-export interface ArtifactInstructions {
-  schemaName: string;
-  changeName: string;
-  changeDirPath: string;
-  artifact: Artifact & {
-    dependencies: ArtifactDependency[];
-    dependents: string[];
-  };
-}
+export type { ArtifactInstructions };
 
 export async function resolveArtifactInstructions(
   projectPath: string,
