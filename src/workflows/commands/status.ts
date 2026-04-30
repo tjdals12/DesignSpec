@@ -7,8 +7,8 @@ import path from "node:path";
 import {
   doesChangeExist,
   getAvailableChanges,
-  loadChangeContext,
 } from "../../core/change/query.js";
+import { loadChangeContext } from "../../core/change/context.js";
 import type {
   ArtifactStatus,
   ChangeContext,

@@ -1,5 +1,12 @@
 import { isEmpty } from "es-toolkit/compat";
-import { getAvailableChanges } from "./query.js";
+import { getAvailableChanges, hasChangesDir } from "./query.js";
+
+export async function validateChangesDir(projectPath: string): Promise<void> {
+  const exists = await hasChangesDir(projectPath);
+  if (!exists) {
+    throw new Error("DesignSpec is not initialized. Run: design-spec init");
+  }
+}
 
 export async function validateAvailableChanges(
   projectPath: string,
@@ -29,5 +36,3 @@ export async function validateChangeName(changeName: string): Promise<void> {
     throw new Error(`Invalid change name '${changeName}': ${message}`);
   }
 }
-
-export async function validateChangeExists(projectPath: string) {}

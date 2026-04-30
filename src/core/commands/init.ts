@@ -5,7 +5,6 @@ import { isEmpty, isUndefined } from "es-toolkit/compat";
 import path from "node:path";
 
 import {
-  AI_TOOLS,
   DESIGN_SPEC_DIR_NAME,
   type AIToolInfo,
   type AIToolOption,
