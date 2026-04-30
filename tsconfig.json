@@ -47,5 +47,6 @@
       "#utils/*": ["./src/utils/*"],
       "#workflows/*": ["./src/workflows/*"]
     }
-  }
+  },
+  "exclude": ["src/**/tests/**", "dist/**", "vitest.config.ts"]
 }
