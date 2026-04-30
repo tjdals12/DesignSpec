@@ -35,9 +35,7 @@ describe("generateSkillContent", () => {
   });
 
   it("compatibility를 지정하면 해당 값이 사용된다", () => {
-    const content = generateSkillContent(
-      makeTemplate({ compatibility: "Requires node 20+." }),
-    );
+    const content = generateSkillContent(makeTemplate({ compatibility: "Requires node 20+." }));
     expect(content).toContain("compatibility: Requires node 20+.");
   });
 

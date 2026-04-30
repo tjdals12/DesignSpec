@@ -4,10 +4,7 @@ import path from "node:path";
 
 import { getAvailableChanges, getChangeLastModified } from "../change/query.js";
 import type { ChangeInfo } from "../change/types.js";
-import {
-  getTaskProgress,
-  type TaskProgress,
-} from "../change/artifact/tasks.js";
+import { getTaskProgress, type TaskProgress } from "../change/artifact/tasks.js";
 import { validateChangesDir } from "../change/validation.js";
 
 export class ListCommand {
@@ -21,46 +18,30 @@ export class ListCommand {
     const projectPath = path.resolve(targetPath);
     await validateChangesDir(projectPath);
 
-    try {
-      const availableChanges = await getAvailableChanges(projectPath);
-      if (availableChanges.length === 0) {
-        if (this._json) {
-          console.log(
-            JSON.stringify(
-              { changes: [], message: "No active changes." },
-              null,
-              2,
-            ),
-          );
-        } else {
-          console.log("No active changes found.");
-        }
-        return;
+    const availableChanges = await getAvailableChanges(projectPath);
+    if (availableChanges.length === 0) {
+      if (this._json) {
+        console.log(JSON.stringify({ changes: [], message: "No active changes." }, null, 2));
+      } else {
+        console.log("No active changes found.");
       }
-
-      const changeInfos: Array<ChangeInfo> = [];
-
-      for (const availableChange of availableChanges) {
-        const taskProgress = await getTaskProgress(
-          projectPath,
-          availableChange,
-        );
-        const lastModified = await getChangeLastModified(
-          projectPath,
-          availableChange,
-        );
-        changeInfos.push({
-          changeName: availableChange,
-          totalTask: taskProgress.total,
-          completedTask: taskProgress.completed,
-          lastModified,
-        });
-      }
-
-      this.printList(changeInfos);
-    } catch (error) {
-      throw error;
+      return;
     }
+
+    const changeInfos: Array<ChangeInfo> = [];
+
+    for (const availableChange of availableChanges) {
+      const taskProgress = await getTaskProgress(projectPath, availableChange);
+      const lastModified = await getChangeLastModified(projectPath, availableChange);
+      changeInfos.push({
+        changeName: availableChange,
+        totalTask: taskProgress.total,
+        completedTask: taskProgress.completed,
+        lastModified,
+      });
+    }
+
+    this.printList(changeInfos);
   }
 
   printList(changeInfos: Array<ChangeInfo>) {
@@ -68,20 +49,18 @@ export class ListCommand {
       console.log(
         JSON.stringify(
           {
-            changes: changeInfos.map(
-              ({ changeName, totalTask, completedTask, lastModified }) => ({
-                changeName: changeName,
-                totalTask: totalTask,
-                completedTask: completedTask,
-                lastModified: lastModified.toISOString(),
-                status:
-                  totalTask === 0
-                    ? "no-tasks"
-                    : totalTask === completedTask
-                      ? "complete"
-                      : "in-progress",
-              }),
-            ),
+            changes: changeInfos.map(({ changeName, totalTask, completedTask, lastModified }) => ({
+              changeName: changeName,
+              totalTask: totalTask,
+              completedTask: completedTask,
+              lastModified: lastModified.toISOString(),
+              status:
+                totalTask === 0
+                  ? "no-tasks"
+                  : totalTask === completedTask
+                    ? "complete"
+                    : "in-progress",
+            })),
           },
           null,
           2,
@@ -91,9 +70,7 @@ export class ListCommand {
     }
 
     console.log("Changes:");
-    const width = Math.max(
-      ...changeInfos.map((changeInfo) => changeInfo.changeName.length),
-    );
+    const width = Math.max(...changeInfos.map((changeInfo) => changeInfo.changeName.length));
     for (const changeInfo of changeInfos) {
       const changeName = changeInfo.changeName.padEnd(width);
       const taskProgress = this.formatTaskProgress({

@@ -1,9 +1,5 @@
 import { isEmpty } from "es-toolkit/compat";
-import {
-  doesChangeExist,
-  getAvailableChanges,
-  hasChangesDir,
-} from "./query.js";
+import { doesChangeExist, getAvailableChanges, hasChangesDir } from "./query.js";
 import { ChangeValidationError } from "./error.js";
 
 export async function validateChangesDir(projectPath: string): Promise<void> {
@@ -13,10 +9,7 @@ export async function validateChangesDir(projectPath: string): Promise<void> {
   }
 }
 
-export async function validateChangeDir(
-  projectPath: string,
-  changeName: string,
-): Promise<void> {
+export async function validateChangeDir(projectPath: string, changeName: string): Promise<void> {
   const exists = await doesChangeExist(projectPath, changeName);
   if (!exists) {
     throw new ChangeValidationError(
@@ -25,9 +18,7 @@ export async function validateChangeDir(
   }
 }
 
-export async function validateAvailableChanges(
-  projectPath: string,
-): Promise<void> {
+export async function validateAvailableChanges(projectPath: string): Promise<void> {
   const availableChanges = await getAvailableChanges(projectPath);
   if (availableChanges.length === 0) {
     throw new ChangeValidationError(

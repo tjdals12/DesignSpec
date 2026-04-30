@@ -4,11 +4,7 @@ import { isEmpty, isUndefined } from "es-toolkit/compat";
 
 import path from "node:path";
 
-import {
-  DESIGN_SPEC_DIR_NAME,
-  type AIToolInfo,
-  type AIToolOption,
-} from "../config.js";
+import { DESIGN_SPEC_DIR_NAME, type AIToolInfo, type AIToolOption } from "../config.js";
 import { FileSystemUtils } from "#utils/file-system.utils.js";
 import {
   getInstalledTools,
@@ -17,16 +13,10 @@ import {
   getToolStates,
   type ToolSkillStatus,
 } from "../tool-detection.js";
-import {
-  generateSkillContent,
-  getSkillTemplates,
-} from "../skills/skill-generation.js";
+import { generateSkillContent, getSkillTemplates } from "../skills/skill-generation.js";
 import { getSlashCommandTemplates } from "../slash-commands/slash-command-generation.js";
 import { SlashCommandAdapterRegistry } from "../slash-commands/slash-command-adapter-registry.js";
-import {
-  buildArchivesDirPath,
-  buildChangesDirPath,
-} from "../change/paths.js";
+import { buildArchivesDirPath, buildChangesDirPath } from "../change/paths.js";
 import { buildSpecsDirPath } from "../spec/paths.js";
 import { PALETTE, PROGRESS_SPINNER } from "../ui.js";
 
@@ -48,8 +38,7 @@ export class InitCommand {
     const projectPath = path.resolve(targetPath);
     const designSpecPath = path.join(projectPath, DESIGN_SPEC_DIR_NAME);
 
-    const hasPermissions =
-      await FileSystemUtils.ensureWritePermissions(projectPath);
+    const hasPermissions = await FileSystemUtils.ensureWritePermissions(projectPath);
     if (!hasPermissions) {
       throw new Error(`Insufficient permissions to write to ${projectPath}`);
     }
@@ -71,10 +60,7 @@ export class InitCommand {
 
     await this.createDirectoryStructure(projectPath, extendMode);
 
-    const results = await this.generateSkillsAndCommands(
-      projectPath,
-      validatedTools,
-    );
+    const results = await this.generateSkillsAndCommands(projectPath, validatedTools);
 
     this.printResults(results);
   }
@@ -110,13 +96,9 @@ export class InitCommand {
       );
     }
 
-    const hasAllOrNone = tokens.some(
-      (token) => token === "all" || token === "none",
-    );
+    const hasAllOrNone = tokens.some((token) => token === "all" || token === "none");
     if (hasAllOrNone) {
-      throw new Error(
-        'Cannot combine reserved values "all" or "none" with specific tool IDs.',
-      );
+      throw new Error('Cannot combine reserved values "all" or "none" with specific tool IDs.');
     }
 
     const invalidTokens = tokens.filter((token) => !supportedSet.has(token));
@@ -132,7 +114,7 @@ export class InitCommand {
   }
 
   // TODO
-  private async getSelectedToolIds(args: {
+  private async getSelectedToolIds(_args: {
     projectPath: string;
     extendMode: boolean;
     installedTools: AIToolOption[];
@@ -167,10 +149,7 @@ export class InitCommand {
     return validatedTools;
   }
 
-  private async createDirectoryStructure(
-    projectPath: string,
-    extendMode: boolean,
-  ): Promise<void> {
+  private async createDirectoryStructure(projectPath: string, extendMode: boolean): Promise<void> {
     const directories = [
       path.join(projectPath, DESIGN_SPEC_DIR_NAME),
       buildChangesDirPath(projectPath),
@@ -232,10 +211,7 @@ export class InitCommand {
               : path.join(projectPath, slashCommandFilePath);
             const slashCommandContent = adapter.formatFile(template);
 
-            await FileSystemUtils.writeFile(
-              slashCommandFile,
-              slashCommandContent,
-            );
+            await FileSystemUtils.writeFile(slashCommandFile, slashCommandContent);
           }
         } else {
           commandSkipped.push(tool.value);
@@ -268,32 +244,23 @@ export class InitCommand {
     console.log(chalk.bold("DesignSpec Setup Complete"));
     console.log();
 
-    const { createdTools, refreshedTools, failedTools, commandSkipped } =
-      results;
+    const { createdTools, refreshedTools, failedTools, commandSkipped } = results;
     if (createdTools.length > 0) {
-      console.log(
-        `Created: ${createdTools.map((tool) => tool.name).join(", ")}`,
-      );
+      console.log(`Created: ${createdTools.map((tool) => tool.name).join(", ")}`);
     }
     if (refreshedTools.length > 0) {
-      console.log(
-        `Refreshed: ${refreshedTools.map((tool) => tool.name).join(", ")}`,
-      );
+      console.log(`Refreshed: ${refreshedTools.map((tool) => tool.name).join(", ")}`);
     }
 
     const successfulTools = [...createdTools, ...refreshedTools];
     if (successfulTools.length > 0) {
       const toolDirs = [
-        ...new Set(
-          successfulTools.map((tool) => path.join(tool.skillsDir, "/")),
-        ),
+        ...new Set(successfulTools.map((tool) => path.join(tool.skillsDir, "/"))),
       ].join(", ");
       const skillCount = getSkillTemplates().length;
       const commandCount = getSlashCommandTemplates().length;
       if (skillCount > 0 && commandCount > 0) {
-        console.log(
-          `${skillCount} skills and ${commandCount} commands in ${toolDirs}`,
-        );
+        console.log(`${skillCount} skills and ${commandCount} commands in ${toolDirs}`);
       } else if (skillCount > 0) {
         console.log(`${skillCount} skills in ${toolDirs}`);
       } else if (commandCount > 0) {
@@ -310,18 +277,12 @@ export class InitCommand {
     }
 
     if (commandSkipped.length > 0) {
-      console.log(
-        chalk.dim(
-          `Commands skipped for: ${commandSkipped.join(", ")} (no adapter)`,
-        ),
-      );
+      console.log(chalk.dim(`Commands skipped for: ${commandSkipped.join(", ")} (no adapter)`));
     }
 
     if (createdTools.length > 0 || refreshedTools.length > 0) {
       console.log();
-      console.log(
-        chalk.white("Restart your IDE for slash commands to take effect."),
-      );
+      console.log(chalk.white("Restart your IDE for slash commands to take effect."));
     }
 
     console.log();

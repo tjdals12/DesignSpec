@@ -48,5 +48,11 @@
       "#workflows/*": ["./src/workflows/*"]
     }
   },
-  "exclude": ["src/**/tests/**", "dist/**", "vitest.config.ts", "vitest.base.config.ts", "vitest.integration.config.ts"]
+  "exclude": [
+    "src/**/tests/**",
+    "dist/**",
+    "vitest.config.ts",
+    "vitest.base.config.ts",
+    "vitest.integration.config.ts"
+  ]
 }

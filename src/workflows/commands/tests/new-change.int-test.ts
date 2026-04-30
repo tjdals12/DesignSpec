@@ -37,22 +37,14 @@ describe("NewChangeCommand", () => {
 
     it("change 디렉토리가 생성된다", async () => {
       await new NewChangeCommand({ change: "my-change" }).execute(tmpDir);
-      const stat = await fs.stat(
-        path.join(tmpDir, "design-spec", "changes", "my-change"),
-      );
+      const stat = await fs.stat(path.join(tmpDir, "design-spec", "changes", "my-change"));
       expect(stat.isDirectory()).toBe(true);
     });
 
     it("메타데이터 파일이 생성된다", async () => {
       await new NewChangeCommand({ change: "my-change" }).execute(tmpDir);
       const stat = await fs.stat(
-        path.join(
-          tmpDir,
-          "design-spec",
-          "changes",
-          "my-change",
-          ".design-spec.yaml",
-        ),
+        path.join(tmpDir, "design-spec", "changes", "my-change", ".design-spec.yaml"),
       );
       expect(stat.isFile()).toBe(true);
     });
@@ -60,13 +52,7 @@ describe("NewChangeCommand", () => {
     it("메타데이터 파일에 schema: default가 포함된다", async () => {
       await new NewChangeCommand({ change: "my-change" }).execute(tmpDir);
       const content = await fs.readFile(
-        path.join(
-          tmpDir,
-          "design-spec",
-          "changes",
-          "my-change",
-          ".design-spec.yaml",
-        ),
+        path.join(tmpDir, "design-spec", "changes", "my-change", ".design-spec.yaml"),
         "utf-8",
       );
       const metadata = parseYaml(content) as { schema: string };
@@ -76,13 +62,7 @@ describe("NewChangeCommand", () => {
     it("메타데이터 파일에 오늘 날짜가 포함된다", async () => {
       await new NewChangeCommand({ change: "my-change" }).execute(tmpDir);
       const content = await fs.readFile(
-        path.join(
-          tmpDir,
-          "design-spec",
-          "changes",
-          "my-change",
-          ".design-spec.yaml",
-        ),
+        path.join(tmpDir, "design-spec", "changes", "my-change", ".design-spec.yaml"),
         "utf-8",
       );
       const metadata = parseYaml(content) as { created: string };
@@ -98,24 +78,18 @@ describe("NewChangeCommand", () => {
     });
 
     it("DesignSpec 미초기화 상태에서 실행하면 에러를 던진다", async () => {
-      await expect(
-        new NewChangeCommand({ change: "my-change" }).execute(tmpDir),
-      ).rejects.toThrow();
+      await expect(new NewChangeCommand({ change: "my-change" }).execute(tmpDir)).rejects.toThrow();
     });
 
     it("이미 존재하는 change 이름으로 실행하면 에러를 던진다", async () => {
       await initializeProject(tmpDir);
       await new NewChangeCommand({ change: "my-change" }).execute(tmpDir);
-      await expect(
-        new NewChangeCommand({ change: "my-change" }).execute(tmpDir),
-      ).rejects.toThrow();
+      await expect(new NewChangeCommand({ change: "my-change" }).execute(tmpDir)).rejects.toThrow();
     });
 
     it("kebab-case가 아닌 이름으로 실행하면 에러를 던진다", async () => {
       await initializeProject(tmpDir);
-      await expect(
-        new NewChangeCommand({ change: "MyChange" }).execute(tmpDir),
-      ).rejects.toThrow();
+      await expect(new NewChangeCommand({ change: "MyChange" }).execute(tmpDir)).rejects.toThrow();
     });
   });
 });

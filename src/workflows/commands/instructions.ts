@@ -3,10 +3,7 @@ import ora from "ora";
 
 import path from "node:path";
 
-import {
-  doesChangeExist,
-  getAvailableChanges,
-} from "#core/change/query.js";
+import { doesChangeExist, getAvailableChanges } from "#core/change/query.js";
 import { loadChangeContext } from "#core/change/context.js";
 import {
   resolveArtifactInstructions,
@@ -29,9 +26,7 @@ export class InstructionsCommand {
     const changeName = this._change;
     const artifactName = this._artifact;
 
-    const spinner = this._json
-      ? undefined
-      : ora("Generating instructions...").start();
+    const spinner = this._json ? undefined : ora("Generating instructions...").start();
 
     try {
       const hasChangeName = !isUndefined(changeName);
@@ -85,17 +80,9 @@ export class InstructionsCommand {
     const availableChanges = await getAvailableChanges(projectPath);
     if (availableChanges.length === 0) {
       if (this._json) {
-        console.log(
-          JSON.stringify(
-            { changes: [], message: "No active changes." },
-            null,
-            2,
-          ),
-        );
+        console.log(JSON.stringify({ changes: [], message: "No active changes." }, null, 2));
       } else {
-        console.log(
-          "No active changes. Create one with: design-spec new change <name>",
-        );
+        console.log("No active changes. Create one with: design-spec new change <name>");
       }
       return;
     }
@@ -107,11 +94,7 @@ export class InstructionsCommand {
   private handleMissingChangeAndArtifact() {
     if (this._json) {
       console.log(
-        JSON.stringify(
-          { error: "Missing required options --change, --artifact." },
-          null,
-          2,
-        ),
+        JSON.stringify({ error: "Missing required options --change, --artifact." }, null, 2),
       );
       return;
     }
@@ -120,10 +103,7 @@ export class InstructionsCommand {
     );
   }
 
-  private async handleChangeNotFound(
-    projectPath: string,
-    changeName: string,
-  ): Promise<void> {
+  private async handleChangeNotFound(projectPath: string, changeName: string): Promise<void> {
     const availableChanges = await getAvailableChanges(projectPath);
     if (this._json) {
       console.log(
@@ -139,9 +119,7 @@ export class InstructionsCommand {
       return;
     }
     if (availableChanges.length === 0) {
-      throw new Error(
-        `Change '${changeName}' not found. No available changes.`,
-      );
+      throw new Error(`Change '${changeName}' not found. No available changes.`);
     }
     throw new Error(
       `Change '${changeName}' not found. Available changes:\n  ${availableChanges.join("\n  ")}`,
@@ -194,24 +172,12 @@ export class InstructionsCommand {
     );
   }
 
-  private printArtifactInstructions(
-    artifactInstructions: ArtifactInstructions,
-  ): void {
+  private printArtifactInstructions(artifactInstructions: ArtifactInstructions): void {
     if (this._json) {
-      const { schemaName, changeName, changeDirPath, artifact } =
-        artifactInstructions;
-      const {
-        id,
-        description,
-        dependencies,
-        generates,
-        instruction,
-        template,
-        dependents,
-      } = artifact;
-      const missingDependencies = dependencies
-        .filter((d) => d.done === false)
-        .map((d) => d.id);
+      const { schemaName, changeName, changeDirPath, artifact } = artifactInstructions;
+      const { id, description, dependencies, generates, instruction, template, dependents } =
+        artifact;
+      const missingDependencies = dependencies.filter((d) => d.done === false).map((d) => d.id);
       console.log(
         JSON.stringify(
           {
@@ -248,23 +214,13 @@ export class InstructionsCommand {
       return;
     }
 
-    const { schemaName, changeName, changeDirPath, artifact } =
-      artifactInstructions;
-    const {
-      id,
-      description,
-      dependencies,
-      generates,
-      instruction,
-      template,
-      dependents,
-    } = artifact;
+    const { schemaName, changeName, changeDirPath, artifact } = artifactInstructions;
+    const { id, description, dependencies, generates, instruction, template, dependents } =
+      artifact;
     const outputPath = path.join(changeDirPath, generates);
 
     // Opening tag
-    console.log(
-      `<artifact id="${id}" change="${changeName}" schema="${schemaName}">`,
-    );
+    console.log(`<artifact id="${id}" change="${changeName}" schema="${schemaName}">`);
     console.log();
 
     const missingDependencies = dependencies
@@ -292,9 +248,7 @@ export class InstructionsCommand {
     // Dependencies
     if (dependencies.length > 0) {
       console.log("<dependencies>");
-      console.log(
-        "Read these files for context before creating this artifact:",
-      );
+      console.log("Read these files for context before creating this artifact:");
       console.log();
 
       for (const dependency of dependencies) {
@@ -328,9 +282,7 @@ export class InstructionsCommand {
 
     // Template
     console.log("<template>");
-    console.log(
-      "<!-- Use this as the structure for your output file. Fill in the sections. -->",
-    );
+    console.log("<!-- Use this as the structure for your output file. Fill in the sections. -->");
     console.log(template.trim());
     console.log("</template>");
     console.log();

@@ -13,9 +13,7 @@ export class FileSystemUtils {
     } catch (error) {
       if (error instanceof Error && "code" in error) {
         if (error.code !== "ENOENT") {
-          console.debug(
-            `Unable to check if directory exists at ${dirPath}: ${error.message}`,
-          );
+          console.debug(`Unable to check if directory exists at ${dirPath}: ${error.message}`);
         }
       }
       return false;
@@ -37,10 +35,7 @@ export class FileSystemUtils {
 
       const testFile = path.join(
         dirPath,
-        ".design-spec-test-" +
-          Date.now() +
-          "-" +
-          Math.random().toString(36).slice(2),
+        ".design-spec-test-" + Date.now() + "-" + Math.random().toString(36).slice(2),
       );
       await fs.writeFile(testFile, "");
 
@@ -51,11 +46,8 @@ export class FileSystemUtils {
           break;
         } catch (error) {
           if (attempt === maxRetries - 1) {
-            const message =
-              error instanceof Error ? error.message : String(error);
-            console.debug(
-              `Could not clean up test file ${testFile}: ${message}`,
-            );
+            const message = error instanceof Error ? error.message : String(error);
+            console.debug(`Could not clean up test file ${testFile}: ${message}`);
           } else {
             await new Promise((resolve) => setTimeout(resolve, 50));
           }
@@ -65,9 +57,7 @@ export class FileSystemUtils {
       return true;
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
-      console.debug(
-        `Insufficient permissions to write to ${dirPath}: ${message}`,
-      );
+      console.debug(`Insufficient permissions to write to ${dirPath}: ${message}`);
       return false;
     }
   }

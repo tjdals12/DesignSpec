@@ -11,9 +11,7 @@ export function validateNoDuplicateArtifactIds(artifacts: Artifact[]): void {
   }
 }
 
-export function validateArtifactRequiresReferences(
-  artifacts: Artifact[],
-): void {
+export function validateArtifactRequiresReferences(artifacts: Artifact[]): void {
   const artifactIds = new Set(artifacts.map((artifact) => artifact.id));
 
   for (const artifact of artifacts) {
@@ -28,12 +26,8 @@ export function validateArtifactRequiresReferences(
   }
 }
 
-export function validateNoArtifactDependencyCycles(
-  artifacts: Artifact[],
-): void {
-  const artifactMap = new Map(
-    artifacts.map((artifact) => [artifact.id, artifact]),
-  );
+export function validateNoArtifactDependencyCycles(artifacts: Artifact[]): void {
+  const artifactMap = new Map(artifacts.map((artifact) => [artifact.id, artifact]));
   const visited = new Set<string>();
   const visiting = new Set<string>();
   const parent = new Map<string, string>();

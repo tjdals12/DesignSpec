@@ -1,8 +1,6 @@
 import chalk from "chalk";
 
-export function getStatusColor(
-  status: "blocked" | "ready" | "done",
-): (text: string) => string {
+export function getStatusColor(status: "blocked" | "ready" | "done"): (text: string) => string {
   switch (status) {
     case "blocked":
       return chalk.red;

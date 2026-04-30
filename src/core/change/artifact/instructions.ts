@@ -12,29 +12,18 @@ export async function resolveArtifactInstructions(
   changeContext: ChangeContext,
   artifactName: string,
 ): Promise<ArtifactInstructions> {
-  const { schemaName, changeName, artifactGraph, completedArtifacts } =
-    changeContext;
+  const { schemaName, changeName, artifactGraph, completedArtifacts } = changeContext;
 
-  const changeDirPath = path.join(
-    projectPath,
-    DESIGN_SPEC_DIR_NAME,
-    "changes",
-    changeName,
-  );
+  const changeDirPath = path.join(projectPath, DESIGN_SPEC_DIR_NAME, "changes", changeName);
 
   const artifact = artifactGraph.getArtifact(artifactName);
   if (!artifact) {
-    throw new Error(
-      `Artifact '${artifactName}' not found in schema '${schemaName}'`,
-    );
+    throw new Error(`Artifact '${artifactName}' not found in schema '${schemaName}'`);
   }
 
   const template = await resolveTemplate(artifact.template);
 
-  const dependencies = artifactGraph.getArtifactDependencies(
-    artifact.id,
-    completedArtifacts,
-  );
+  const dependencies = artifactGraph.getArtifactDependencies(artifact.id, completedArtifacts);
 
   const dependents = artifactGraph.getArtifactDependents(artifact.id);
 

@@ -13,11 +13,7 @@ export async function loadChangeContext(
   const schemaName = artifactGraph.getName();
   const artifacts = artifactGraph.getAllArtifacts();
 
-  const completedArtifacts = await getCompletedArtifacts(
-    projectPath,
-    changeName,
-    artifacts,
-  );
+  const completedArtifacts = await getCompletedArtifacts(projectPath, changeName, artifacts);
 
   return {
     changeName,

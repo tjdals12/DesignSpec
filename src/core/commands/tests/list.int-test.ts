@@ -88,10 +88,7 @@ describe("ListCommand (JSON)", () => {
   });
 
   it("archive 디렉토리는 목록에 포함되지 않는다", async () => {
-    await fs.mkdir(
-      path.join(tmpDir, "design-spec", "changes", "archive"),
-      { recursive: true },
-    );
+    await fs.mkdir(path.join(tmpDir, "design-spec", "changes", "archive"), { recursive: true });
     await new ListCommand({ json: true }).execute(tmpDir);
     const output = captureJsonOutput() as {
       changes: Array<{ changeName: string }>;
@@ -103,8 +100,6 @@ describe("ListCommand (JSON)", () => {
 
 describe("ListCommand 실패", () => {
   it("DesignSpec 미초기화 상태에서 실행하면 에러를 던진다", async () => {
-    await expect(
-      new ListCommand({ json: true }).execute(tmpDir),
-    ).rejects.toThrow();
+    await expect(new ListCommand({ json: true }).execute(tmpDir)).rejects.toThrow();
   });
 });

@@ -22,9 +22,7 @@ export function parseSchema(content: string): SchemaYaml {
 
   const result = SchemaYamlSchema.safeParse(parsed);
   if (!result.success) {
-    const errors = result.error.issues
-      .map((e) => `${e.path.join(".")}: ${e.message}`)
-      .join(", ");
+    const errors = result.error.issues.map((e) => `${e.path.join(".")}: ${e.message}`).join(", ");
     throw new SchemaParseError(`Invalid schema: ${errors}`);
   }
 
@@ -45,9 +43,7 @@ export async function resolveSchema(): Promise<SchemaYaml> {
     content = fs.readFileSync(DEFAULT_SCHEMA, "utf-8");
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
-    throw new SchemaLoadError(
-      `Failed to load schema at '${DEFAULT_SCHEMA}': ${message}`,
-    );
+    throw new SchemaLoadError(`Failed to load schema at '${DEFAULT_SCHEMA}': ${message}`);
   }
 
   try {
@@ -56,12 +52,12 @@ export async function resolveSchema(): Promise<SchemaYaml> {
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     if (error instanceof SchemaParseError) {
-      throw new Error(
-        `Failed to parse schema at '${DEFAULT_SCHEMA}': ${message}`,
-      );
+      throw new Error(`Failed to parse schema at '${DEFAULT_SCHEMA}': ${message}`, {
+        cause: error,
+      });
     }
     if (error instanceof SchemaValidationError) {
-      throw new Error(`Invalid schema at '${DEFAULT_SCHEMA}': ${message}`);
+      throw new Error(`Invalid schema at '${DEFAULT_SCHEMA}': ${message}`, { cause: error });
     }
     throw error;
   }

@@ -44,23 +44,17 @@ describe("InitCommand — 디렉토리 구조", () => {
 
   it("design-spec/changes/ 디렉토리가 생성된다", async () => {
     await new InitCommand({ tools: "none" }).execute(tmpDir);
-    expect(await pathExists(path.join(tmpDir, "design-spec", "changes"))).toBe(
-      true,
-    );
+    expect(await pathExists(path.join(tmpDir, "design-spec", "changes"))).toBe(true);
   });
 
   it("design-spec/changes/archive/ 디렉토리가 생성된다", async () => {
     await new InitCommand({ tools: "none" }).execute(tmpDir);
-    expect(
-      await pathExists(path.join(tmpDir, "design-spec", "changes", "archive")),
-    ).toBe(true);
+    expect(await pathExists(path.join(tmpDir, "design-spec", "changes", "archive"))).toBe(true);
   });
 
   it("design-spec/specs/ 디렉토리가 생성된다", async () => {
     await new InitCommand({ tools: "none" }).execute(tmpDir);
-    expect(await pathExists(path.join(tmpDir, "design-spec", "specs"))).toBe(
-      true,
-    );
+    expect(await pathExists(path.join(tmpDir, "design-spec", "specs"))).toBe(true);
   });
 });
 
@@ -68,49 +62,29 @@ describe("InitCommand — 스킬 파일 생성", () => {
   it("--tools=claude 지정 시 SKILL.md가 생성된다", async () => {
     await new InitCommand({ tools: "claude" }).execute(tmpDir);
     expect(
-      await pathExists(
-        path.join(
-          tmpDir,
-          ".claude",
-          "skills",
-          "designspec-new-change",
-          "SKILL.md",
-        ),
-      ),
+      await pathExists(path.join(tmpDir, ".claude", "skills", "designspec-new-change", "SKILL.md")),
     ).toBe(true);
   });
 
   it("--tools=claude 지정 시 슬래시 커맨드 파일이 생성된다", async () => {
     await new InitCommand({ tools: "claude" }).execute(tmpDir);
-    expect(
-      await pathExists(
-        path.join(tmpDir, ".claude", "commands", "designspec", "new.md"),
-      ),
-    ).toBe(true);
+    expect(await pathExists(path.join(tmpDir, ".claude", "commands", "designspec", "new.md"))).toBe(
+      true,
+    );
   });
 
   it("--tools=codex 지정 시 SKILL.md가 생성된다", async () => {
     await new InitCommand({ tools: "codex" }).execute(tmpDir);
     expect(
-      await pathExists(
-        path.join(
-          tmpDir,
-          ".codex",
-          "skills",
-          "designspec-new-change",
-          "SKILL.md",
-        ),
-      ),
+      await pathExists(path.join(tmpDir, ".codex", "skills", "designspec-new-change", "SKILL.md")),
     ).toBe(true);
   });
 
   it("--tools=codex 지정 시 슬래시 커맨드 파일이 생성된다", async () => {
     await new InitCommand({ tools: "codex" }).execute(tmpDir);
-    expect(
-      await pathExists(
-        path.join(tmpDir, ".codex", "prompts", "designspec-new.md"),
-      ),
-    ).toBe(true);
+    expect(await pathExists(path.join(tmpDir, ".codex", "prompts", "designspec-new.md"))).toBe(
+      true,
+    );
   });
 
   it("--tools=none 지정 시 스킬 파일이 생성되지 않는다", async () => {
@@ -121,13 +95,7 @@ describe("InitCommand — 스킬 파일 생성", () => {
 
   it("이미 초기화된 디렉토리에서 재실행하면 스킬 파일을 덮어쓴다", async () => {
     await new InitCommand({ tools: "claude" }).execute(tmpDir);
-    const skillPath = path.join(
-      tmpDir,
-      ".claude",
-      "skills",
-      "designspec-new-change",
-      "SKILL.md",
-    );
+    const skillPath = path.join(tmpDir, ".claude", "skills", "designspec-new-change", "SKILL.md");
     await fs.writeFile(skillPath, "custom content");
     await new InitCommand({ tools: "claude" }).execute(tmpDir);
     const content = await fs.readFile(skillPath, "utf-8");
@@ -141,8 +109,6 @@ describe("InitCommand — 실패", () => {
   });
 
   it("지원하지 않는 tool ID를 지정하면 에러를 던진다", async () => {
-    await expect(
-      new InitCommand({ tools: "unknown-tool" }).execute(tmpDir),
-    ).rejects.toThrow();
+    await expect(new InitCommand({ tools: "unknown-tool" }).execute(tmpDir)).rejects.toThrow();
   });
 });

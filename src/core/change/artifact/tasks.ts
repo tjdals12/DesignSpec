@@ -13,13 +13,7 @@ export async function getTaskProgress(
   projectPath: string,
   changeName: string,
 ): Promise<TaskProgress> {
-  const tasksPath = path.join(
-    projectPath,
-    DESIGN_SPEC_DIR_NAME,
-    "changes",
-    changeName,
-    "tasks.md",
-  );
+  const tasksPath = path.join(projectPath, DESIGN_SPEC_DIR_NAME, "changes", changeName, "tasks.md");
   try {
     const content = await fs.readFile(tasksPath, "utf-8");
 

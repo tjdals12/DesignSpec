@@ -12,13 +12,8 @@ export type Artifact = z.infer<typeof ArtifactSchema>;
 
 export const SchemaYamlSchema = z.object({
   name: z.string().min(1, { error: "Schema name is required" }),
-  version: z
-    .number()
-    .int()
-    .positive({ error: "Version must be a positive integer" }),
+  version: z.number().int().positive({ error: "Version must be a positive integer" }),
   description: z.string().optional(),
-  artifacts: z
-    .array(ArtifactSchema)
-    .min(1, { error: "At least one artifact required" }),
+  artifacts: z.array(ArtifactSchema).min(1, { error: "At least one artifact required" }),
 });
 export type SchemaYaml = z.infer<typeof SchemaYamlSchema>;

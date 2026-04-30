@@ -11,9 +11,7 @@ export async function resolveTemplate(template: string): Promise<string> {
     content = await fs.readFile(templatePath, "utf-8");
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
-    throw new TemplateLoadError(
-      `Failed to load template at '${templatePath}': ${message}`,
-    );
+    throw new TemplateLoadError(`Failed to load template at '${templatePath}': ${message}`);
   }
   return content;
 }

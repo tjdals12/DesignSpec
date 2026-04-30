@@ -19,47 +19,31 @@ describe("validateChangeName", () => {
   });
 
   it("빈 문자열이면 ChangeValidationError를 던진다", async () => {
-    await expect(validateChangeName("")).rejects.toThrowError(
-      ChangeValidationError,
-    );
+    await expect(validateChangeName("")).rejects.toThrowError(ChangeValidationError);
   });
 
   it("대문자가 포함되면 ChangeValidationError를 던진다", async () => {
-    await expect(validateChangeName("AddAuth")).rejects.toThrowError(
-      ChangeValidationError,
-    );
-    await expect(validateChangeName("add-Auth")).rejects.toThrowError(
-      ChangeValidationError,
-    );
+    await expect(validateChangeName("AddAuth")).rejects.toThrowError(ChangeValidationError);
+    await expect(validateChangeName("add-Auth")).rejects.toThrowError(ChangeValidationError);
   });
 
   it("언더스코어가 포함되면 ChangeValidationError를 던진다", async () => {
-    await expect(validateChangeName("add_auth")).rejects.toThrowError(
-      ChangeValidationError,
-    );
+    await expect(validateChangeName("add_auth")).rejects.toThrowError(ChangeValidationError);
   });
 
   it("하이픈으로 시작하면 ChangeValidationError를 던진다", async () => {
-    await expect(validateChangeName("-add-auth")).rejects.toThrowError(
-      ChangeValidationError,
-    );
+    await expect(validateChangeName("-add-auth")).rejects.toThrowError(ChangeValidationError);
   });
 
   it("하이픈으로 끝나면 ChangeValidationError를 던진다", async () => {
-    await expect(validateChangeName("add-auth-")).rejects.toThrowError(
-      ChangeValidationError,
-    );
+    await expect(validateChangeName("add-auth-")).rejects.toThrowError(ChangeValidationError);
   });
 
   it("연속된 하이픈이 있으면 ChangeValidationError를 던진다", async () => {
-    await expect(validateChangeName("add--auth")).rejects.toThrowError(
-      ChangeValidationError,
-    );
+    await expect(validateChangeName("add--auth")).rejects.toThrowError(ChangeValidationError);
   });
 
   it("숫자로 시작하면 ChangeValidationError를 던진다", async () => {
-    await expect(validateChangeName("1-add-auth")).rejects.toThrowError(
-      ChangeValidationError,
-    );
+    await expect(validateChangeName("1-add-auth")).rejects.toThrowError(ChangeValidationError);
   });
 });

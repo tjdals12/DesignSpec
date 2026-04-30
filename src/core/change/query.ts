@@ -9,17 +9,12 @@ export async function hasChangesDir(projectPath: string): Promise<boolean> {
   return await FileSystemUtils.directoryExists(dirPath);
 }
 
-export async function doesChangeExist(
-  projectPath: string,
-  changeName: string,
-): Promise<boolean> {
+export async function doesChangeExist(projectPath: string, changeName: string): Promise<boolean> {
   const changeDirPath = path.join(buildChangesDirPath(projectPath), changeName);
   return await FileSystemUtils.directoryExists(changeDirPath);
 }
 
-export async function getAvailableChanges(
-  projectPath: string,
-): Promise<string[]> {
+export async function getAvailableChanges(projectPath: string): Promise<string[]> {
   const changesDirExists = await hasChangesDir(projectPath);
   if (!changesDirExists) {
     return [];

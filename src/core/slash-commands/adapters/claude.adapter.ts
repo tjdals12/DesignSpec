@@ -11,12 +11,7 @@ export class ClaudeAdapter extends SlashCommandAdapter {
   toolId: string = "claude";
 
   getFilePath(commandId: string): string {
-    const filePath = path.join(
-      ".claude",
-      "commands",
-      "designspec",
-      `${commandId}.md`,
-    );
+    const filePath = path.join(".claude", "commands", "designspec", `${commandId}.md`);
     return filePath;
   }
 

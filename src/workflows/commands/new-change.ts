@@ -16,9 +16,7 @@ export class NewChangeCommand {
     const projectPath = path.resolve(targetPath);
     const changeName = this._change;
 
-    const spinner = ora(
-      `Creating change '${this._change}' with schema 'default'...`,
-    ).start();
+    const spinner = ora(`Creating change '${this._change}' with schema 'default'...`).start();
 
     try {
       const hasChangeName = !isUndefined(changeName);

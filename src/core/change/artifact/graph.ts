@@ -7,9 +7,7 @@ export class ArtifactGraph {
 
   constructor(schema: SchemaYaml) {
     this._schema = schema;
-    this._artifacts = new Map(
-      schema.artifacts.map((artifact) => [artifact.id, artifact]),
-    );
+    this._artifacts = new Map(schema.artifacts.map((artifact) => [artifact.id, artifact]));
   }
 
   getName(): string {
@@ -34,9 +32,7 @@ export class ArtifactGraph {
           return false;
         }
 
-        const hasMissingDep = artifact.requires.some(
-          (dep) => !completedArtifacts.has(dep),
-        );
+        const hasMissingDep = artifact.requires.some((dep) => !completedArtifacts.has(dep));
         if (hasMissingDep) {
           return false;
         }
@@ -48,10 +44,7 @@ export class ArtifactGraph {
     return ready;
   }
 
-  getArtifactDependencies(
-    id: string,
-    completedArtifacts: Set<string>,
-  ): ArtifactDependency[] {
+  getArtifactDependencies(id: string, completedArtifacts: Set<string>): ArtifactDependency[] {
     const schemaName = this._schema.name;
 
     const artifact = this.getArtifact(id);
@@ -62,9 +55,7 @@ export class ArtifactGraph {
     const dependencies = artifact.requires.map((require) => {
       const dependency = this.getArtifact(require);
       if (!dependency) {
-        throw new Error(
-          `Artifact '${require}' not found in schema '${schemaName}'`,
-        );
+        throw new Error(`Artifact '${require}' not found in schema '${schemaName}'`);
       }
 
       const { id, description, generates } = dependency;
@@ -81,9 +72,7 @@ export class ArtifactGraph {
     return dependencies;
   }
 
-  getMissingDependencies(
-    completedArtifacts: Set<string>,
-  ): Map<string, string[]> {
+  getMissingDependencies(completedArtifacts: Set<string>): Map<string, string[]> {
     const artifacts = this.getAllArtifacts();
     const map = artifacts.reduce((acc, cur) => {
       const isComplete = completedArtifacts.has(cur.id);
@@ -91,9 +80,7 @@ export class ArtifactGraph {
         return acc;
       }
 
-      const unmetDeps = cur.requires.filter(
-        (dep) => !completedArtifacts.has(dep),
-      );
+      const unmetDeps = cur.requires.filter((dep) => !completedArtifacts.has(dep));
       if (unmetDeps.length > 0) {
         acc.set(cur.id, unmetDeps);
       }

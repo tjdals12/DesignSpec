@@ -4,16 +4,9 @@ import { isBoolean, isUndefined } from "es-toolkit";
 
 import path from "node:path";
 
-import {
-  doesChangeExist,
-  getAvailableChanges,
-} from "#core/change/query.js";
+import { doesChangeExist, getAvailableChanges } from "#core/change/query.js";
 import { loadChangeContext } from "#core/change/context.js";
-import type {
-  ArtifactStatus,
-  ChangeContext,
-  ChangeStatus,
-} from "#core/change/types.js";
+import type { ArtifactStatus, ChangeContext, ChangeStatus } from "#core/change/types.js";
 import { getStatusColor, getStatusIndicator } from "#workflows/utils/status-display.js";
 
 export class StatusCommand {
@@ -29,9 +22,7 @@ export class StatusCommand {
     const projectPath = path.resolve(targetPath);
     const changeName = this._change;
 
-    const spinner = this._json
-      ? undefined
-      : ora("Loading change status...").start();
+    const spinner = this._json ? undefined : ora("Loading change status...").start();
 
     try {
       const hasChangeName = !isUndefined(changeName);
@@ -64,17 +55,9 @@ export class StatusCommand {
     const availableChanges = await getAvailableChanges(projectPath);
     if (availableChanges.length === 0) {
       if (this._json) {
-        console.log(
-          JSON.stringify(
-            { changes: [], message: "No active changes." },
-            null,
-            2,
-          ),
-        );
+        console.log(JSON.stringify({ changes: [], message: "No active changes." }, null, 2));
       } else {
-        console.log(
-          "No active changes. Create one with: design-spec new change <name>",
-        );
+        console.log("No active changes. Create one with: design-spec new change <name>");
       }
       return;
     }
@@ -83,10 +66,7 @@ export class StatusCommand {
     );
   }
 
-  private async handleChangeNotFound(
-    projectPath: string,
-    changeName: string,
-  ): Promise<void> {
+  private async handleChangeNotFound(projectPath: string, changeName: string): Promise<void> {
     const availableChanges = await getAvailableChanges(projectPath);
     if (availableChanges.length === 0) {
       throw new Error(`Change '${changeName}' not found. No avaiable changes.`);
@@ -97,8 +77,7 @@ export class StatusCommand {
   }
 
   private formatStatus(changeContext: ChangeContext): ChangeStatus {
-    const { changeName, schemaName, artifactGraph, completedArtifacts } =
-      changeContext;
+    const { changeName, schemaName, artifactGraph, completedArtifacts } = changeContext;
 
     const artifacts = artifactGraph.getAllArtifacts();
     const ready = new Set(artifactGraph.getNextArtifacts(completedArtifacts));
@@ -131,12 +110,8 @@ export class StatusCommand {
     });
 
     const buildOrder = artifactGraph.getBuildOrder();
-    const orderMap = new Map(
-      buildOrder.map((artifactId, index) => [artifactId, index]),
-    );
-    artifactStatuses.sort(
-      (a, b) => (orderMap.get(a.id) ?? 0) - (orderMap.get(b.id) ?? 0),
-    );
+    const orderMap = new Map(buildOrder.map((artifactId, index) => [artifactId, index]));
+    artifactStatuses.sort((a, b) => (orderMap.get(a.id) ?? 0) - (orderMap.get(b.id) ?? 0));
 
     const isComplete = artifactGraph.isAllCompleted(completedArtifacts);
 
@@ -149,13 +124,10 @@ export class StatusCommand {
   }
 
   private printStatus(changeStatus: ChangeStatus): void {
-    const { changeName, schemaName, artifactStatuses, isComplete } =
-      changeStatus;
+    const { changeName, schemaName, artifactStatuses, isComplete } = changeStatus;
 
     if (this._json) {
-      const doneCount = artifactStatuses.filter(
-        (s) => s.status === "done",
-      ).length;
+      const doneCount = artifactStatuses.filter((s) => s.status === "done").length;
       console.log(
         JSON.stringify(
           {

@@ -25,16 +25,12 @@ describe("validateNoDuplicateArtifactIds", () => {
 
   it("중복 ID가 있으면 SchemaValidationError를 던진다", () => {
     const artifacts = [makeArtifact("a"), makeArtifact("b"), makeArtifact("a")];
-    expect(() => validateNoDuplicateArtifactIds(artifacts)).toThrowError(
-      SchemaValidationError,
-    );
+    expect(() => validateNoDuplicateArtifactIds(artifacts)).toThrowError(SchemaValidationError);
   });
 
   it("에러 메시지에 중복된 ID가 포함된다", () => {
     const artifacts = [makeArtifact("spec"), makeArtifact("spec")];
-    expect(() => validateNoDuplicateArtifactIds(artifacts)).toThrowError(
-      /spec/,
-    );
+    expect(() => validateNoDuplicateArtifactIds(artifacts)).toThrowError(/spec/);
   });
 
   it("빈 배열이면 에러를 던지지 않는다", () => {
@@ -50,16 +46,12 @@ describe("validateArtifactRequiresReferences", () => {
 
   it("존재하지 않는 ID를 requires하면 SchemaValidationError를 던진다", () => {
     const artifacts = [makeArtifact("a", ["nonexistent"])];
-    expect(() => validateArtifactRequiresReferences(artifacts)).toThrowError(
-      SchemaValidationError,
-    );
+    expect(() => validateArtifactRequiresReferences(artifacts)).toThrowError(SchemaValidationError);
   });
 
   it("에러 메시지에 참조한 artifact ID와 없는 ID가 포함된다", () => {
     const artifacts = [makeArtifact("a", ["ghost"])];
-    expect(() => validateArtifactRequiresReferences(artifacts)).toThrowError(
-      /a.*ghost|ghost.*a/,
-    );
+    expect(() => validateArtifactRequiresReferences(artifacts)).toThrowError(/a.*ghost|ghost.*a/);
   });
 
   it("requires가 없는 artifact만 있으면 에러를 던지지 않는다", () => {
@@ -70,26 +62,18 @@ describe("validateArtifactRequiresReferences", () => {
 
 describe("validateNoArtifactDependencyCycles", () => {
   it("사이클이 없으면 에러를 던지지 않는다", () => {
-    const artifacts = [
-      makeArtifact("a"),
-      makeArtifact("b", ["a"]),
-      makeArtifact("c", ["b"]),
-    ];
+    const artifacts = [makeArtifact("a"), makeArtifact("b", ["a"]), makeArtifact("c", ["b"])];
     expect(() => validateNoArtifactDependencyCycles(artifacts)).not.toThrow();
   });
 
   it("직접 자기 자신을 requires하면 SchemaValidationError를 던진다", () => {
     const artifacts = [makeArtifact("a", ["a"])];
-    expect(() => validateNoArtifactDependencyCycles(artifacts)).toThrowError(
-      SchemaValidationError,
-    );
+    expect(() => validateNoArtifactDependencyCycles(artifacts)).toThrowError(SchemaValidationError);
   });
 
   it("두 노드 간 순환 의존이 있으면 SchemaValidationError를 던진다", () => {
     const artifacts = [makeArtifact("a", ["b"]), makeArtifact("b", ["a"])];
-    expect(() => validateNoArtifactDependencyCycles(artifacts)).toThrowError(
-      SchemaValidationError,
-    );
+    expect(() => validateNoArtifactDependencyCycles(artifacts)).toThrowError(SchemaValidationError);
   });
 
   it("세 노드 간 순환 의존이 있으면 SchemaValidationError를 던진다", () => {
@@ -98,16 +82,12 @@ describe("validateNoArtifactDependencyCycles", () => {
       makeArtifact("b", ["a"]),
       makeArtifact("c", ["b"]),
     ];
-    expect(() => validateNoArtifactDependencyCycles(artifacts)).toThrowError(
-      SchemaValidationError,
-    );
+    expect(() => validateNoArtifactDependencyCycles(artifacts)).toThrowError(SchemaValidationError);
   });
 
   it("에러 메시지에 사이클 경로가 포함된다", () => {
     const artifacts = [makeArtifact("a", ["b"]), makeArtifact("b", ["a"])];
-    expect(() => validateNoArtifactDependencyCycles(artifacts)).toThrowError(
-      /→/,
-    );
+    expect(() => validateNoArtifactDependencyCycles(artifacts)).toThrowError(/→/);
   });
 
   it("빈 배열이면 에러를 던지지 않는다", () => {

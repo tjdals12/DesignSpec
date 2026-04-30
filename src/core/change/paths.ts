@@ -10,16 +10,10 @@ export function buildArchivesDirPath(projectPath: string): string {
   return path.join(buildChangesDirPath(projectPath), "archive");
 }
 
-export function buildChangeDirPath(
-  projectPath: string,
-  changeName: string,
-): string {
+export function buildChangeDirPath(projectPath: string, changeName: string): string {
   return path.join(buildChangesDirPath(projectPath), changeName);
 }
 
-export function buildMetadataPath(
-  projectPath: string,
-  changeName: string,
-): string {
+export function buildMetadataPath(projectPath: string, changeName: string): string {
   return path.join(buildChangeDirPath(projectPath, changeName), METADATA_FILENAME);
 }

@@ -12,21 +12,15 @@ export interface ToolSkillStatus {
   skillCount: number;
 }
 
-export function getToolById(
-  toolId: AIToolOption["value"],
-): AIToolOption | undefined {
+export function getToolById(toolId: AIToolOption["value"]): AIToolOption | undefined {
   return AI_TOOLS.find((tool) => tool.value === toolId);
 }
 
 export function getSupportedToolIds(): Array<AIToolOption["value"]> {
-  return AI_TOOLS.filter((tool) => !isEmpty(tool.skillsDir)).map(
-    (tool) => tool.value,
-  );
+  return AI_TOOLS.filter((tool) => !isEmpty(tool.skillsDir)).map((tool) => tool.value);
 }
 
-export async function getInstalledTools(
-  projectPath: string,
-): Promise<AIToolOption[]> {
+export async function getInstalledTools(projectPath: string): Promise<AIToolOption[]> {
   const installedTools: AIToolOption[] = [];
   for (const tool of AI_TOOLS) {
     if (tool.skillsDir) {
@@ -41,10 +35,7 @@ export async function getInstalledTools(
   return installedTools;
 }
 
-export function getToolSkillStatus(
-  projectPath: string,
-  toolId: string,
-): ToolSkillStatus {
+export function getToolSkillStatus(projectPath: string, toolId: string): ToolSkillStatus {
   const tool = AI_TOOLS.find((tool) => tool.value === toolId);
   if (isUndefined(tool) || isUndefined(tool.skillsDir)) {
     return {
@@ -71,9 +62,7 @@ export function getToolSkillStatus(
   };
 }
 
-export function getToolStates(
-  projectPath: string,
-): Map<AIToolOption["value"], ToolSkillStatus> {
+export function getToolStates(projectPath: string): Map<AIToolOption["value"], ToolSkillStatus> {
   const states = new Map<AIToolOption["value"], ToolSkillStatus>();
   const toolIds = getSupportedToolIds();
 

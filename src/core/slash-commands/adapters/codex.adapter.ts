@@ -9,11 +9,7 @@ export class CodexAdapter extends SlashCommandAdapter {
   toolId: string = "codex";
 
   getFilePath(commandId: string): string {
-    const filePath = path.join(
-      ".codex",
-      "prompts",
-      `designspec-${commandId}.md`,
-    );
+    const filePath = path.join(".codex", "prompts", `designspec-${commandId}.md`);
     return filePath;
   }
 
