@@ -26,13 +26,12 @@ export class StatusCommand {
   }
 
   async execute(targetPath: string) {
+    const projectPath = path.resolve(targetPath);
+    const changeName = this._change;
+
     const spinner = this._json
       ? undefined
       : ora("Loading change status...").start();
-
-    const projectPath = path.resolve(targetPath);
-
-    const changeName = this._change;
 
     try {
       const hasChangeName = !isUndefined(changeName);

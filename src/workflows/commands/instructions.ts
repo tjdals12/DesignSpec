@@ -26,55 +26,55 @@ export class InstructionsCommand {
 
   async execute(targetPath: string) {
     const projectPath = path.resolve(targetPath);
-
     const changeName = this._change;
-    const hasChangeName = !isUndefined(changeName);
-
     const artifactName = this._artifact;
-    const hasArtifactName = !isUndefined(artifactName);
-
-    if (!hasChangeName && !hasArtifactName) {
-      this.handleMissingChangeAndArtifact();
-      return;
-    }
-
-    if (!hasChangeName) {
-      await this.handleNoChange(projectPath);
-      return;
-    }
-
-    const changeExists = await doesChangeExist(projectPath, changeName);
-    if (!changeExists) {
-      await this.handleChangeNotFound(projectPath, changeName);
-      return;
-    }
-
-    if (!hasArtifactName) {
-      await this.handleNoArtifact(projectPath, changeName);
-      return;
-    }
-
-    const changeContext = await loadChangeContext(projectPath, changeName);
-    const artifact = changeContext.artifactGraph.getArtifact(artifactName);
-    const hasArtifact = !isUndefined(artifact);
-    if (!hasArtifact) {
-      await this.handleArtifactNotFound(changeContext, artifactName);
-      return;
-    }
 
     const spinner = this._json
       ? undefined
       : ora("Generating instructions...").start();
 
     try {
+      const hasChangeName = !isUndefined(changeName);
+      const hasArtifactName = !isUndefined(artifactName);
+
+      if (!hasChangeName && !hasArtifactName) {
+        this.handleMissingChangeAndArtifact();
+        return;
+      }
+
+      if (!hasChangeName) {
+        await this.handleNoChange(projectPath);
+        return;
+      }
+
+      const changeExists = await doesChangeExist(projectPath, changeName);
+      if (!changeExists) {
+        await this.handleChangeNotFound(projectPath, changeName);
+        return;
+      }
+
+      if (!hasArtifactName) {
+        await this.handleNoArtifact(projectPath, changeName);
+        return;
+      }
+
+      const changeContext = await loadChangeContext(projectPath, changeName);
+      const artifact = changeContext.artifactGraph.getArtifact(artifactName);
+      const hasArtifact = !isUndefined(artifact);
+      if (!hasArtifact) {
+        await this.handleArtifactNotFound(changeContext, artifactName);
+        return;
+      }
+
       const artifactInstructions = await resolveArtifactInstructions(
         projectPath,
         changeContext,
         artifactName,
       );
-      this.printArtifactInstructions(artifactInstructions);
 
       spinner?.stop();
+
+      this.printArtifactInstructions(artifactInstructions);
     } catch (error) {
       spinner?.stop();
       throw error;

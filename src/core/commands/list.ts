@@ -1,9 +1,7 @@
-import { isBoolean, last } from "es-toolkit";
+import { isBoolean } from "es-toolkit";
 
 import path from "node:path";
 
-import { DESIGN_SPEC_DIR_NAME } from "../config.js";
-import { FileSystemUtils } from "../../utils/file-system.utils.js";
 import { getAvailableChanges, getChangeLastModified } from "../change/query.js";
 import type { ChangeInfo } from "../change/types.js";
 import {
@@ -24,8 +22,6 @@ export class ListCommand {
     await validateChangesDir(projectPath);
 
     try {
-      const changeInfos: Array<ChangeInfo> = [];
-
       const availableChanges = await getAvailableChanges(projectPath);
       if (availableChanges.length === 0) {
         if (this._json) {
@@ -41,6 +37,8 @@ export class ListCommand {
         }
         return;
       }
+
+      const changeInfos: Array<ChangeInfo> = [];
 
       for (const availableChange of availableChanges) {
         const taskProgress = await getTaskProgress(

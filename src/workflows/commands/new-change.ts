@@ -14,21 +14,21 @@ export class NewChangeCommand {
 
   async execute(targetPath: string) {
     const projectPath = path.resolve(targetPath);
-
     const changeName = this._change;
-
-    const hasChangeName = !isUndefined(changeName);
-    if (!hasChangeName) {
-      throw new Error(
-        "Missing required option --change.\n  Run: design-spec new --change <name>",
-      );
-    }
 
     const spinner = ora(
       `Creating change '${this._change}' with schema 'default'...`,
     ).start();
 
     try {
+      const hasChangeName = !isUndefined(changeName);
+      if (!hasChangeName) {
+        spinner.stop();
+        throw new Error(
+          "Missing required option --change.\n  Run: design-spec new --change <name>",
+        );
+      }
+
       await createChange(projectPath, changeName);
 
       spinner.succeed(
