@@ -3,7 +3,7 @@ import ora from "ora";
 
 import path from "node:path";
 
-import { createChange } from "../../core/change/mutation.js";
+import { createChange } from "#core/change/mutation.js";
 
 export class NewChangeCommand {
   private readonly _change?: string | undefined;

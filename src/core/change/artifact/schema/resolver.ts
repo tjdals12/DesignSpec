@@ -2,7 +2,7 @@ import { parse as parseYaml } from "yaml";
 
 import fs from "node:fs";
 
-import { DEFAULT_SCHEMA } from "../../../../utils/package-paths.js";
+import { DEFAULT_SCHEMA } from "#utils/package-paths.js";
 import { SchemaYamlSchema, type SchemaYaml } from "./schema.js";
 import {
   validateArtifactRequiresReferences,

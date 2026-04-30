@@ -4,7 +4,7 @@ import { createRequire } from "node:module";
 import path from "node:path";
 import fs from "node:fs/promises";
 
-import { getSupportedToolIds } from "../core/tool-detection.js";
+import { getSupportedToolIds } from "#core/tool-detection.js";
 import dedent from "dedent";
 import ora from "ora";
 
@@ -54,7 +54,7 @@ program
         }
       }
 
-      const { InitCommand } = await import("../core/commands/init.js");
+      const { InitCommand } = await import("#core/commands/init.js");
       const initCommand = new InitCommand(options);
       await initCommand.execute(targetPath);
     } catch (error) {
@@ -92,7 +92,7 @@ program
         }
       }
 
-      const { ListCommand } = await import("../core/commands/list.js");
+      const { ListCommand } = await import("#core/commands/list.js");
       const listCommand = new ListCommand(options);
       await listCommand.execute(targetPath);
     } catch (error) {
@@ -131,7 +131,7 @@ program
         }
 
         const { StatusCommand } =
-          await import("../workflows/commands/status.js");
+          await import("#workflows/commands/status.js");
         const statusCommand = new StatusCommand(options);
         await statusCommand.execute(targetPath);
       } catch (error) {
@@ -169,7 +169,7 @@ program
       }
 
       const { NewChangeCommand } =
-        await import("../workflows/commands/new-change.js");
+        await import("#workflows/commands/new-change.js");
       const newChangeCommand = new NewChangeCommand(options);
       await newChangeCommand.execute(targetPath);
     } catch (error) {
@@ -211,7 +211,7 @@ program
         }
 
         const { InstructionsCommand } =
-          await import("../workflows/commands/instructions.js");
+          await import("#workflows/commands/instructions.js");
         const instructionsCommand = new InstructionsCommand(options);
         await instructionsCommand.execute(targetPath);
       } catch (error) {

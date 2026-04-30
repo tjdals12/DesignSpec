@@ -7,6 +7,11 @@
   "bin": {
     "design-spec": "./bin/design-spec.js"
   },
+  "imports": {
+    "#core/*": "./dist/core/*",
+    "#utils/*": "./dist/utils/*",
+    "#workflows/*": "./dist/workflows/*"
+  },
   "scripts": {
     "build": "tsc",
     "dev:cli": "pnpm build && node bin/design-spec.js"

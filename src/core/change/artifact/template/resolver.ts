@@ -1,7 +1,7 @@
 import path from "node:path";
 import fs from "node:fs/promises";
 
-import { DEFAULT_SCHEMA_DIR } from "../../../../utils/package-paths.js";
+import { DEFAULT_SCHEMA_DIR } from "#utils/package-paths.js";
 import { TemplateLoadError } from "./error.js";
 
 export async function resolveTemplate(template: string): Promise<string> {

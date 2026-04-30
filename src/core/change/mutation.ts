@@ -1,7 +1,7 @@
 import yaml from "yaml";
 
 import { validateChangeName, validateChangesDir } from "./validation.js";
-import { FileSystemUtils } from "../../utils/file-system.utils.js";
+import { FileSystemUtils } from "#utils/file-system.utils.js";
 import { doesChangeExist } from "./query.js";
 import { buildChangeDirPath, buildMetadataPath } from "./paths.js";
 

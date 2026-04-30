@@ -1,7 +1,7 @@
 import path from "node:path";
 import fs from "node:fs/promises";
 
-import { FileSystemUtils } from "../../utils/file-system.utils.js";
+import { FileSystemUtils } from "#utils/file-system.utils.js";
 import { buildChangeDirPath, buildChangesDirPath } from "./paths.js";
 
 export async function hasChangesDir(projectPath: string): Promise<boolean> {

@@ -6,12 +6,12 @@ import path from "node:path";
 import {
   doesChangeExist,
   getAvailableChanges,
-} from "../../core/change/query.js";
-import { loadChangeContext } from "../../core/change/context.js";
+} from "#core/change/query.js";
+import { loadChangeContext } from "#core/change/context.js";
 import {
   resolveArtifactInstructions,
   type ArtifactInstructions,
-} from "../../core/change/artifact/instructions.js";
+} from "#core/change/artifact/instructions.js";
 
 export class InstructionsCommand {
   private readonly _change?: string | undefined;

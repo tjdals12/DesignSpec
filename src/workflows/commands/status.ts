@@ -7,14 +7,14 @@ import path from "node:path";
 import {
   doesChangeExist,
   getAvailableChanges,
-} from "../../core/change/query.js";
-import { loadChangeContext } from "../../core/change/context.js";
+} from "#core/change/query.js";
+import { loadChangeContext } from "#core/change/context.js";
 import type {
   ArtifactStatus,
   ChangeContext,
   ChangeStatus,
-} from "../../core/change/types.js";
-import { getStatusColor, getStatusIndicator } from "../utils/status-display.js";
+} from "#core/change/types.js";
+import { getStatusColor, getStatusIndicator } from "#workflows/utils/status-display.js";
 
 export class StatusCommand {
   private readonly _change?: string | undefined;

@@ -3,7 +3,7 @@ import path from "node:path";
 import { SlashCommandAdapter } from "../slash-command-adapter.js";
 import type { SlashCommandTemplate } from "../slasn-command-template.js";
 import dedent from "dedent";
-import { escapeYamlValue } from "../../../utils/yaml.utils.js";
+import { escapeYamlValue } from "#utils/yaml.utils.js";
 
 export class CodexAdapter extends SlashCommandAdapter {
   toolId: string = "codex";

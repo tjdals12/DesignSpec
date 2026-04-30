@@ -4,7 +4,7 @@ import path from "node:path";
 import fsSync from "node:fs";
 
 import { AI_TOOLS, type AIToolOption, SKILL_IDS } from "./config.js";
-import { FileSystemUtils } from "../utils/file-system.utils.js";
+import { FileSystemUtils } from "#utils/file-system.utils.js";
 
 export interface ToolSkillStatus {
   configured: boolean;

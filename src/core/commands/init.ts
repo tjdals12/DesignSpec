@@ -9,7 +9,7 @@ import {
   type AIToolInfo,
   type AIToolOption,
 } from "../config.js";
-import { FileSystemUtils } from "../../utils/file-system.utils.js";
+import { FileSystemUtils } from "#utils/file-system.utils.js";
 import {
   getInstalledTools,
   getSupportedToolIds,

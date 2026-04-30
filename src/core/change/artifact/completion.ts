@@ -1,8 +1,8 @@
 import path from "node:path";
 import fs from "node:fs";
 
-import { FileSystemUtils } from "../../../utils/file-system.utils.js";
-import { isGlobPattern } from "../../../utils/glob.utils.js";
+import { FileSystemUtils } from "#utils/file-system.utils.js";
+import { isGlobPattern } from "#utils/glob.utils.js";
 import type { Artifact } from "./schema/schema.js";
 import { doesChangeExist } from "../query.js";
 import { buildChangeDirPath } from "../paths.js";
