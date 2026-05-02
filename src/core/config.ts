@@ -4,6 +4,8 @@ export const METADATA_FILENAME = ".design-spec.yaml";
 export const SKILL_IDS = ["designspec-new-change"] as const;
 export type SkillIds = (typeof SKILL_IDS)[number];
 
+export const SLASH_COMMAND_NAMESPACE = "desx";
+
 export const COMMAND_IDS = ["new"] as const;
 export type CommandIds = (typeof COMMAND_IDS)[number];
 

@@ -68,9 +68,7 @@ describe("InitCommand — 스킬 파일 생성", () => {
 
   it("--tools=claude 지정 시 슬래시 커맨드 파일이 생성된다", async () => {
     await new InitCommand({ tools: "claude" }).execute(tmpDir);
-    expect(await pathExists(path.join(tmpDir, ".claude", "commands", "designspec", "new.md"))).toBe(
-      true,
-    );
+    expect(await pathExists(path.join(tmpDir, ".claude", "commands", "desx", "new.md"))).toBe(true);
   });
 
   it("--tools=codex 지정 시 SKILL.md가 생성된다", async () => {
@@ -82,9 +80,7 @@ describe("InitCommand — 스킬 파일 생성", () => {
 
   it("--tools=codex 지정 시 슬래시 커맨드 파일이 생성된다", async () => {
     await new InitCommand({ tools: "codex" }).execute(tmpDir);
-    expect(await pathExists(path.join(tmpDir, ".codex", "prompts", "designspec-new.md"))).toBe(
-      true,
-    );
+    expect(await pathExists(path.join(tmpDir, ".codex", "prompts", "desx-new.md"))).toBe(true);
   });
 
   it("--tools=none 지정 시 스킬 파일이 생성되지 않는다", async () => {
