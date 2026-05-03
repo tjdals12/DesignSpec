@@ -221,3 +221,15 @@ artifacts:
     requires:
       - pages
       - components
+
+apply:
+  requires:
+    - proposal
+    - screens
+    - pages
+    - components
+    - tasks
+  tracks: tasks.md
+  instruction: |
+    Read context files, work through pending tasks in tasks.md, mark complete as you go.
+    Pause if you hit blockers or need clarification.
