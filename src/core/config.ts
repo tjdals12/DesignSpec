@@ -6,7 +6,7 @@ export type SkillIds = (typeof SKILL_IDS)[number];
 
 export const SLASH_COMMAND_NAMESPACE = "desx";
 
-export const COMMAND_IDS = ["new"] as const;
+export const COMMAND_IDS = ["new", "continue"] as const;
 export type CommandIds = (typeof COMMAND_IDS)[number];
 
 export interface AIToolOption {
