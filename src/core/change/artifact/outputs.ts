@@ -7,14 +7,14 @@ import type { Artifact } from "./schema/schema.js";
 import { doesChangeExist } from "../query.js";
 import { buildChangeDirPath } from "../paths.js";
 
-export async function hasArtifactOutput(
+export async function resolveArtifactOutput(
   projectPath: string,
   changeName: string,
   artifact: Artifact,
-): Promise<boolean> {
+): Promise<string | undefined> {
   const changeDirExist = await doesChangeExist(projectPath, changeName);
   if (!changeDirExist) {
-    return false;
+    return undefined;
   }
 
   const changeDirPath = await FileSystemUtils.toCanonicalPath(
@@ -29,26 +29,28 @@ export async function hasArtifactOutput(
       cwd: changeDirPath,
       withFileTypes: true,
     });
-    return entries.some((entry) => entry.isFile());
+    const hasMatch = entries.some((entry) => entry.isFile());
+    return hasMatch ? path.join(changeDirPath, generates) : undefined;
   }
 
   const filePath = path.join(changeDirPath, generates);
   const stat = fs.statSync(filePath, { throwIfNoEntry: false });
-  return stat ? stat.isFile() : false;
+  return stat && stat.isFile() ? filePath : undefined;
 }
 
-export async function getCompletedArtifacts(
+export async function resolveArtifactOutputs(
   projectPath: string,
   changeName: string,
   artifacts: Artifact[],
-): Promise<Set<string>> {
-  const completedArtifacts = new Set<string>();
+): Promise<Map<string, string>> {
+  const map = new Map<string, string>();
 
   for (const artifact of artifacts) {
-    if (await hasArtifactOutput(projectPath, changeName, artifact)) {
-      completedArtifacts.add(artifact.id);
+    const output = await resolveArtifactOutput(projectPath, changeName, artifact);
+    if (output !== undefined) {
+      map.set(artifact.id, output);
     }
   }
 
-  return completedArtifacts;
+  return map;
 }

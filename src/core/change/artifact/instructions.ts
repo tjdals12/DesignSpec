@@ -1,9 +1,7 @@
-import path from "node:path";
-
 import type { ChangeContext } from "../types.js";
 import { resolveTemplate } from "./template/resolver.js";
-import { DESIGN_SPEC_DIR_NAME } from "../../config.js";
 import type { ArtifactInstructions } from "./types.js";
+import { buildChangeDirPath } from "../paths.js";
 
 export type { ArtifactInstructions };
 
@@ -14,7 +12,7 @@ export async function resolveArtifactInstructions(
 ): Promise<ArtifactInstructions> {
   const { schemaName, changeName, artifactGraph, completedArtifacts } = changeContext;
 
-  const changeDirPath = path.join(projectPath, DESIGN_SPEC_DIR_NAME, "changes", changeName);
+  const changeDirPath = buildChangeDirPath(projectPath, changeName);
 
   const artifact = artifactGraph.getArtifact(artifactName);
   if (!artifact) {
