@@ -57,11 +57,17 @@ artifacts:
       Per-page Displayed Information / Actions / Layout / States belong in `pages/*.md`.
       Per-component Displayed Information / Actions / Layout / States belong in `components/*.md`.
 
+      Living document — this file may be updated by later phases:
+      - `Pages` and `Shared Components` listed here are an initial plan.
+      - During the `pages` phase, if a new component is discovered or a name needs to change, the agent will update this file to keep the inventory in sync.
+      - During the `components` phase, after reading every page in detail, the agent may add, remove, or rename entries in `Shared Components` to reflect what truly emerged as reusable. Treat the initial Shared Components list as a best guess, not a final contract.
+
       Common pitfalls:
       - Listing a page or component that is not in `What Changes` of `proposal.md`. Keep both in sync.
       - Putting a page sub-section (e.g., a form, a filter bar) under Pages. Use the rule above — it almost always belongs under Shared Components.
       - Writing per-page details (Layout, States, etc.) here. Those belong in the per-artifact files.
       - Adding a `Used by` field to Shared Components. Stay one-way.
+      - Treating the initial Shared Components list as final. Components are an emergent abstraction — expect the list to be refined later.
     requires:
       - proposal
 
@@ -87,7 +93,11 @@ artifacts:
 
       Cross-references:
       - The components used by this page should already be listed in `screens.md` under this page's `Uses`. Refer to them by name in this file (e.g., "uses `space-form` for the create flow").
-      - Per-component details (the component's own Displayed Information, Actions, Layout, States) belong in `components/<component-name>.md`, not here.
+      - Per-component details (the component's own Displayed Information, Actions, Layout, States) belong in `components/<component-name>.md`, not here. At this phase, the component file does not exist yet — that is fine. Refer to the component by name and trust that the `components` phase will fix its requirements.
+
+      Refining `screens.md`:
+      - The Shared Components list in `screens.md` is an initial estimate. While writing this page, you may notice a reusable pattern that is not yet listed, or a listed component that turns out not to apply. When that happens, update `screens.md` to keep the inventory in sync (add, remove, or rename entries) and update this page's `Uses` accordingly.
+      - Do NOT inline component details here just to avoid touching `screens.md`. Keep the inventory authoritative.
 
       Common pitfalls:
       - Describing component internals (e.g., "the form has a name input, a description textarea, and a submit button"). Move that to the component's file.
@@ -105,12 +115,22 @@ artifacts:
     description: Per-component UI design requirements covering role, displayed information, actions, layout, and states
     template: component.md
     instruction: |
-      Create one component document per shared component listed in `screens.md`'s `Shared Components` section.
+      Create one component document for every shared component that should exist after reviewing all pages.
 
-      Each file is created at `components/<component-name>.md`. The filename MUST match the component name in `screens.md` exactly (kebab-case).
+      Each file is created at `components/<component-name>.md`. The filename uses kebab-case and must match the entry in `screens.md`'s `Shared Components` section.
 
-      This document fixes the design requirements for a UI unit that is reused across multiple pages.
-      It exists so that pages do not have to redefine the same component, and so the component stays consistent wherever it appears.
+      A shared component is an emergent abstraction. By this phase, every page is already written, so you can decide what is truly reusable based on evidence — not on guesses made during the `screens` phase.
+
+      Workflow:
+      1. **Read every `pages/*.md`** in this change. You need full context before deciding what should be a shared component.
+      2. **Identify reusable patterns**. Look for layouts, controls, or information units that repeat across two or more pages, or that have a clear single responsibility worth isolating even if they appear once (e.g., a form reused between create and edit pages).
+      3. **Reconcile against `screens.md`**. The initial `Shared Components` list in `screens.md` was a best guess.
+         - Add components you discovered while reading pages.
+         - Remove components that turned out to not be reusable or not be needed.
+         - Rename for clarity if the original name no longer fits.
+         - Update `screens.md` to reflect the final list.
+      4. **Update `pages/*.md` to reference components properly**. If a page currently inlines details that are now covered by a shared component (e.g., it describes form fields directly), replace the inline description with a reference to the component (e.g., "uses `space-form` for the create flow") and ensure the page's `Uses` in `screens.md` lists the component.
+      5. **Create `components/<name>.md` for every component in the final list**, using the sections below.
 
       Sections:
       - **Role**: 1-2 sentences. The component's responsibility in the UI. What problem does this component solve, or which part of the page is it responsible for? Do NOT describe the whole page that uses it.
@@ -121,16 +141,18 @@ artifacts:
       - **Notes**: Optional component-specific constraints or reminders that should not be missed when designing or implementing this component. Examples: "reused across multiple pages — keep action order consistent", "should not expose destructive actions directly", "must work in both create and edit contexts". Leave empty if there is nothing important to add.
 
       Cross-references:
-      - The pages that use this component should already be listed in `screens.md` (each page's `Uses` field references this component). Do NOT add a `Used by` field here — the reference is one-way only, page → component.
+      - The reference is one-way: pages reference components through `Uses` in `screens.md`. Do NOT add a `Used by` field here. To find usage, search `screens.md`.
       - Page-level concerns (overall page layout, page-level states, page-level information) belong in `pages/*.md`, not here.
 
       Common pitfalls:
+      - Skipping the page-reading step and falling back on the initial `Shared Components` list in `screens.md`. The list is a guess; pages are evidence.
+      - Extracting a component that is only used in one place and has no clear standalone responsibility. When in doubt, keep it inlined in the page.
+      - Updating `components/*.md` and `screens.md` but forgetting to update `pages/*.md` to reference the new components. Pages must stay consistent with the final component list.
       - Describing the whole page that the component lives in (e.g., "this form is on the create page, which has a header and a sidebar"). Stay scoped to the component.
       - Listing implementation details (props, internal state hooks, API wiring). Keep this layer focused on what the user sees and does.
-      - Adding a `Used by` field. The reference is one-way (page → component) by design. To find usage, search `screens.md` instead.
+      - Adding a `Used by` field. The reference is one-way (page → component) by design.
       - Forcing every component to have every state. A `space-status-badge` may only need `default` and a couple of variant states; a form needs more.
-      - Creating a `components/<name>.md` for a component that is not listed in `screens.md`. Add it to `screens.md` first.
 
-      Keep each section focused. The component file should be short enough to read in one screen and clear enough that the same component renders identically on every page that uses it.
+      Keep each component file short enough to read in one screen, and clear enough that the same component renders identically on every page that uses it.
     requires:
-      - screens
+      - pages
