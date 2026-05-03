@@ -4,17 +4,133 @@ description: Default DesignSpec workflow
 artifacts:
   - id: proposal
     generates: proposal.md
-    description: Initial proposal document outlining the change
+    description: High-level overview of why this change is needed, what changes, and what is impacted from a UI/product perspective
     template: proposal.md
     instruction: |
-      Do something
+      Create the proposal document that establishes WHY this change is needed from a UI/product perspective.
+
+      This is the foundation — `screens.md`, `pages/*.md`, and `components/*.md` all build on it.
+
+      Sections:
+      - **Why**: 1-2 sentences on the UI or product problem this change solves. What is broken, missing, or unclear in the current experience? Frame it from the user's or product's perspective, not from a technical or implementation angle.
+      - **What Changes**: High-level bullet list of pages and shared components included in this change. Note which pages are new vs modified, and which shared components are new vs updated. Mark changes that remove or restructure existing user flows with **BREAKING**. Do not list per-page or per-component details here — those belong in later artifacts.
+      - **Impact**: What parts of the product are affected and who is affected. Examples: which user roles see the change, which existing flows are altered, which surfaces (web, mobile, admin) are touched.
+
+      Keep it concise (1 page is usually enough). Focus on the "why" and the "what at a high level".
+      Per-page Purpose / Displayed Information / Actions / Layout / States belong in `pages/*.md`.
+      Per-component Role / Displayed Information / Actions / Layout / States belong in `components/*.md`.
+      The page-component inventory belongs in `screens.md`.
     requires: []
 
   - id: screens
     generates: screens.md
-    description: Screens
+    description: Index of pages and shared components included in this change, with each page's purpose, type, and shared component usage
     template: screens.md
     instruction: |
-      Do something
+      Create the screens document that lists every page and shared component included in this change.
+
+      This is the index between `proposal.md` (the why) and `pages/*.md` / `components/*.md` (the per-artifact details).
+      It is the contract between phases — each entry here will need a corresponding file in `pages/` or `components/` later.
+
+      Sections:
+      - **Pages**: Every page included in this change. For each page:
+        - `Purpose`: The page's primary role from the user's perspective. What does the user come here to do, check, or understand?
+        - `Type`: `New` if the page does not exist yet and will be newly designed. `Modified` if the page already exists and is being changed as part of this change.
+        - `Uses`: Shared components used by this page as part of this change. List only components that are also included in this change. Use the exact component name from the Shared Components section below.
+      - **Shared Components**: Every shared component included in this change. For each component:
+        - `Role`: The component's responsibility in the UI. What problem does this component solve, or which part of the page is it responsible for?
+
+      Naming convention:
+      - Use kebab-case for page and component names (e.g., `space-list`, `space-status-badge`).
+      - Each page name becomes the filename `pages/<page-name>.md`.
+      - Each component name becomes the filename `components/<component-name>.md`.
+      - Check `design-spec/specs/` for existing pages and components before naming new ones.
+
+      One-way reference only:
+      - Pages reference components through `Uses`. The Shared Components section does NOT carry a `Used by` field. This avoids two-way drift between page and component lists.
+
+      Pages vs components — decide using these rules:
+      - A **page** is a standalone screen with a route or full-screen layout that the user navigates to directly.
+      - A **component** is a reusable UI unit that lives inside one or more pages. Forms, badges, filter bars, info cards, tables belong here — even when they look complex on their own. For example, `space-form` is a component, not a page, because it lives inside `space-create` and `space-edit`.
+
+      Keep entries short. The goal is a scannable inventory.
+      Per-page Displayed Information / Actions / Layout / States belong in `pages/*.md`.
+      Per-component Displayed Information / Actions / Layout / States belong in `components/*.md`.
+
+      Common pitfalls:
+      - Listing a page or component that is not in `What Changes` of `proposal.md`. Keep both in sync.
+      - Putting a page sub-section (e.g., a form, a filter bar) under Pages. Use the rule above — it almost always belongs under Shared Components.
+      - Writing per-page details (Layout, States, etc.) here. Those belong in the per-artifact files.
+      - Adding a `Used by` field to Shared Components. Stay one-way.
     requires:
       - proposal
+
+  - id: pages
+    generates: pages/*.md
+    description: Per-page UI design requirements covering purpose, displayed information, actions, layout, and states
+    template: page.md
+    instruction: |
+      Create one page document per page listed in `screens.md`'s `Pages` section.
+
+      Each file is created at `pages/<page-name>.md`. The filename MUST match the page name in `screens.md` exactly (kebab-case).
+
+      This is the document the agent reads most directly when designing or implementing the page.
+      The goal is to fix the page's design requirements so the agent does not make arbitrary decisions later.
+
+      Sections:
+      - **Purpose**: 1-2 sentences. The page's primary role from the user's perspective. What does the user come to this page to do, check, or understand? Do not repeat proposal-level background unless it is necessary for this page. Do not explain the whole change here.
+      - **Displayed Information**: Bullet list of what must be visible to the user. Include only page-level information that matters for design (e.g., "list of spaces with name, status, and last modified date", "summary card showing total occupancy"). Do NOT describe implementation details such as API field names or data types.
+      - **Actions**: Bullet list of what the user can do on this page. Include primary and secondary actions when they affect the layout or interaction (e.g., "create a new space", "filter by status", "delete a space"). Do NOT describe internal logic or backend processing here.
+      - **Layout**: Describe how the page should be structured at the page level — the arrangement of sections, information, and actions. Examples: "top area with title and primary 'Create' action", "filter bar above the list", "main content split into a left sidebar and right detail pane". Do NOT go deep into visual styling, and do NOT describe component internals here (those belong in `components/*.md`).
+      - **States**: Bullet list of states the page must handle. Include only states that affect what the user sees on this page. Examples: `default`, `loading`, `empty`, `error`, `success`, `read-only`, `permission restricted`. If a state is not relevant for this page, do not force it in.
+      - **Notes**: Optional page-specific constraints or reminders that should not be missed when designing or implementing this page. Examples: "reuses an existing table pattern", "destructive actions should not be exposed as primary actions", "only visible to admins". Leave empty if there is nothing important to add.
+
+      Cross-references:
+      - The components used by this page should already be listed in `screens.md` under this page's `Uses`. Refer to them by name in this file (e.g., "uses `space-form` for the create flow").
+      - Per-component details (the component's own Displayed Information, Actions, Layout, States) belong in `components/<component-name>.md`, not here.
+
+      Common pitfalls:
+      - Describing component internals (e.g., "the form has a name input, a description textarea, and a submit button"). Move that to the component's file.
+      - Listing implementation details (API fields, data types, state management). Keep this layer focused on what the user sees and does.
+      - Forcing every page to have every state. Only include states that genuinely apply to this page.
+      - Using `Notes` to repeat `Purpose`. Notes is for information that does NOT fit anywhere else.
+      - Creating a `pages/<name>.md` for a page that is not listed in `screens.md`. Add it to `screens.md` first.
+
+      Keep each section focused. The goal is a clear, scannable contract that the agent can follow without making arbitrary decisions.
+    requires:
+      - screens
+
+  - id: components
+    generates: components/*.md
+    description: Per-component UI design requirements covering role, displayed information, actions, layout, and states
+    template: component.md
+    instruction: |
+      Create one component document per shared component listed in `screens.md`'s `Shared Components` section.
+
+      Each file is created at `components/<component-name>.md`. The filename MUST match the component name in `screens.md` exactly (kebab-case).
+
+      This document fixes the design requirements for a UI unit that is reused across multiple pages.
+      It exists so that pages do not have to redefine the same component, and so the component stays consistent wherever it appears.
+
+      Sections:
+      - **Role**: 1-2 sentences. The component's responsibility in the UI. What problem does this component solve, or which part of the page is it responsible for? Do NOT describe the whole page that uses it.
+      - **Displayed Information**: Bullet list of what this component shows. Include only information handled by this component itself. Do NOT repeat page-level information unless the component is directly responsible for it. Do NOT describe implementation details such as API fields or data types.
+      - **Actions**: Bullet list of what the user can do through this component. Include only actions that belong to the component (e.g., for a `space-form`: "submit", "cancel", "validate on blur"). Do NOT describe actions that belong to the page as a whole unless this component directly provides them.
+      - **Layout**: Describe how the component is structured internally — the arrangement of its own content, information, and actions. Examples: "label on top, input below, helper text aligned right", "icon + label + count, in a single row", "header / body / footer with the primary action in the footer". Do NOT describe the full page layout here. Do NOT go deep into visual styling unless the structure depends on it.
+      - **States**: Bullet list of states this component must handle. Include only states that affect what the user sees in this component. Examples: `default`, `loading`, `empty`, `error`, `disabled`, `read-only`, `expanded`, `collapsed`. If a state is not relevant, do not force it in.
+      - **Notes**: Optional component-specific constraints or reminders that should not be missed when designing or implementing this component. Examples: "reused across multiple pages — keep action order consistent", "should not expose destructive actions directly", "must work in both create and edit contexts". Leave empty if there is nothing important to add.
+
+      Cross-references:
+      - The pages that use this component should already be listed in `screens.md` (each page's `Uses` field references this component). Do NOT add a `Used by` field here — the reference is one-way only, page → component.
+      - Page-level concerns (overall page layout, page-level states, page-level information) belong in `pages/*.md`, not here.
+
+      Common pitfalls:
+      - Describing the whole page that the component lives in (e.g., "this form is on the create page, which has a header and a sidebar"). Stay scoped to the component.
+      - Listing implementation details (props, internal state hooks, API wiring). Keep this layer focused on what the user sees and does.
+      - Adding a `Used by` field. The reference is one-way (page → component) by design. To find usage, search `screens.md` instead.
+      - Forcing every component to have every state. A `space-status-badge` may only need `default` and a couple of variant states; a form needs more.
+      - Creating a `components/<name>.md` for a component that is not listed in `screens.md`. Add it to `screens.md` first.
+
+      Keep each section focused. The component file should be short enough to read in one screen and clear enough that the same component renders identically on every page that uses it.
+    requires:
+      - screens
