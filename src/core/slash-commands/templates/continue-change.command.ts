@@ -99,11 +99,12 @@ export function getContinueChangeSlashCommand(): SlashCommandTemplate {
 
       The artifact types and their purpose depend on the schema. Use the \`instruction\` field from the instructions output to understand what to create.
 
-      **default schema** (proposal → screens → pages → components):
+      **default schema** (proposal → screens → pages → components → tasks):
       - **proposal.md**: Ask the user about the change if not clear. Fill in Why, What Changes, Impact from a UI/product perspective. Keep it lightweight — per-page and per-component details belong in later artifacts.
       - **screens.md**: The index that lists every page and shared component included in this change. Each entry needs a corresponding \`pages/<name>.md\` or \`components/<name>.md\` later. The Shared Components section is an initial estimate and may be refined during the pages and components phases.
       - **pages/<page-name>.md**: Create one file per page listed in \`screens.md\`'s Pages section. Each file fixes per-page design requirements (Purpose, Displayed Information, Actions, Layout, States, Notes). If you discover a new shared component while writing pages, update \`screens.md\` to add it.
       - **components/<component-name>.md**: Read every \`pages/*.md\` first. Identify reusable patterns based on evidence, reconcile against \`screens.md\`'s initial Shared Components list (add/remove/rename), update \`screens.md\` and any \`pages/*.md\` that referenced inline details, then create one file per component in the final list.
+      - **tasks.md**: Break the design into trackable implementation units. Group as Shared Components → Pages → Integration (note: implementation order is the REVERSE of design order — components are built first because pages consume them). Use \`- [ ] N.M\` checkbox format so the apply phase can track progress. Each task should reference the artifact it implements.
 
       For other schemas, follow the \`instruction\` field from the CLI output.
 

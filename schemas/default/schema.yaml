@@ -155,4 +155,69 @@ artifacts:
 
       Keep each component file short enough to read in one screen, and clear enough that the same component renders identically on every page that uses it.
     requires:
+      - screens
       - pages
+
+  - id: tasks
+    generates: tasks.md
+    description: Implementation checklist that breaks the change into trackable units, grouped by shared components, pages, and integration concerns
+    template: tasks.md
+    instruction: |
+      Create the task list that breaks the design into trackable implementation units.
+
+      This is the bridge from design artifacts to actual code. The apply phase parses checkbox format to track progress, so tasks not using `- [ ]` won't be tracked.
+
+      **IMPORTANT: Follow the template below exactly.**
+
+      Guidelines:
+      - Group related tasks under `## N. Group Name` headings.
+      - Each task MUST be a checkbox: `- [ ] N.M Task description`.
+      - Tasks should be small enough to complete in one session.
+      - Order groups by implementation dependency: shared components first (since pages consume them), then pages, then integration concerns. This is the reverse of the design order, where pages were authored before components.
+      - Reference the artifact each task implements (e.g., "per `components/space-form.md`").
+      - Each task should be verifiable — you know it is done by checking the rendered UI or behavior.
+
+      Path discipline:
+      - For tasks that **create or modify files**, the task MUST include the concrete code path(s) (e.g., `src/components/SpaceForm/SpaceForm.tsx`). Tasks without paths are not actionable across sessions and force the agent to re-discover the codebase every time.
+      - **Inspect the existing codebase before writing tasks.** Look at how similar pages and components are organized today and follow the project's prevailing structure and naming conventions. Do NOT invent new conventions in tasks.
+      - When a task spans multiple files, list them all under the same task. Split into sub-tasks only when each file can be verified independently.
+      - Pair test files with the implementation file when the project has tests for similar units (e.g., co-located `*.test.tsx` next to the component).
+      - For integration tasks (routing, navigation, data fetching), point to the specific files that need to change (e.g., `src/router.tsx`, `src/components/Sidebar/Sidebar.tsx`).
+      - The DesignSpec artifact name (kebab-case, e.g., `space-form`) is independent from the code identifier (e.g., `SpaceForm`). Use the project's code naming convention for paths and identifiers, not the DesignSpec name.
+
+      Path-less tasks (allowed exceptions):
+      - Tasks that run a command, perform verification, or do manual QA do NOT need a path. Examples: `pnpm run lint`, `pnpm run format`, `pnpm test`, "Verify the create → edit flow in a browser", "Run a visual regression check". For these, write the command or the verification step clearly in the task description so the next session knows exactly how to repeat it.
+
+      Recommended group structure for the default schema:
+      1. **Shared Components** — One task per file in `components/*.md`. Build these first so pages can reuse them.
+      2. **Pages** — One task per file in `pages/*.md`. Pages consume the components above.
+      3. **Integration** — Cross-cutting work that does not belong to a specific page or component. Examples: routing, navigation entries, data fetching, state management, API wiring, tests.
+
+      Default to one task per artifact. Split a single artifact into multiple tasks only when it is genuinely large (e.g., a page with many distinct states or a complex form component).
+
+      Example (project uses PascalCase code, co-located tests):
+      ```
+      ## 1. Shared Components
+
+      - [ ] 1.1 Implement `SpaceStatusBadge` at `src/components/SpaceStatusBadge/SpaceStatusBadge.tsx` (+ `SpaceStatusBadge.test.tsx`) per `components/space-status-badge.md`
+      - [ ] 1.2 Implement `SpaceForm` at `src/components/SpaceForm/SpaceForm.tsx` (+ `SpaceForm.test.tsx`) per `components/space-form.md`
+
+      ## 2. Pages
+
+      - [ ] 2.1 Implement `SpaceListPage` at `src/pages/SpaceListPage/SpaceListPage.tsx` per `pages/space-list.md`
+      - [ ] 2.2 Implement `SpaceDetailPage` at `src/pages/SpaceDetailPage/SpaceDetailPage.tsx` per `pages/space-detail.md`
+      - [ ] 2.3 Implement `SpaceCreatePage` at `src/pages/SpaceCreatePage/SpaceCreatePage.tsx` per `pages/space-create.md`
+      - [ ] 2.4 Implement `SpaceEditPage` at `src/pages/SpaceEditPage/SpaceEditPage.tsx` per `pages/space-edit.md`
+
+      ## 3. Integration
+
+      - [ ] 3.1 Add routes for the new pages in `src/router.tsx`
+      - [ ] 3.2 Wire up data fetching in `src/api/spaces.ts` and consume from list/detail pages
+      - [ ] 3.3 Add a `Spaces` entry to `src/components/Sidebar/Sidebar.tsx`
+      - [ ] 3.4 Run `pnpm run lint && pnpm run format` and verify the create → edit flow in a browser
+      ```
+
+      Reference `pages/*.md` for what each page should do, `components/*.md` for what each component should do, and `proposal.md` for overall context.
+    requires:
+      - pages
+      - components
