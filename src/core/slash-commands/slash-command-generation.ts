@@ -5,6 +5,7 @@ import { getArchiveChangeSlashCommand } from "./templates/archive-change.command
 import { getContinueChangeSlashCommand } from "./templates/continue-change.command.js";
 import { getNewChangeSlashCommand } from "./templates/new-change.command.js";
 import { getSyncSpecsSlashCommand } from "./templates/sync-specs.command.js";
+import { getVerifyChangeSlashCommand } from "./templates/verify-change.command.js";
 
 export interface SlashCommandContentEntry {
   id: CommandIds;
@@ -32,6 +33,10 @@ export function getSlashCommandTemplates(): SlashCommandContentEntry[] {
     {
       id: "archive",
       template: getArchiveChangeSlashCommand(),
+    },
+    {
+      id: "verify",
+      template: getVerifyChangeSlashCommand(),
     },
   ];
 

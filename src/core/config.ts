@@ -7,12 +7,13 @@ export const SKILL_IDS = [
   "designspec-apply-change",
   "designspec-sync-specs",
   "designspec-archive-change",
+  "designspec-verify-change",
 ] as const;
 export type SkillIds = (typeof SKILL_IDS)[number];
 
 export const SLASH_COMMAND_NAMESPACE = "desx";
 
-export const COMMAND_IDS = ["new", "continue", "apply", "sync", "archive"] as const;
+export const COMMAND_IDS = ["new", "continue", "apply", "sync", "archive", "verify"] as const;
 export type CommandIds = (typeof COMMAND_IDS)[number];
 
 export interface AIToolOption {
