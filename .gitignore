@@ -147,3 +147,9 @@ vite.config.ts.timestamp-*
 docs
 
 .DS_Store
+
+# Local tooling and specs
+.claude/
+.codex/
+openspec/
+design-spec/

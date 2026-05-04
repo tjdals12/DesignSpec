@@ -1,85 +1,12 @@
-import { resolveArtifactOutputs } from "#core/change/artifact/outputs.js";
-import { getTaskSummary } from "#core/change/artifact/tasks.js";
-import type { TaskSummary } from "#core/change/artifact/types.js";
-import { loadChangeContext } from "#core/change/context.js";
-import { doesChangeExist, getAvailableChanges } from "#core/change/query.js";
-import type { ChangeContext } from "#core/change/types.js";
 import { isBoolean, isUndefined } from "es-toolkit";
 
 import path from "node:path";
 import ora from "ora";
 
-type ApplyState = "blocked" | "all_done" | "ready";
-
-interface ApplyInstructions {
-  changeName: string;
-  schemaName: string;
-  state: ApplyState;
-  missingArtifacts: string[];
-  contextFiles: Map<string, string>;
-  taskSummary: TaskSummary;
-  instruction: string;
-}
-
-function resolveState(missingArtifacts: string[], taskSummary: TaskSummary): ApplyState {
-  if (missingArtifacts.length > 0) return "blocked";
-  if (taskSummary.items.length === 0) return "blocked";
-  if (taskSummary.progress.completed === taskSummary.progress.total) return "all_done";
-  return "ready";
-}
-
-function resolveInstruction(
-  state: ApplyState,
-  missingArtifacts: string[],
-  schemaInstruction: string,
-): string {
-  if (state === "blocked" && missingArtifacts.length > 0) {
-    return `Cannot apply this change yet. Missing artifacts: ${missingArtifacts.join(", ")}.\nUse the desx:continue skill to create the missing artifacts first.`;
-  }
-  if (state === "blocked") {
-    return "tasks.md has no tasks. Use the desx:continue skill to regenerate the tasks artifact.";
-  }
-  if (state === "all_done") {
-    return "All tasks are complete. This change is ready to be archived.";
-  }
-  return schemaInstruction;
-}
-
-async function resolveApplyInstructions(
-  projectPath: string,
-  changeContext: ChangeContext,
-): Promise<ApplyInstructions> {
-  const { schemaName, changeName, artifactGraph, apply } = changeContext;
-
-  const artifacts = artifactGraph.getAllArtifacts();
-
-  const outputByArtifact = await resolveArtifactOutputs(projectPath, changeName, artifacts);
-
-  const missingArtifacts: string[] = [];
-  const contextFiles = new Map<string, string>();
-  for (const require of apply.requires) {
-    const output = outputByArtifact.get(require);
-    if (output !== undefined) {
-      contextFiles.set(require, output);
-    } else {
-      missingArtifacts.push(require);
-    }
-  }
-
-  const taskSummary = await getTaskSummary(projectPath, changeName);
-  const state = resolveState(missingArtifacts, taskSummary);
-  const instruction = resolveInstruction(state, missingArtifacts, apply.instruction);
-
-  return {
-    changeName,
-    schemaName,
-    state,
-    missingArtifacts,
-    contextFiles,
-    taskSummary,
-    instruction,
-  };
-}
+import { resolveApplyInstructions } from "#core/change/apply/instructions.js";
+import type { ApplyInstructions } from "#core/change/apply/types.js";
+import { loadChangeContext } from "#core/change/context.js";
+import { doesChangeExist, getAvailableChanges } from "#core/change/query.js";
 
 export class ApplyInstructionsCommand {
   private readonly _change?: string | undefined;
@@ -161,60 +88,95 @@ export class ApplyInstructionsCommand {
   }
 
   private printApplyInstructions(applyInstructions: ApplyInstructions): void {
-    const {
-      changeName,
-      schemaName,
-      state,
-      missingArtifacts,
-      contextFiles,
-      taskSummary,
-      instruction,
-    } = applyInstructions;
+    const { changeName, schemaName, changeDirPath, apply } = applyInstructions;
+    const { state, missingArtifacts, contextFiles, taskSummary, instruction } = apply;
+    const { progress, items } = taskSummary;
 
-    console.log(`## Apply: ${changeName}`);
-    console.log(`Schema: ${schemaName}`);
+    if (this._json) {
+      console.log(
+        JSON.stringify(
+          {
+            change: changeName,
+            schema: schemaName,
+            state,
+            warning:
+              missingArtifacts.length > 0
+                ? {
+                    message: "Cannot apply this change yet. Complete missing artifacts first.",
+                    missingArtifacts,
+                  }
+                : undefined,
+            contextFiles: [...contextFiles.entries()].map(([id, generates]) => ({
+              id,
+              path: path.join(changeDirPath, generates),
+            })),
+            progress,
+            tasks: items.map((item) => ({ text: item.text, completed: item.completed })),
+            instruction: instruction.trim(),
+          },
+          null,
+          2,
+        ),
+      );
+      return;
+    }
+
+    // Opening tag
+    console.log(`<apply change="${changeName}" schema="${schemaName}">`);
     console.log();
 
-    // Blocked
+    // Warning
     if (missingArtifacts.length > 0) {
-      console.log("### ⚠️ Blocked");
-      console.log();
-      console.log(`Missing artifacts: ${missingArtifacts.join(", ")}`);
-      console.log("Use the openspec-continue-change skill to create these first.");
+      console.log("<warning>");
+      console.log("Cannot apply this change yet. Complete missing artifacts first.");
+      console.log(`Missing: ${missingArtifacts.join(", ")}`);
+      console.log("</warning>");
       console.log();
     }
 
     // Context Files
     if (contextFiles.size > 0) {
-      console.log("### Context Files");
-      for (const [artifactId, output] of contextFiles.entries()) {
-        console.log(`- ${artifactId}: ${output}`);
+      console.log("<context-files>");
+      console.log("Read these files for context before applying:");
+      console.log();
+      for (const [artifactId, generates] of contextFiles.entries()) {
+        console.log(`<file id="${artifactId}">`);
+        console.log(`<path>${path.join(changeDirPath, generates)}</path>`);
+        console.log(`</file>`);
       }
+      console.log("</context-files>");
       console.log();
     }
 
-    // Tasks
+    // Progress + Tasks
     if (state === "ready" || state === "all_done") {
       const { progress, items } = taskSummary;
 
-      console.log("### Progress");
+      console.log("<progress>");
       if (state === "all_done") {
         console.log(`${progress.completed}/${progress.total} complete ✓`);
       } else {
         console.log(`${progress.completed}/${progress.total} complete`);
       }
+      console.log("</progress>");
       console.log();
 
-      console.log("### Tasks");
+      console.log("<tasks>");
       for (const item of items) {
         const checkbox = item.completed ? "[x]" : "[ ]";
         console.log(`- ${checkbox} ${item.text}`);
       }
+      console.log("</tasks>");
       console.log();
     }
 
     // Instruction
-    console.log("### Instruction");
-    console.log(instruction);
+    console.log("<instruction>");
+    console.log(instruction.trim());
+    console.log("</instruction>");
+    console.log();
+
+    // Closing tag
+    console.log("</apply>");
   }
 }

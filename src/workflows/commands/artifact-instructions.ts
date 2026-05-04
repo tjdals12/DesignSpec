@@ -5,10 +5,8 @@ import path from "node:path";
 
 import { doesChangeExist, getAvailableChanges } from "#core/change/query.js";
 import { loadChangeContext } from "#core/change/context.js";
-import {
-  resolveArtifactInstructions,
-  type ArtifactInstructions,
-} from "#core/change/artifact/instructions.js";
+import { resolveArtifactInstructions } from "#core/change/artifact/instructions.js";
+import type { ArtifactInstructions } from "#core/change/artifact/types.js";
 
 export class ArtifactInstructionsCommand {
   private readonly _change?: string | undefined;
