@@ -6,6 +6,7 @@ import { getArchiveChangeSkillTemplate } from "./templates/archive-change.templa
 import { getContinueChangeSkillTemplate } from "./templates/continue-change.template.js";
 import { getNewChangeSkillTemplate } from "./templates/new-change.template.js";
 import { getSyncSpecsSkillTemplate } from "./templates/sync-specs.template.js";
+import { getExploreSkillTemplate } from "./templates/explore.template.js";
 import { getVerifyChangeSkillTemplate } from "./templates/verify-change.template.js";
 import type { SkillIds } from "../config.js";
 
@@ -39,6 +40,10 @@ export function getSkillTemplates(): SkillTemplateEntry[] {
     {
       id: "designspec-verify-change",
       template: getVerifyChangeSkillTemplate(),
+    },
+    {
+      id: "designspec-explore",
+      template: getExploreSkillTemplate(),
     },
   ];
 
