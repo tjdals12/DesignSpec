@@ -38,7 +38,7 @@ export function getNewChangeSlashCommand(): SlashCommandTemplate {
       4. **Get instructions for the first artifact**
          The first artifact depends on the schema. Check the status output to find the first artifact with status "ready".
          \`\`\`bash
-         design-spec instructions --change "<name>" --artifact <first-artifact-id>
+         design-spec artifact-instructions --change "<name>" --artifact <first-artifact-id>
          \`\`\`
          This outputs the template and context for creating the first artifact.
 

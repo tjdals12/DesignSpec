@@ -10,7 +10,7 @@ import {
   type ArtifactInstructions,
 } from "#core/change/artifact/instructions.js";
 
-export class InstructionsCommand {
+export class ArtifactInstructionsCommand {
   private readonly _change?: string | undefined;
   private readonly _artifact?: string | undefined;
   private readonly _json: boolean;
@@ -99,7 +99,7 @@ export class InstructionsCommand {
       return;
     }
     throw new Error(
-      "Missing required options --change, --artifact.\n  Run: design-spec instructions --change <name> --artifact <name>",
+      "Missing required options --change, --artifact.\n  Run: design-spec artifact-instructions --change <name> --artifact <name>",
     );
   }
 

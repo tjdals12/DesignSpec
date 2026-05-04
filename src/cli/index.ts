@@ -164,7 +164,7 @@ program
   });
 
 program
-  .command("instructions [path]")
+  .command("artifact-instructions [path]")
   .description("Show instructions for a specific artifact in a change")
   .option("--change <id>", "Change name")
   .option("--artifact <id>", "Artifact name")
@@ -191,9 +191,10 @@ program
           throw error;
         }
 
-        const { InstructionsCommand } = await import("#workflows/commands/instructions.js");
-        const instructionsCommand = new InstructionsCommand(options);
-        await instructionsCommand.execute(targetPath);
+        const { ArtifactInstructionsCommand } =
+          await import("#workflows/commands/artifact-instructions.js");
+        const artifactInstructionsCommand = new ArtifactInstructionsCommand(options);
+        await artifactInstructionsCommand.execute(targetPath);
       } catch (error) {
         const message = error instanceof Error ? error.message : String(error);
         ora().fail(`Error: ${message}`);
@@ -201,5 +202,39 @@ program
       }
     },
   );
+
+program
+  .command("apply-instructions [path]")
+  .description("Show apply instructions for a change")
+  .option("--change <id>", "Change name")
+  .option("--json", "Output as JSON")
+  .action(async (targetPath: string = ".", options: { change: string; json: boolean }) => {
+    try {
+      const resolvedPath = path.resolve(targetPath);
+
+      try {
+        const stats = await fs.stat(resolvedPath);
+        if (!stats.isDirectory()) {
+          throw new Error(`Path "${targetPath}" is not directory`);
+        }
+      } catch (error) {
+        if (error instanceof Error && "code" in error && error.code === "ENOENT") {
+          throw new Error("DesignSpec is not initialized. Run: design-spec init", {
+            cause: error,
+          });
+        }
+        throw error;
+      }
+
+      const { ApplyInstructionsCommand } =
+        await import("#workflows/commands/apply-instructions.js");
+      const applyInstructionsCommand = new ApplyInstructionsCommand(options);
+      await applyInstructionsCommand.execute(targetPath);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      ora().fail(`Error: ${message}`);
+      process.exit(1);
+    }
+  });
 
 program.parse();

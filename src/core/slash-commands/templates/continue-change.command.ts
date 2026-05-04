@@ -53,7 +53,7 @@ export function getContinueChangeSlashCommand(): SlashCommandTemplate {
          - Pick the FIRST artifact with \`status: "ready"\` from the status output
          - Get its instructions:
            \`\`\`bash
-          design-spec instructions --change "<name>" --artifact <first-artifact-id> --json
+          design-spec artifact-instructions --change "<name>" --artifact <first-artifact-id> --json
            \`\`\`
          - Parse the JSON. The key fields are:
            - \`context\`: Project background (constraints for you — do NOT include in output)
