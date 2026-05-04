@@ -12,7 +12,6 @@ export type Artifact = z.infer<typeof ArtifactSchema>;
 
 export const ApplySchema = z.object({
   requires: z.array(z.string()).min(1, { error: "apply.requires must list at least one artifact" }),
-  tracks: z.string().min(1, { error: "apply.tracks is required" }),
   instruction: z.string().min(1, { error: "apply.instruction is required" }),
 });
 export type Apply = z.infer<typeof ApplySchema>;

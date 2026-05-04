@@ -21,3 +21,13 @@ export interface TaskProgress {
   total: number;
   completed: number;
 }
+
+export interface TaskItem {
+  text: string;
+  completed: boolean;
+}
+
+export interface TaskSummary {
+  progress: TaskProgress;
+  items: TaskItem[];
+}
