@@ -1,7 +1,11 @@
 import dedent from "dedent";
 
 import type { SkillTemplate } from "./skill-templates.js";
+import { getApplyChangeSkillTemplate } from "./templates/apply-change.template.js";
+import { getArchiveChangeSkillTemplate } from "./templates/archive-change.template.js";
+import { getContinueChangeSkillTemplate } from "./templates/continue-change.template.js";
 import { getNewChangeSkillTemplate } from "./templates/new-change.template.js";
+import { getSyncSpecsSkillTemplate } from "./templates/sync-specs.template.js";
 import type { SkillIds } from "../config.js";
 
 export interface SkillTemplateEntry {
@@ -14,6 +18,22 @@ export function getSkillTemplates(): SkillTemplateEntry[] {
     {
       id: "designspec-new-change",
       template: getNewChangeSkillTemplate(),
+    },
+    {
+      id: "designspec-continue-change",
+      template: getContinueChangeSkillTemplate(),
+    },
+    {
+      id: "designspec-apply-change",
+      template: getApplyChangeSkillTemplate(),
+    },
+    {
+      id: "designspec-sync-specs",
+      template: getSyncSpecsSkillTemplate(),
+    },
+    {
+      id: "designspec-archive-change",
+      template: getArchiveChangeSkillTemplate(),
     },
   ];
 

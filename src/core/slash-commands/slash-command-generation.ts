@@ -1,7 +1,10 @@
 import type { CommandIds } from "../config.js";
 import type { SlashCommandTemplate } from "./slasn-command-template.js";
+import { getApplyChangeSlashCommand } from "./templates/apply-change.command.js";
+import { getArchiveChangeSlashCommand } from "./templates/archive-change.command.js";
 import { getContinueChangeSlashCommand } from "./templates/continue-change.command.js";
 import { getNewChangeSlashCommand } from "./templates/new-change.command.js";
+import { getSyncSpecsSlashCommand } from "./templates/sync-specs.command.js";
 
 export interface SlashCommandContentEntry {
   id: CommandIds;
@@ -17,6 +20,18 @@ export function getSlashCommandTemplates(): SlashCommandContentEntry[] {
     {
       id: "continue",
       template: getContinueChangeSlashCommand(),
+    },
+    {
+      id: "apply",
+      template: getApplyChangeSlashCommand(),
+    },
+    {
+      id: "sync",
+      template: getSyncSpecsSlashCommand(),
+    },
+    {
+      id: "archive",
+      template: getArchiveChangeSlashCommand(),
     },
   ];
 
