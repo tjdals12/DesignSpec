@@ -4,6 +4,7 @@ import type { SkillTemplate } from "./skill-templates.js";
 import { getApplyChangeSkillTemplate } from "./templates/apply-change.template.js";
 import { getArchiveChangeSkillTemplate } from "./templates/archive-change.template.js";
 import { getContinueChangeSkillTemplate } from "./templates/continue-change.template.js";
+import { getFastForwardSkillTemplate } from "./templates/ff.template.js";
 import { getNewChangeSkillTemplate } from "./templates/new-change.template.js";
 import { getSyncSpecsSkillTemplate } from "./templates/sync-specs.template.js";
 import { getExploreSkillTemplate } from "./templates/explore.template.js";
@@ -24,6 +25,10 @@ export function getSkillTemplates(): SkillTemplateEntry[] {
     {
       id: "designspec-continue-change",
       template: getContinueChangeSkillTemplate(),
+    },
+    {
+      id: "designspec-ff-change",
+      template: getFastForwardSkillTemplate(),
     },
     {
       id: "designspec-apply-change",

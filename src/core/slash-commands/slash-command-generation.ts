@@ -3,6 +3,7 @@ import type { SlashCommandTemplate } from "./slasn-command-template.js";
 import { getApplyChangeSlashCommand } from "./templates/apply-change.command.js";
 import { getArchiveChangeSlashCommand } from "./templates/archive-change.command.js";
 import { getContinueChangeSlashCommand } from "./templates/continue-change.command.js";
+import { getFastForwardSlashCommand } from "./templates/ff.command.js";
 import { getNewChangeSlashCommand } from "./templates/new-change.command.js";
 import { getSyncSpecsSlashCommand } from "./templates/sync-specs.command.js";
 import { getExploreSlashCommand } from "./templates/explore.command.js";
@@ -22,6 +23,10 @@ export function getSlashCommandTemplates(): SlashCommandContentEntry[] {
     {
       id: "continue",
       template: getContinueChangeSlashCommand(),
+    },
+    {
+      id: "ff",
+      template: getFastForwardSlashCommand(),
     },
     {
       id: "apply",

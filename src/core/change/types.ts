@@ -19,6 +19,7 @@ export interface ChangeStatus {
   changeName: string;
   schemaName: string;
   artifactStatuses: ArtifactStatus[];
+  applyRequires: string[];
   isComplete: boolean;
 }
 

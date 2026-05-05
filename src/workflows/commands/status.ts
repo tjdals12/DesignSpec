@@ -77,7 +77,8 @@ export class StatusCommand {
   }
 
   private formatStatus(changeContext: ChangeContext): ChangeStatus {
-    const { changeName, schemaName, artifactGraph, completedArtifacts } = changeContext;
+    const { changeName, schemaName, artifactGraph, applyContext, completedArtifacts } =
+      changeContext;
 
     const artifacts = artifactGraph.getAllArtifacts();
     const ready = new Set(artifactGraph.getNextArtifacts(completedArtifacts));
@@ -119,12 +120,13 @@ export class StatusCommand {
       changeName,
       schemaName,
       artifactStatuses,
+      applyRequires: applyContext.getRequires(),
       isComplete,
     };
   }
 
   private printStatus(changeStatus: ChangeStatus): void {
-    const { changeName, schemaName, artifactStatuses, isComplete } = changeStatus;
+    const { changeName, schemaName, artifactStatuses, applyRequires, isComplete } = changeStatus;
 
     if (this._json) {
       const doneCount = artifactStatuses.filter((s) => s.status === "done").length;
@@ -135,6 +137,7 @@ export class StatusCommand {
             schemaName,
             progress: { done: doneCount, total: artifactStatuses.length },
             artifacts: artifactStatuses,
+            applyRequires,
             isComplete,
           },
           null,

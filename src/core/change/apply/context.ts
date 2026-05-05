@@ -17,6 +17,10 @@ export class ApplyContext {
     return this._schema.name;
   }
 
+  getRequires(): string[] {
+    return [...this._requires];
+  }
+
   resolve(completedArtifacts: Set<string>, taskSummary: TaskSummary): ApplyResult {
     const missingArtifacts = [...this._requires].filter((r) => !completedArtifacts.has(r));
 
