@@ -36,10 +36,11 @@ Do not describe internal logic or backend processing here.
 
 ## Layout
 
-<!--
-Describe how the page should be structured.
+### Description
 
-Focus on the page-level arrangement of sections, information, and actions.
+<!--
+Short prose describing the page-level arrangement of sections, information, and actions.
+
 Examples:
 - top area with title and primary action
 - filter area above the list
@@ -48,6 +49,23 @@ Examples:
 Do not go too deep into visual styling.
 Do not describe reusable component internals here.
 -->
+
+### Wireframe
+
+<!--
+Required. ASCII wireframe capturing the page-level structure.
+
+Conventions:
+- Use box-drawing characters: ┌ ┐ └ ┘ │ ─ ├ ┤ ┬ ┴
+- Label elements in brackets: [Page Title], [Primary Action], [Item Row]
+- Use … or repeated rows to indicate repetition
+- Annotate dynamic regions briefly when helpful: [Item Row] (loading), [Empty State]
+- Stay at page scale — do NOT draw component internals (those live in `components/*.md`); refer to them by name (e.g., [space-form]).
+- The wireframe captures arrangement and density, NOT pixel-perfect styling, exact dimensions, colors, or fonts.
+-->
+
+```
+```
 
 ## States
 
