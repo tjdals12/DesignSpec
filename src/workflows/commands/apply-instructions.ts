@@ -7,6 +7,7 @@ import { resolveApplyInstructions } from "#core/change/apply/instructions.js";
 import type { ApplyInstructions } from "#core/change/apply/types.js";
 import { loadChangeContext } from "#core/change/context.js";
 import { doesChangeExist, getAvailableChanges } from "#core/change/query.js";
+import type { ProjectContext } from "#core/project-config/types.js";
 
 export class ApplyInstructionsCommand {
   private readonly _change?: string | undefined;
@@ -125,7 +126,7 @@ export class ApplyInstructionsCommand {
     // Project context (precedes <apply> so the agent reads it first)
     if (projectContext) {
       console.log("<project_context>");
-      console.log(projectContext);
+      console.log(formatProjectContext(projectContext));
       console.log("</project_context>");
       console.log();
     }
@@ -188,4 +189,23 @@ export class ApplyInstructionsCommand {
     // Closing tag
     console.log("</apply>");
   }
+}
+
+function formatProjectContext(ctx: ProjectContext): string {
+  const sections: string[] = [];
+
+  if (ctx.context) {
+    sections.push(`<context>\n${ctx.context}\n</context>`);
+  }
+
+  if (ctx.contextFiles && ctx.contextFiles.length > 0) {
+    const entries = ctx.contextFiles.map((f) => `[from ${f.path}]\n${f.content}`).join("\n\n");
+    sections.push(`<context_files>\n${entries}\n</context_files>`);
+  }
+
+  if (ctx.style) {
+    sections.push(`<style>\n${ctx.style}\n</style>`);
+  }
+
+  return sections.join("\n\n");
 }

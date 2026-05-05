@@ -1,4 +1,5 @@
 import type { Artifact } from "./schema/schema.js";
+import type { ProjectContext } from "../../project-config/types.js";
 
 export interface ArtifactDependency {
   id: string;
@@ -11,7 +12,7 @@ export interface ArtifactInstructions {
   schemaName: string;
   changeName: string;
   changeDirPath: string;
-  projectContext?: string;
+  projectContext?: ProjectContext;
   artifact: Artifact & {
     dependencies: ArtifactDependency[];
     dependents: string[];

@@ -4,7 +4,8 @@ import fs from "node:fs/promises";
 import { parse as parseYaml } from "yaml";
 
 import { buildConfigPaths } from "./paths.js";
-import { ProjectConfigSchema, type ProjectConfig } from "./types.js";
+import { ProjectConfigSchema, type ProjectConfig, type ProjectContext } from "./types.js";
+import { buildStylesDirPath } from "../styles/paths.js";
 
 export async function resolveProjectConfig(projectPath: string): Promise<ProjectConfig | null> {
   let content: string | null = null;
@@ -46,29 +47,42 @@ export async function resolveProjectConfig(projectPath: string): Promise<Project
   return result.data;
 }
 
-export async function resolveProjectContext(projectPath: string): Promise<string | null> {
+export async function resolveProjectContext(projectPath: string): Promise<ProjectContext | null> {
   const config = await resolveProjectConfig(projectPath);
-  if (config === null) return null;
 
-  const sections: string[] = [];
+  const result: ProjectContext = {};
 
-  const inline = config.context?.trim();
+  const inline = config?.context?.trim();
   if (inline) {
-    sections.push(inline);
+    result.context = inline;
   }
 
-  for (const filePath of config.contextFiles ?? []) {
+  const contextFiles: ProjectContext["contextFiles"] = [];
+  for (const filePath of config?.contextFiles ?? []) {
     const absolutePath = path.isAbsolute(filePath) ? filePath : path.resolve(projectPath, filePath);
     try {
       const fileContent = await fs.readFile(absolutePath, "utf-8");
-      sections.push(`[from ${filePath}]\n${fileContent.trim()}`);
+      contextFiles.push({ path: filePath, content: fileContent.trim() });
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
       console.warn(`contextFiles: cannot read '${filePath}': ${message}`);
-      continue;
+    }
+  }
+  if (contextFiles.length > 0) {
+    result.contextFiles = contextFiles;
+  }
+
+  const styleFilePath = path.join(buildStylesDirPath(projectPath), "style.md");
+  try {
+    const styleContent = await fs.readFile(styleFilePath, "utf-8");
+    result.style = styleContent.trim();
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code !== "ENOENT") {
+      const message = error instanceof Error ? error.message : String(error);
+      console.warn(`style: cannot read '${styleFilePath}': ${message}`);
     }
   }
 
-  if (sections.length === 0) return null;
-  return sections.join("\n\n");
+  const isEmpty = !result.context && !result.contextFiles && !result.style;
+  return isEmpty ? null : result;
 }

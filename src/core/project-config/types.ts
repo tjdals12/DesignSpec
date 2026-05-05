@@ -6,3 +6,14 @@ export const ProjectConfigSchema = z.looseObject({
 });
 
 export type ProjectConfig = z.infer<typeof ProjectConfigSchema>;
+
+export interface ProjectContextFile {
+  path: string;
+  content: string;
+}
+
+export interface ProjectContext {
+  context?: string;
+  contextFiles?: ProjectContextFile[];
+  style?: string;
+}

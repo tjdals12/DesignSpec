@@ -19,6 +19,7 @@ import { getSlashCommandTemplates } from "../slash-commands/slash-command-genera
 import { SlashCommandAdapterRegistry } from "../slash-commands/slash-command-adapter-registry.js";
 import { buildArchivesDirPath, buildChangesDirPath } from "../change/paths.js";
 import { buildSpecsDirPath } from "../spec/paths.js";
+import { buildStylesDirPath } from "../styles/paths.js";
 import { buildConfigPaths } from "../project-config/paths.js";
 import { PALETTE, PROGRESS_SPINNER } from "../ui.js";
 
@@ -208,6 +209,7 @@ export class InitCommand {
       buildChangesDirPath(projectPath),
       buildArchivesDirPath(projectPath),
       buildSpecsDirPath(projectPath),
+      buildStylesDirPath(projectPath),
     ];
 
     const spinner = extendMode
