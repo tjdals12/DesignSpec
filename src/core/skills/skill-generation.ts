@@ -9,6 +9,7 @@ import { getNewChangeSkillTemplate } from "./templates/new-change.template.js";
 import { getSyncSpecsSkillTemplate } from "./templates/sync-specs.template.js";
 import { getExploreSkillTemplate } from "./templates/explore.template.js";
 import { getVerifyChangeSkillTemplate } from "./templates/verify-change.template.js";
+import { getStyleInitSkillTemplate } from "./templates/style-init.template.js";
 import type { SkillIds } from "../config.js";
 
 export interface SkillTemplateEntry {
@@ -49,6 +50,10 @@ export function getSkillTemplates(): SkillTemplateEntry[] {
     {
       id: "designspec-explore",
       template: getExploreSkillTemplate(),
+    },
+    {
+      id: "designspec-style-init",
+      template: getStyleInitSkillTemplate(),
     },
   ];
 

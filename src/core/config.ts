@@ -11,6 +11,7 @@ export const SKILL_IDS = [
   "designspec-archive-change",
   "designspec-verify-change",
   "designspec-explore",
+  "designspec-style-init",
 ] as const;
 export type SkillIds = (typeof SKILL_IDS)[number];
 
@@ -25,6 +26,7 @@ export const COMMAND_IDS = [
   "archive",
   "verify",
   "explore",
+  "style-init",
 ] as const;
 export type CommandIds = (typeof COMMAND_IDS)[number];
 

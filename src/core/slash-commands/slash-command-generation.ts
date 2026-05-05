@@ -8,6 +8,7 @@ import { getNewChangeSlashCommand } from "./templates/new-change.command.js";
 import { getSyncSpecsSlashCommand } from "./templates/sync-specs.command.js";
 import { getExploreSlashCommand } from "./templates/explore.command.js";
 import { getVerifyChangeSlashCommand } from "./templates/verify-change.command.js";
+import { getStyleInitSlashCommand } from "./templates/style-init.command.js";
 
 export interface SlashCommandContentEntry {
   id: CommandIds;
@@ -47,6 +48,10 @@ export function getSlashCommandTemplates(): SlashCommandContentEntry[] {
     {
       id: "explore",
       template: getExploreSlashCommand(),
+    },
+    {
+      id: "style-init",
+      template: getStyleInitSlashCommand(),
     },
   ];
 
