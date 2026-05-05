@@ -6,30 +6,53 @@ import { getAvailableChanges, getChangeLastModified } from "../change/query.js";
 import type { ChangeInfo } from "../change/types.js";
 import { getTaskProgress, type TaskProgress } from "../change/artifact/tasks.js";
 import { validateChangesDir } from "../change/validation.js";
+import { getAvailableSpecs } from "../spec/query.js";
+import type { SpecInfo, SpecKind } from "../spec/types.js";
+
+interface ListOptions {
+  json: boolean;
+  changes?: boolean;
+  specs?: boolean;
+}
 
 export class ListCommand {
   private readonly _json: boolean;
+  private readonly _showChanges: boolean;
+  private readonly _showSpecs: boolean;
 
-  constructor(options: { json: boolean }) {
+  constructor(options: ListOptions) {
     this._json = isBoolean(options.json) ? options.json : false;
+
+    const changesFlag = isBoolean(options.changes) ? options.changes : false;
+    const specsFlag = isBoolean(options.specs) ? options.specs : false;
+
+    if (!changesFlag && !specsFlag) {
+      this._showChanges = true;
+      this._showSpecs = false;
+    } else {
+      this._showChanges = changesFlag;
+      this._showSpecs = specsFlag;
+    }
   }
 
   async execute(targetPath: string) {
     const projectPath = path.resolve(targetPath);
     await validateChangesDir(projectPath);
 
-    const availableChanges = await getAvailableChanges(projectPath);
-    if (availableChanges.length === 0) {
-      if (this._json) {
-        console.log(JSON.stringify({ changes: [], message: "No active changes." }, null, 2));
-      } else {
-        console.log("No active changes found.");
-      }
+    const changeInfos = this._showChanges ? await this.collectChangeInfos(projectPath) : [];
+    const specInfos = this._showSpecs ? await getAvailableSpecs(projectPath) : [];
+
+    if (this._json) {
+      this.printJson(changeInfos, specInfos);
       return;
     }
 
-    const changeInfos: Array<ChangeInfo> = [];
+    this.printText(changeInfos, specInfos);
+  }
 
+  private async collectChangeInfos(projectPath: string): Promise<Array<ChangeInfo>> {
+    const availableChanges = await getAvailableChanges(projectPath);
+    const changeInfos: Array<ChangeInfo> = [];
     for (const availableChange of availableChanges) {
       const taskProgress = await getTaskProgress(projectPath, availableChange);
       const lastModified = await getChangeLastModified(projectPath, availableChange);
@@ -40,36 +63,60 @@ export class ListCommand {
         lastModified,
       });
     }
-
-    this.printList(changeInfos);
+    return changeInfos;
   }
 
-  printList(changeInfos: Array<ChangeInfo>) {
-    if (this._json) {
-      console.log(
-        JSON.stringify(
-          {
-            changes: changeInfos.map(({ changeName, totalTask, completedTask, lastModified }) => ({
-              changeName: changeName,
-              totalTask: totalTask,
-              completedTask: completedTask,
-              lastModified: lastModified.toISOString(),
-              status:
-                totalTask === 0
-                  ? "no-tasks"
-                  : totalTask === completedTask
-                    ? "complete"
-                    : "in-progress",
-            })),
-          },
-          null,
-          2,
-        ),
+  private printJson(changeInfos: Array<ChangeInfo>, specInfos: Array<SpecInfo>) {
+    const payload: Record<string, unknown> = {};
+
+    if (this._showChanges) {
+      payload.changes = changeInfos.map(
+        ({ changeName, totalTask, completedTask, lastModified }) => ({
+          changeName,
+          totalTask,
+          completedTask,
+          lastModified: lastModified.toISOString(),
+          status:
+            totalTask === 0 ? "no-tasks" : totalTask === completedTask ? "complete" : "in-progress",
+        }),
       );
-      return;
     }
 
-    console.log("Changes:");
+    if (this._showSpecs) {
+      payload.specs = specInfos.map(({ specName, kind, lastModified }) => ({
+        specName,
+        kind,
+        lastModified: lastModified.toISOString(),
+      }));
+    }
+
+    if (this._showChanges && changeInfos.length === 0) {
+      payload.message = "No active changes.";
+    }
+
+    console.log(JSON.stringify(payload, null, 2));
+  }
+
+  private printText(changeInfos: Array<ChangeInfo>, specInfos: Array<SpecInfo>) {
+    const sections: string[] = [];
+
+    if (this._showChanges) {
+      sections.push(this.formatChanges(changeInfos));
+    }
+
+    if (this._showSpecs) {
+      sections.push(this.formatSpecs(specInfos));
+    }
+
+    console.log(sections.join("\n\n"));
+  }
+
+  private formatChanges(changeInfos: Array<ChangeInfo>): string {
+    if (changeInfos.length === 0) {
+      return "No active changes found.";
+    }
+
+    const lines: string[] = ["Changes:"];
     const width = Math.max(...changeInfos.map((changeInfo) => changeInfo.changeName.length));
     for (const changeInfo of changeInfos) {
       const changeName = changeInfo.changeName.padEnd(width);
@@ -78,8 +125,38 @@ export class ListCommand {
         completed: changeInfo.completedTask,
       }).padEnd(12);
       const lastModified = this.formatLastModified(changeInfo.lastModified);
-      console.log(`  ${changeName}     ${taskProgress}  ${lastModified}`);
+      lines.push(`  ${changeName}     ${taskProgress}  ${lastModified}`);
     }
+    return lines.join("\n");
+  }
+
+  private formatSpecs(specInfos: Array<SpecInfo>): string {
+    if (specInfos.length === 0) {
+      return "No specs found.";
+    }
+
+    const lines: string[] = ["Specs:"];
+    const groupOrder: Array<{ kind: SpecKind; label: string }> = [
+      { kind: "page", label: "Pages" },
+      { kind: "component", label: "Components" },
+    ];
+
+    const sections: string[] = [];
+    for (const { kind, label } of groupOrder) {
+      const items = specInfos.filter((spec) => spec.kind === kind);
+      if (items.length === 0) continue;
+
+      const sectionLines: string[] = [`  ${label}`];
+      const width = Math.max(...items.map((spec) => spec.specName.length));
+      for (const spec of items) {
+        const name = spec.specName.padEnd(width);
+        const lastModified = this.formatLastModified(spec.lastModified);
+        sectionLines.push(`    ${name}    ${lastModified}`);
+      }
+      sections.push(sectionLines.join("\n"));
+    }
+
+    return [lines[0], ...sections].join("\n");
   }
 
   private formatTaskProgress(taskProgress: TaskProgress): string {

@@ -64,39 +64,56 @@ program
 
 program
   .command("list [path]")
-  .description("List all active changes")
+  .description("List active changes and/or specs")
   .option("--json", "Output as JSON")
-  .action(async (targetPath: string = ".", options: { json: boolean }) => {
-    try {
-      const resolvedPath = path.resolve(targetPath);
-
+  .option("--changes", "List active changes (default when no flag is given)")
+  .option("--specs", "List specs")
+  .addHelpText(
+    "after",
+    dedent`
+    Examples:
+      $ design-spec list
+      $ design-spec list --changes
+      $ design-spec list --specs
+      $ design-spec list --changes --specs
+  `,
+  )
+  .action(
+    async (
+      targetPath: string = ".",
+      options: { json: boolean; changes?: boolean; specs?: boolean },
+    ) => {
       try {
-        const stats = await fs.stat(resolvedPath);
-        if (!stats.isDirectory()) {
-          throw new Error(`Path "${targetPath}" is not a directory`);
-        }
-      } catch (error) {
-        if (error instanceof Error && "code" in error) {
-          if (error.code === "ENOENT") {
-            console.log(`Directory "${targetPath}" doesn't exist, it will be created.`);
-            await fs.mkdir(resolvedPath, { recursive: true });
+        const resolvedPath = path.resolve(targetPath);
+
+        try {
+          const stats = await fs.stat(resolvedPath);
+          if (!stats.isDirectory()) {
+            throw new Error(`Path "${targetPath}" is not a directory`);
+          }
+        } catch (error) {
+          if (error instanceof Error && "code" in error) {
+            if (error.code === "ENOENT") {
+              console.log(`Directory "${targetPath}" doesn't exist, it will be created.`);
+              await fs.mkdir(resolvedPath, { recursive: true });
+            } else {
+              throw error;
+            }
           } else {
             throw error;
           }
-        } else {
-          throw error;
         }
-      }
 
-      const { ListCommand } = await import("#core/commands/list.js");
-      const listCommand = new ListCommand(options);
-      await listCommand.execute(targetPath);
-    } catch (error) {
-      const message = error instanceof Error ? error.message : String(error);
-      ora().fail(`Error: ${message}`);
-      process.exit(1);
-    }
-  });
+        const { ListCommand } = await import("#core/commands/list.js");
+        const listCommand = new ListCommand(options);
+        await listCommand.execute(targetPath);
+      } catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
+        ora().fail(`Error: ${message}`);
+        process.exit(1);
+      }
+    },
+  );
 
 program
   .command("status [path]")
