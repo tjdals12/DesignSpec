@@ -2,13 +2,14 @@ import path from "node:path";
 import fs from "node:fs/promises";
 
 import { DESIGN_SPEC_DIR_NAME } from "../../config.js";
-import type { TaskSummary, TaskProgress } from "./types.js";
+import type { TaskItem, TaskSummary, TaskProgress } from "./types.js";
 
 export type { TaskSummary, TaskItem, TaskProgress } from "./types.js";
 
 const TASK_PATTERN = /^[-*]\s+\[[\sx]\]/i;
 const COMPLETED_TASK_PATTERN = /^[-*]\s+\[x\]/i;
 const TASK_TEXT_PATTERN = /^[-*]\s+\[[\sx]\]\s*/i;
+const INDENTED_LINE_PATTERN = /^[ \t]+\S/;
 
 export async function getTaskSummary(
   projectPath: string,
@@ -21,14 +22,23 @@ export async function getTaskSummary(
 
     let total = 0;
     let completed = 0;
-    const items = [];
+    const items: TaskItem[] = [];
+    let currentItem: TaskItem | null = null;
 
     for (const line of lines) {
       if (line.match(TASK_PATTERN)) {
         total++;
         const isCompleted = !!line.match(COMPLETED_TASK_PATTERN);
         if (isCompleted) completed++;
-        items.push({ text: line.replace(TASK_TEXT_PATTERN, ""), completed: isCompleted });
+        currentItem = {
+          text: line.replace(TASK_TEXT_PATTERN, ""),
+          completed: isCompleted,
+        };
+        items.push(currentItem);
+      } else if (currentItem && INDENTED_LINE_PATTERN.test(line)) {
+        currentItem.text += "\n" + line;
+      } else {
+        currentItem = null;
       }
     }
 
