@@ -114,12 +114,21 @@ export function getExploreSlashCommand(): SlashCommandTemplate {
 
       ### Check for context
 
-      At the start, quickly check what exists:
+      At the start, run BOTH of these to ground yourself:
+
       \`\`\`bash
+      design-spec context
       design-spec list --json
       \`\`\`
 
-      This tells you:
+      \`design-spec context\` tells you what the project has already established:
+      - Inline project context from \`design-spec/config.yaml\` (tech stack, conventions)
+      - Any \`contextFiles\` the user has linked
+      - The style system from \`design-spec/styles/style.md\` (direction, tokens, component patterns) if \`desx:style-init\` has been run
+
+      **Treat the context output as ground truth. Do not re-ask things that are already answered there.** If the style system says the personality is "Precision & Density" with a specific palette, don't ask the user what feel they want. If \`config.yaml\` describes the tech stack, don't ask about it. Reference what's there and build on it.
+
+      \`design-spec list --json\` tells you:
       - If there are active changes
       - Their names, schemas, and status
       - What the user might be working on
