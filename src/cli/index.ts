@@ -254,4 +254,36 @@ program
     }
   });
 
+program
+  .command("context [path]")
+  .description("Show resolved project context (inline context, contextFiles, and style system)")
+  .option("--json", "Output as JSON")
+  .action(async (targetPath: string = ".", options: { json: boolean }) => {
+    try {
+      const resolvedPath = path.resolve(targetPath);
+
+      try {
+        const stats = await fs.stat(resolvedPath);
+        if (!stats.isDirectory()) {
+          throw new Error(`Path "${targetPath}" is not directory`);
+        }
+      } catch (error) {
+        if (error instanceof Error && "code" in error && error.code === "ENOENT") {
+          throw new Error("DesignSpec is not initialized. Run: design-spec init", {
+            cause: error,
+          });
+        }
+        throw error;
+      }
+
+      const { ContextCommand } = await import("#workflows/commands/context.js");
+      const contextCommand = new ContextCommand(options);
+      await contextCommand.execute(targetPath);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      ora().fail(`Error: ${message}`);
+      process.exit(1);
+    }
+  });
+
 program.parse();
