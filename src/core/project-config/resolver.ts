@@ -1,3 +1,4 @@
+import path from "node:path";
 import fs from "node:fs/promises";
 
 import { parse as parseYaml } from "yaml";
@@ -43,4 +44,31 @@ export async function resolveProjectConfig(projectPath: string): Promise<Project
   }
 
   return result.data;
+}
+
+export async function resolveProjectContext(projectPath: string): Promise<string | null> {
+  const config = await resolveProjectConfig(projectPath);
+  if (config === null) return null;
+
+  const sections: string[] = [];
+
+  const inline = config.context?.trim();
+  if (inline) {
+    sections.push(inline);
+  }
+
+  for (const filePath of config.contextFiles ?? []) {
+    const absolutePath = path.isAbsolute(filePath) ? filePath : path.resolve(projectPath, filePath);
+    try {
+      const fileContent = await fs.readFile(absolutePath, "utf-8");
+      sections.push(`[from ${filePath}]\n${fileContent.trim()}`);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      console.warn(`contextFiles: cannot read '${filePath}': ${message}`);
+      continue;
+    }
+  }
+
+  if (sections.length === 0) return null;
+  return sections.join("\n\n");
 }

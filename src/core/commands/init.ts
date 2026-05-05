@@ -23,9 +23,13 @@ import { buildConfigPaths } from "../project-config/paths.js";
 import { PALETTE, PROGRESS_SPINNER } from "../ui.js";
 
 const STARTER_CONFIG_CONTENT = `# DesignSpec project configuration.
-# \`context\` is injected into every artifact-instructions and apply-instructions
-# output as a <project_context> block, so put information here that should be
-# present every time the agent works on this project.
+#
+# Both \`context\` and \`contextFiles\` are merged into a single <project_context>
+# block that is injected into every artifact-instructions and apply-instructions
+# output, so anything here is present every time the agent works on this project.
+#
+# \`context\` — inline notes written directly in this file.
+# Use it for short, project-specific guidance.
 #
 # Examples of what to include:
 # - Tech stack (framework, styling system, component library)
@@ -38,6 +42,16 @@ const STARTER_CONFIG_CONTENT = `# DesignSpec project configuration.
 #   Density: dense, scannable — this is a B2B admin tool
 #   Color: monochrome with one accent (blue-600)
 #   Spacing: 4px base, multiples of 4
+#
+# \`contextFiles\` — paths (relative to project root) to markdown files whose
+# contents should be inlined into the <project_context> block. Useful for
+# pulling in an existing design system file (e.g., interface-design's
+# .interface-design/system.md) without duplicating its content here.
+# Each file is labeled with \`[from <path>]\` in the output.
+#
+# contextFiles:
+#   - .interface-design/system.md
+#   - docs/ui-conventions.md
 `;
 
 interface SetupResults {
