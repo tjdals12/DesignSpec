@@ -1,9 +1,10 @@
 import path from "node:path";
 
-import { DESIGN_SPEC_DIR_NAME, METADATA_FILENAME } from "../config.js";
+import { METADATA_FILENAME } from "../config.js";
+import { buildDesignSpecDirPath } from "../paths.js";
 
 export function buildChangesDirPath(projectPath: string): string {
-  return path.join(projectPath, DESIGN_SPEC_DIR_NAME, "changes");
+  return path.join(buildDesignSpecDirPath(projectPath), "changes");
 }
 
 export function buildArchivesDirPath(projectPath: string): string {

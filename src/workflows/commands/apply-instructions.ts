@@ -88,7 +88,7 @@ export class ApplyInstructionsCommand {
   }
 
   private printApplyInstructions(applyInstructions: ApplyInstructions): void {
-    const { changeName, schemaName, changeDirPath, apply } = applyInstructions;
+    const { changeName, schemaName, changeDirPath, projectContext, apply } = applyInstructions;
     const { state, missingArtifacts, contextFiles, taskSummary, instruction } = apply;
     const { progress, items } = taskSummary;
 
@@ -99,6 +99,7 @@ export class ApplyInstructionsCommand {
             change: changeName,
             schema: schemaName,
             state,
+            projectContext,
             warning:
               missingArtifacts.length > 0
                 ? {
@@ -119,6 +120,14 @@ export class ApplyInstructionsCommand {
         ),
       );
       return;
+    }
+
+    // Project context (precedes <apply> so the agent reads it first)
+    if (projectContext) {
+      console.log("<project_context>");
+      console.log(projectContext);
+      console.log("</project_context>");
+      console.log();
     }
 
     // Opening tag

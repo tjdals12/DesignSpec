@@ -1,7 +1,7 @@
 import path from "node:path";
 
-import { DESIGN_SPEC_DIR_NAME } from "../config.js";
+import { buildDesignSpecDirPath } from "../paths.js";
 
 export function buildSpecsDirPath(projectPath: string): string {
-  return path.join(projectPath, DESIGN_SPEC_DIR_NAME, "specs");
+  return path.join(buildDesignSpecDirPath(projectPath), "specs");
 }

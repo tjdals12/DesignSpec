@@ -3,6 +3,7 @@ import chalk from "chalk";
 import { isEmpty, isUndefined } from "es-toolkit/compat";
 
 import path from "node:path";
+import fs from "node:fs/promises";
 
 import { DESIGN_SPEC_DIR_NAME, type AIToolInfo, type AIToolOption } from "../config.js";
 import { FileSystemUtils } from "#utils/file-system.utils.js";
@@ -18,7 +19,26 @@ import { getSlashCommandTemplates } from "../slash-commands/slash-command-genera
 import { SlashCommandAdapterRegistry } from "../slash-commands/slash-command-adapter-registry.js";
 import { buildArchivesDirPath, buildChangesDirPath } from "../change/paths.js";
 import { buildSpecsDirPath } from "../spec/paths.js";
+import { buildConfigPaths } from "../project-config/paths.js";
 import { PALETTE, PROGRESS_SPINNER } from "../ui.js";
+
+const STARTER_CONFIG_CONTENT = `# DesignSpec project configuration.
+# \`context\` is injected into every artifact-instructions and apply-instructions
+# output as a <project_context> block, so put information here that should be
+# present every time the agent works on this project.
+#
+# Examples of what to include:
+# - Tech stack (framework, styling system, component library)
+# - Visual personality (dense B2B vs airy SaaS, monochrome vs colorful)
+# - Spacing / typography conventions
+# - References to existing style sources (Tailwind config path, design tokens)
+#
+# context: |
+#   Tech stack: React + Tailwind, shadcn/ui as base
+#   Density: dense, scannable — this is a B2B admin tool
+#   Color: monochrome with one accent (blue-600)
+#   Spacing: 4px base, multiples of 4
+`;
 
 interface SetupResults {
   createdTools: Array<AIToolInfo>;
@@ -59,6 +79,8 @@ export class InitCommand {
     const validatedTools = this.validateTools(toolStates, selectedToolIds);
 
     await this.createDirectoryStructure(projectPath, extendMode);
+
+    await this.scaffoldConfigFile(projectPath);
 
     const results = await this.generateSkillsAndCommands(projectPath, validatedTools);
 
@@ -147,6 +169,23 @@ export class InitCommand {
     }
 
     return validatedTools;
+  }
+
+  private async scaffoldConfigFile(projectPath: string): Promise<void> {
+    const candidates = buildConfigPaths(projectPath);
+
+    for (const candidate of candidates) {
+      try {
+        await fs.access(candidate);
+        return;
+      } catch {
+        continue;
+      }
+    }
+
+    const target = candidates[0];
+    if (!target) return;
+    await FileSystemUtils.writeFile(target, STARTER_CONFIG_CONTENT);
   }
 
   private async createDirectoryStructure(projectPath: string, extendMode: boolean): Promise<void> {

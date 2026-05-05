@@ -11,6 +11,7 @@ export interface ArtifactInstructions {
   schemaName: string;
   changeName: string;
   changeDirPath: string;
+  projectContext?: string;
   artifact: Artifact & {
     dependencies: ArtifactDependency[];
     dependents: string[];

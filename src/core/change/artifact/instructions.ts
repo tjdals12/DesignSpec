@@ -1,4 +1,5 @@
 import type { ChangeContext } from "../types.js";
+import { resolveProjectConfig } from "../../project-config/resolver.js";
 import { resolveTemplate } from "./template/resolver.js";
 import type { ArtifactInstructions } from "./types.js";
 import { buildChangeDirPath } from "../paths.js";
@@ -23,10 +24,14 @@ export async function resolveArtifactInstructions(
 
   const dependents = artifactGraph.getArtifactDependents(artifact.id);
 
+  const projectConfig = await resolveProjectConfig(projectPath);
+  const projectContext = projectConfig?.context?.trim();
+
   return {
     schemaName,
     changeName,
     changeDirPath,
+    ...(projectContext ? { projectContext } : {}),
     artifact: {
       ...artifact,
       template,

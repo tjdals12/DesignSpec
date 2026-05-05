@@ -12,6 +12,7 @@ export interface ApplyInstructions {
   changeName: string;
   schemaName: string;
   changeDirPath: string;
+  projectContext?: string;
   apply: ApplyResult & {
     contextFiles: Map<string, string>;
     taskSummary: TaskSummary;

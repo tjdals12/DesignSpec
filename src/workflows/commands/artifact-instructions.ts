@@ -172,7 +172,8 @@ export class ArtifactInstructionsCommand {
 
   private printArtifactInstructions(artifactInstructions: ArtifactInstructions): void {
     if (this._json) {
-      const { schemaName, changeName, changeDirPath, artifact } = artifactInstructions;
+      const { schemaName, changeName, changeDirPath, projectContext, artifact } =
+        artifactInstructions;
       const { id, description, dependencies, generates, instruction, template, dependents } =
         artifact;
       const missingDependencies = dependencies.filter((d) => d.done === false).map((d) => d.id);
@@ -182,6 +183,7 @@ export class ArtifactInstructionsCommand {
             id,
             change: changeName,
             schema: schemaName,
+            projectContext,
             warning:
               missingDependencies.length > 0
                 ? {
@@ -212,10 +214,19 @@ export class ArtifactInstructionsCommand {
       return;
     }
 
-    const { schemaName, changeName, changeDirPath, artifact } = artifactInstructions;
+    const { schemaName, changeName, changeDirPath, projectContext, artifact } =
+      artifactInstructions;
     const { id, description, dependencies, generates, instruction, template, dependents } =
       artifact;
     const outputPath = path.join(changeDirPath, generates);
+
+    // Project context (precedes <artifact> so the agent reads it first)
+    if (projectContext) {
+      console.log("<project_context>");
+      console.log(projectContext);
+      console.log("</project_context>");
+      console.log();
+    }
 
     // Opening tag
     console.log(`<artifact id="${id}" change="${changeName}" schema="${schemaName}">`);

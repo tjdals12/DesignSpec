@@ -143,6 +143,7 @@ export function getApplyChangeSkillTemplate(): SkillTemplate {
     **Guardrails**
     - Always read every file in \`contextFiles\` before starting implementation. The page and component design files (\`pages/*.md\`, \`components/*.md\`) are the contract — do not improvise UI decisions that conflict with them.
     - Use \`contextFiles\` from CLI output as authoritative — don't assume specific file names.
+    - The \`<project_context>\` block in the CLI output is project-wide guidance for YOU (visual personality, conventions, references). Follow it while writing code, but do NOT copy the block itself into any file.
     - Update the task checkbox in \`tasks.md\` immediately after completing each task. Do not batch checkbox updates.
     - Match the exact task line when toggling \`- [ ]\` → \`- [x]\` so the parser keeps progress in sync.
     - Keep code changes minimal and scoped to each task.
