@@ -66,7 +66,7 @@ export function getArchiveChangeSlashCommand(): SlashCommandTemplate {
          - If sync is needed: "Sync now (recommended)", "Archive without syncing"
          - If already in sync: "Archive now", "Sync anyway", "Cancel"
 
-         If the user chooses sync, use the **Skill tool** to invoke \`designspec-sync-specs\` for this change. Pass along the spec analysis summary so the sync skill has context. Proceed to archive after sync completes (regardless of sync outcome).
+         If the user chooses sync, use the **Task tool** (subagent_type: "general-purpose", prompt: "Use Skill tool to invoke designspec-sync-specs for change '<name>'. Spec analysis: <include the analyzed spec summary>"). Proceed to archive after the Task completes, regardless of sync outcome.
 
       5. **Perform the archive**
 
@@ -160,7 +160,7 @@ export function getArchiveChangeSlashCommand(): SlashCommandTemplate {
       - Don't block archive on warnings — just inform and confirm.
       - Preserve \`.design-spec.yaml\` when moving to archive (it moves with the directory).
       - Show a clear summary of what happened.
-      - If sync is requested, use the **Skill tool** to invoke \`designspec-sync-specs\` (agent-driven).
+      - If sync is requested, use the **Task tool** (subagent) to invoke \`designspec-sync-specs\` — never use Skill tool directly, as it prevents the archive from continuing after sync.
       - If spec artifacts exist, always run the sync assessment and show the combined summary before prompting.
       - REMOVE of pages or components is not handled by sync. If the user mentions removals, instruct them to handle it manually after archive.
     `,
