@@ -194,7 +194,7 @@ export function getStyleInitSkillTemplate(): SkillTemplate {
 
     Topics: \`Swap\`, \`Squint\`, \`Signature\`, \`Token\`. Use \`[Phase 6 — Check K/4: TestName]\`.
 
-    Before saving, run these 4 checks against the decisions made in Phases 1–5. For each check, state the test, apply it honestly to the current system, report pass or fail, and if it fails, ask the user whether to revisit a specific earlier decision.
+    Before saving, run these 4 checks against the decisions made in Phases 1-5. For each check, state the test, apply it honestly to the current system, report pass or fail, and if it fails, ask the user whether to revisit a specific earlier decision.
 
     Do not skip checks. Do not rubber-stamp. The point of this phase is to catch defaults that slipped in.
 
