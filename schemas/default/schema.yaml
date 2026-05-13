@@ -20,6 +20,15 @@ artifacts:
       Per-page Purpose / Displayed Information / Actions / Layout / States belong in `pages/*.md`.
       Per-component Role / Displayed Information / Actions / Layout / States belong in `components/*.md`.
       The page-component inventory belongs in `screens.md`.
+
+      ## Out of scope
+
+      Do NOT include:
+      - API endpoints, request/response shape, data fetching
+      - MSW handlers, query-library setup
+      - Backend field names — use UI vocabulary
+      - Operational policy values (specific thresholds, limits, windows)
+      - Implementation paths (paths belong only in `tasks.md`)
     requires: []
 
   - id: screens
@@ -68,6 +77,15 @@ artifacts:
       - Writing per-page details (Layout, States, etc.) here. Those belong in the per-artifact files.
       - Adding a `Used by` field to Shared Components. Stay one-way.
       - Treating the initial Shared Components list as final. Components are an emergent abstraction — expect the list to be refined later.
+
+      ## Out of scope
+
+      Do NOT include:
+      - API endpoints, request/response shape, data fetching
+      - MSW handlers, query-library setup
+      - Backend field names — use UI vocabulary
+      - Operational policy values (specific thresholds, limits, windows)
+      - Implementation paths (paths belong only in `tasks.md`)
     requires:
       - proposal
 
@@ -90,7 +108,7 @@ artifacts:
       - **Layout**: Two required subsections.
         - **Description**: Short prose on the page-level arrangement of sections, information, and actions. Examples: "top area with title and primary 'Create' action", "filter bar above the list", "main content split into a left sidebar and right detail pane". Do NOT go deep into visual styling, and do NOT describe component internals here (those belong in `components/*.md`).
         - **Wireframe**: ASCII wireframe in a fenced code block that captures the page structure. The wireframe is what external design tools and the implementing agent rely on to reproduce the intent — give as much information as possible at this fidelity. Conventions: use box-drawing characters (`┌ ┐ └ ┘ │ ─ ├ ┤ ┬ ┴`), label elements in brackets (`[Page Title]`, `[Primary Action]`, `[Item Row]`), use `…` or repeated rows for repetition, and annotate dynamic regions briefly when helpful (e.g., `[Item Row] (loading)`, `[Empty State]`). Stay at page scale — do NOT draw component internals; refer to components by name (e.g., `[space-form]`). The wireframe captures arrangement and density, NOT pixel-perfect styling, exact dimensions, colors, or fonts.
-      - **States**: Bullet list of states the page must handle. Include only states that affect what the user sees on this page. Examples: `default`, `loading`, `empty`, `error`, `success`, `read-only`, `permission restricted`. If a state is not relevant for this page, do not force it in.
+      - **States**: Bullet list of states the page must handle. Include only states that affect what the user sees on this page. Examples: `default`, `loading`, `empty`, `error`, `success`, `read-only`, `permission-restricted`. Use UI-perspective names — avoid backend phrasings like "fetch failed" or "API error"; rephrase as `error`, `partial-error`, `no-results`. If a state is not relevant for this page, do not force it in.
       - **Notes**: Optional page-specific constraints or reminders that should not be missed when designing or implementing this page. Examples: "reuses an existing table pattern", "destructive actions should not be exposed as primary actions", "only visible to admins". Leave empty if there is nothing important to add.
 
       Cross-references:
@@ -103,10 +121,18 @@ artifacts:
 
       Common pitfalls:
       - Describing component internals (e.g., "the form has a name input, a description textarea, and a submit button"). Move that to the component's file.
-      - Listing implementation details (API fields, data types, state management). Keep this layer focused on what the user sees and does.
       - Forcing every page to have every state. Only include states that genuinely apply to this page.
       - Using `Notes` to repeat `Purpose`. Notes is for information that does NOT fit anywhere else.
       - Creating a `pages/<name>.md` for a page that is not listed in `screens.md`. Add it to `screens.md` first.
+
+      ## Out of scope
+
+      Do NOT include:
+      - API endpoints, request/response shape, data fetching
+      - MSW handlers, query-library setup
+      - Backend field names — use UI vocabulary
+      - Operational policy values (specific thresholds, limits, windows) — describe the rule, not the number
+      - Implementation paths (paths belong only in `tasks.md`)
 
       Keep each section focused. The goal is a clear, scannable contract that the agent can follow without making arbitrary decisions.
     requires:
@@ -141,7 +167,7 @@ artifacts:
       - **Layout**: Required `Description` subsection, optional `Wireframe` subsection.
         - **Description**: Short prose on how the component is structured internally — the arrangement of its own content, information, and actions. Examples: "label on top, input below, helper text aligned right", "icon + label + count, in a single row", "header / body / footer with the primary action in the footer". Do NOT describe the full page layout here. Do NOT go deep into visual styling unless the structure depends on it.
         - **Wireframe** (optional): ASCII wireframe in a fenced code block when the structure is not self-evident from Description. Use the same conventions as page wireframes (box-drawing characters, bracketed labels, `…` for repetition, brief state annotations) but stay at component scope — do NOT draw the surrounding page. Skip (omit) this subsection entirely for components whose structure is obvious from the prose (e.g., a single-element badge). When a component has both a default and a meaningful alternate state structure, draw the default and annotate the variant inline rather than producing multiple wireframes.
-      - **States**: Bullet list of states this component must handle. Include only states that affect what the user sees in this component. Examples: `default`, `loading`, `empty`, `error`, `disabled`, `read-only`, `expanded`, `collapsed`. If a state is not relevant, do not force it in.
+      - **States**: Bullet list of states this component must handle. Include only states that affect what the user sees in this component. Examples: `default`, `loading`, `empty`, `error`, `disabled`, `read-only`, `expanded`, `collapsed`. Use UI-perspective names — avoid backend phrasings like "fetch failed" or "API error"; rephrase as `error`, `partial-error`, `no-results`. If a state is not relevant, do not force it in.
       - **Notes**: Optional component-specific constraints or reminders that should not be missed when designing or implementing this component. Examples: "reused across multiple pages — keep action order consistent", "should not expose destructive actions directly", "must work in both create and edit contexts". Leave empty if there is nothing important to add.
 
       Cross-references:
@@ -153,9 +179,17 @@ artifacts:
       - Extracting a component that is only used in one place and has no clear standalone responsibility. When in doubt, keep it inlined in the page.
       - Updating `components/*.md` and `screens.md` but forgetting to update `pages/*.md` to reference the new components. Pages must stay consistent with the final component list.
       - Describing the whole page that the component lives in (e.g., "this form is on the create page, which has a header and a sidebar"). Stay scoped to the component.
-      - Listing implementation details (props, internal state hooks, API wiring). Keep this layer focused on what the user sees and does.
       - Adding a `Used by` field. The reference is one-way (page → component) by design.
       - Forcing every component to have every state. A `space-status-badge` may only need `default` and a couple of variant states; a form needs more.
+
+      ## Out of scope
+
+      Do NOT include:
+      - API endpoints, request/response shape, data fetching
+      - MSW handlers, query-library setup
+      - Backend field names — use UI vocabulary
+      - Operational policy values (specific thresholds, limits, windows) — describe the rule, not the number
+      - Implementation paths (paths belong only in `tasks.md`)
 
       Keep each component file short enough to read in one screen, and clear enough that the same component renders identically on every page that uses it.
     requires:
@@ -216,12 +250,20 @@ artifacts:
       ## 3. Integration
 
       - [ ] 3.1 Add routes for the new pages in `src/router.tsx`
-      - [ ] 3.2 Wire up data fetching in `src/api/spaces.ts` and consume from list/detail pages
-      - [ ] 3.3 Add a `Spaces` entry to `src/components/Sidebar/Sidebar.tsx`
-      - [ ] 3.4 Run `pnpm run lint && pnpm run format` and verify the create → edit flow in a browser
+      - [ ] 3.2 Add a `Spaces` entry to `src/components/Sidebar/Sidebar.tsx`
+      - [ ] 3.3 Apply design tokens / fonts if missing in `src/styles/tokens.css`
+      - [ ] 3.4 Run `pnpm run lint && pnpm run format && pnpm run build`
+      - [ ] 3.5 Manual visual QA against the page wireframes (golden path + every documented state)
       ```
 
       Reference `pages/*.md` for what each page should do, `components/*.md` for what each component should do, and `proposal.md` for overall context.
+
+      ## Out of scope
+
+      Paths are required, but task descriptions stay design-implementation only. Do NOT include:
+      - Data fetching, API calls, MSW handlers, query libraries
+      - Backend field names or response shape
+      - Operational policy values
     requires:
       - pages
       - components
