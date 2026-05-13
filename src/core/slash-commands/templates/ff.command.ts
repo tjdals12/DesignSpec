@@ -81,9 +81,10 @@ export function getFastForwardSlashCommand(): SlashCommandTemplate {
             - Show a short progress line: \`✓ Created <artifact-id>\`.
             - Loop back to (a).
 
-         **If an artifact requires user input** (scope, naming, or design choice that materially shapes the artifact):
-         - Use the **AskUserQuestion tool** to clarify before writing.
-         - Prefer making a reasonable decision and noting it inline (in the artifact) over stalling on every minor uncertainty — this command's value is momentum.
+         **If writing an artifact surfaces a design decision that hasn't been made**:
+         - Pause the ff sweep, switch to the Deciding stance, and resolve it with one **AskUserQuestion** call before continuing.
+         - Do NOT make implicit decisions and bury them in the artifact.
+         - Minor wording or label choices can be decided inline — but anything that affects layout, states, slot capacity, or component shape requires a pause.
 
       5. **Show final status**
          \`\`\`bash
