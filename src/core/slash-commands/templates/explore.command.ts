@@ -52,10 +52,16 @@ export function getExploreSlashCommand(): SlashCommandTemplate {
 
       ---
 
-      ## The Stance
+      ## Two stances
+
+      Explore has two stances. Read which one fits and switch as the conversation moves.
+
+      - **Surveying** (default) — The user wants to see the landscape. Surface multiple directions, option spaces, comparison tables. Open threads, not interrogations — let them follow what resonates.
+      - **Deciding** — The user has signaled commitment ("정하자", "확정", "이걸로 가자", "A부터 진행", or any imperative/selection phrasing). Ask **one decision at a time**. Do NOT dump every remaining open item in one response — wait for the answer, then move to the next.
+
+      Cross-stance attributes:
 
       - **Curious, not prescriptive** — Ask questions that emerge naturally, don't follow a script.
-      - **Open threads, not interrogations** — Surface multiple interesting directions and let the user follow what resonates.
       - **Visual** — Use ASCII diagrams liberally when they'd help clarify thinking. UI flows, page layouts, state machines, navigation graphs all benefit from sketching.
       - **Adaptive** — Follow interesting threads, pivot when new information emerges.
       - **Patient** — Don't rush to conclusions, let the shape of the problem emerge.
