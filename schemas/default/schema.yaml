@@ -29,6 +29,17 @@ artifacts:
       - Backend field names — use UI vocabulary
       - Operational policy values (specific thresholds, limits, windows)
       - Implementation paths (paths belong only in `tasks.md`)
+
+      ## Decisions, not deferrals
+
+      Each line must record a DECISION. Forbidden phrasings: "TBD", "later", "needs review", "to be decided", "to confirm", "to discuss", "next variant".
+
+      If something genuinely falls outside this artifact, use one explicit form:
+      - "out of design scope" — e.g., operational policy
+      - "deferred to a named successor change"
+      - "delegated to a named component"
+
+      Anything else means the decision should be made before sealing.
     requires: []
 
   - id: screens
@@ -134,6 +145,17 @@ artifacts:
       - Operational policy values (specific thresholds, limits, windows) — describe the rule, not the number
       - Implementation paths (paths belong only in `tasks.md`)
 
+      ## Decisions, not deferrals
+
+      Each line — especially in Notes — must record a DECISION. Forbidden phrasings: "TBD", "later", "needs review", "to be decided", "to confirm", "to discuss", "next variant".
+
+      If something genuinely falls outside this artifact, use one explicit form:
+      - "out of design scope" — e.g., operational policy
+      - "deferred to a named successor change"
+      - "delegated to a named component"
+
+      Anything else means the decision should be made before sealing.
+
       Keep each section focused. The goal is a clear, scannable contract that the agent can follow without making arbitrary decisions.
     requires:
       - screens
@@ -190,6 +212,17 @@ artifacts:
       - Backend field names — use UI vocabulary
       - Operational policy values (specific thresholds, limits, windows) — describe the rule, not the number
       - Implementation paths (paths belong only in `tasks.md`)
+
+      ## Decisions, not deferrals
+
+      Each line — especially in Notes — must record a DECISION. Forbidden phrasings: "TBD", "later", "needs review", "to be decided", "to confirm", "to discuss", "next variant".
+
+      If something genuinely falls outside this artifact, use one explicit form:
+      - "out of design scope" — e.g., operational policy
+      - "deferred to a named successor change"
+      - "delegated to a named component"
+
+      Anything else means the decision should be made before sealing.
 
       Keep each component file short enough to read in one screen, and clear enough that the same component renders identically on every page that uses it.
     requires:
