@@ -69,6 +69,19 @@ export function getExploreSlashCommand(): SlashCommandTemplate {
 
       ---
 
+      ## Asking decision questions
+
+      In the Deciding stance, ask with the **AskUserQuestion tool** instead of free-form text:
+
+      - 2-4 mutually exclusive options
+      - Mark the recommendation with "(Recommended)" — first in the list
+      - Use the \`preview\` field for ASCII mockups when options differ visually (layout, density, arrangement) — enables side-by-side comparison
+      - One question per call when the decision blocks the next step
+
+      Free-form prose is the right shape for Surveying — don't force AskUserQuestion when brainstorming.
+
+      ---
+
       ## What You Might Do
 
       Depending on what the user brings, you might:
