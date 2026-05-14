@@ -5,297 +5,338 @@ export function getStyleInitSlashCommand(): SlashCommandTemplate {
   return {
     name: "DesignSpec: Style Init",
     description:
-      "Initialize the project's style system — guide through visual personality, tokens, and component patterns, then save to design-spec/styles/style.md.",
+      "Initialize the project's style system by deriving tokens and patterns from reference products you like — saved to design-spec/styles/style.md.",
     category: "Workflow",
     tags: ["workflow", "style", "design-system", "tokens"],
     instructions: dedent`
-      Initialize the project's style system. Guide the user through intentional design decisions and save the result to \`design-spec/styles/style.md\`.
+      Initialize the project's style system by deriving design tokens and component patterns from reference products the user knows and likes. Save the result to \`design-spec/styles/style.md\`.
 
-      **This is a structured conversation, not a form to fill out.** Each decision must emerge from genuine reasoning about this specific product — not from defaults, templates, or "common practice."
+      **Method.** This command runs as **assistant proposes → user reacts**. The user gives a short product brief and a feel; the assistant proposes references; the user picks 1–2; the assistant derives every downstream token and pattern from those references and asks the user to confirm or adjust.
+
+      Never ask the user to generate abstract design vocabulary from a blank prompt (metaphors, "signature elements", "defaults to reject", "physical objects in this domain"). The chosen references do that work.
 
       ---
 
       ## Asking Style (read this first)
 
-      **Ask exactly ONE question per turn. Wait for the user's answer. Then ask the next.**
+      Every **decision question** has these four properties:
 
-      Each phase is organized by **topics**, not by question count. A topic might take 1 question or 5 — whatever it takes to nail down. The progress marker reflects topics, not questions.
+      1. One question per turn. Never bundled.
+      2. 2–4 named options, mutually exclusive.
+      3. Exactly one option marked as the recommendation. The recommendation must trace to an earlier answer (brief, feel, or chosen references). Never random.
+      4. An "Other" escape so the user can override with a free answer.
 
-      - Never bundle multiple questions in one message.
-      - Never present a list of questions and expect the user to answer all of them at once.
-      - **Show progress on every question.** Prefix each question with a topic-based marker so the user knows where they are. Format: \`[Phase N — Topic K/total: TopicName]\`. Example: \`[Phase 1 — Topic 2/3: What]\`. For open-ended phases (Phase 5), use \`[Phase 5 — TopicName]\` without K/total.
-      - **The marker tracks topic, not question.** If the user's answer is vague and you ask a follow-up on the same topic, the marker stays the same. The marker only advances when you genuinely move to the next topic.
-      - **Don't rush topics.** Move on only when the current topic is genuinely clear. If 3 questions are needed to make WHO concrete, ask 3 — don't move on at question 1 just because there are more topics.
-      - The bullet points under each topic are **probes** — follow-ups you can use ONLY if the user's first answer is vague. Use one probe at a time, never the whole list.
-      - After each answer, briefly reflect what you heard (one line) before asking the next question.
+      **Use the \`AskUserQuestion\` tool for every decision question.** Call it with:
+
+      - \`question\` — the question text, prefixed with the phase marker (see below).
+      - \`options\` — 2–4 entries with \`label\` and \`description\`. Put the recommended option **first** in the array and suffix its \`label\` with \`" (Recommended)"\`.
+      - \`header\` — short label, ≤12 chars (e.g. "Reference", "Palette", "Depth").
+      - \`multiSelect: true\` — only for "pick many" prompts (e.g. which atoms to define). Otherwise omit.
+
+      The tool renders the options as a picker UI and automatically adds an "Other" choice — you do not need to add it yourself.
+
+      **If \`AskUserQuestion\` is not in your tool list** (you are running outside Claude Code), you cannot call the tool. In that case, produce the same effect as a text message. \`AskUserQuestion\` is Claude Code's built-in tool for structured multiple-choice questions: it shows the user a question, a small set of named options with one marked as Recommended, and always lets them write a free-form "Other" answer. To reproduce that effect as text, render the decision question in exactly this format:
+
+      \`\`\`
+      [Phase N — TopicName] [Question text]
+
+      (A) [Option label] — Recommended. [One-line reason tied to earlier answers]
+      (B) [Option label] — [One-line note]
+      (C) [Option label] — [One-line note]
+      (D) Other — describe your own
+      \`\`\`
+
+      The user replies with the letter (A/B/C) or types a free-form override. This is the fallback path only — when \`AskUserQuestion\` is available, use the tool, not the text format.
+
+      **Free-text questions** (brief, feel, "what to adjust" follow-ups) don't use the decision-question form — just ask in plain prose.
+
+      **Phase marker.** Every decision question begins with \`[Phase N — TopicName]\` (e.g., \`[Phase 2 — Reference Source]\`). If a follow-up is on the same topic, keep the same marker.
+
+      **After each free-text answer, reflect in one short line** what you heard before moving on. For decision-question (multiple-choice) answers, skip the reflection unless the user picked "Other" or there's something specific worth confirming — echoing their pick verbatim is noise.
+
+      **Web tools.** If \`WebSearch\` / \`WebFetch\` are available, use them only to (a) find reference candidates and (b) confirm a URL resolves. Do **not** scrape CSS, fonts, or color values from reference sites. Existing knowledge of well-known brands is the primary signal. If web tools aren't available, propose references from existing knowledge.
 
       ---
 
       ## Step 0: Check Existing System
-
-      Before anything else:
 
       \`\`\`bash
       cat design-spec/styles/style.md 2>/dev/null
       \`\`\`
 
       **If the file exists:**
-      - Show a summary of the current system (Direction, key tokens)
-      - Ask: "A style system already exists. Do you want to review it, update specific decisions, or start fresh?"
-      - Honor what the user says. Don't overwrite without confirmation.
+      - Show a one-paragraph summary (direction, key tokens, defined patterns).
+      - Decision question \`[Phase 0 — Existing]\`:
+        - Question: "A style system already exists. What do you want to do?"
+        - Options: "Review the current system" (Recommended) / "Update specific decisions" / "Start over from scratch"
+      - Honor the choice. Never overwrite without explicit confirmation.
 
       **If the file does not exist:**
-      - Announce the plan in topic terms: "We'll go through 6 phases plus a save step. Phase 1 (Intent) covers 3 topics, Phase 2 (Domain) covers 4, Phase 3 is a direction proposal, Phase 4 (Tokens) covers 6, Phase 5 (Component patterns) is open-ended, Phase 6 (Self-check) runs 4 quality checks before saving. Each topic takes as many questions as it needs to be clear — I'll show topic progress on every question."
-      - Then proceed with Phase 1.
+      - Announce the plan in one short paragraph: "I'll ask you to describe the product in 1–2 sentences and give one phrase about how it should feel. Then we'll pick 1–2 reference products to anchor the visual direction — I can suggest candidates if you want. From those references I'll propose tokens and component defaults as multiple-choice questions with a recommendation. The whole flow is about 10 questions."
+      - Proceed to Phase 1.
 
       ---
 
-      ## Phase 1: Intent
+      ## Phase 1: Brief & Feel
 
-      Topics: \`Who\`, \`What\`, \`Feeling\`. Use \`[Phase 1 — Topic K/3: TopicName]\` as the progress marker.
+      ### Topic 1: Brief (free text)
 
-      Do not guess. Do not default. Each topic must be concrete before moving to the next. If the user's answer is vague, stay on the topic and probe further.
+      Marker: \`[Phase 1 — Brief]\`.
 
-      ### Topic 1: Who is this human?
+      Ask: "Describe this product in 1–2 sentences. What does it do, and roughly who uses it?"
 
-      Not "users." The actual person.
+      Reflect one line. Move on.
 
-      A teacher grading at 7am is a different human than a developer debugging at midnight.
+      ### Topic 2: Feel (free text with examples)
 
-      Probes (one at a time, only if vague):
-      - Where are they when they open this?
-      - What's on their mind right before they open it?
-      - What device, what context, what emotional state?
+      Marker: \`[Phase 1 — Feel]\`.
 
-      ### Topic 2: What must they accomplish?
+      Ask: "In one short phrase, how should using this product feel? Concrete examples — 'dense like a trading floor', 'calm like a paper notebook', 'sharp like a terminal', 'warm like a stationery store'."
 
-      Not "use the app." The verb.
+      If the answer is vague ("clean", "modern", "professional"), push back once: "Those words fit any product. Can you anchor it to something concrete — a physical object, a tool, a place?"
 
-      Probes (one at a time, only if vague):
-      - What single action are they completing?
-      - What does success look like for them?
-      - What does failure cost them?
-
-      ### Topic 3: What should this feel like?
-
-      Concrete words with meaning. Not "clean and modern."
-
-      Counts: "Warm like a notebook." "Cold like a terminal." "Dense like a trading floor."
-      Doesn't count: "Clean." "Modern." "Professional."
-
-      Probes (one at a time, only if vague):
-      - Warm like a notebook? Cold like a terminal?
-      - Dense like a trading floor? Airy like a health app?
-      - Playful like a consumer product? Serious like a bank?
+      Reflect one line. Move on.
 
       ---
 
-      ## Phase 2: Domain Exploration
+      ## Phase 2: References
 
-      Topics: \`Concepts\`, \`Colors\`, \`Signature\`, \`Defaults to reject\`. Use \`[Phase 2 — Topic K/4: TopicName]\`.
+      ### Topic 1: How to source references
 
-      This is where direction emerges. Each topic requires genuine exploration — not a quick list. Push back on shallow answers and stay on the topic until it's substantial.
+      Marker: \`[Phase 2 — Reference Source]\`. Decision question:
 
-      ### Topic 1: Domain concepts (5 minimum)
+      - Question: "How do you want to pick the visual references?"
+      - Options:
+        - "Suggest candidates I can pick from" (Recommended) — assistant proposes 3–4 options
+        - "I'll name them myself" — user types names or URLs
+        - "Skip references, use only the feel description" — fastest, less coherent downstream
 
-      "List at least 5 concepts, metaphors, or vocabulary from this product's world. Not features — territory."
+      ### Topic 2a — Branch: "Suggest candidates"
 
-      Probes (one at a time, only if vague):
-      - What language do people in this field use day-to-day?
-      - What physical objects exist in this domain?
-      - What mental models do users bring from outside the app?
+      Marker: \`[Phase 2 — Candidates]\`.
 
-      ### Topic 2: Color world (5 minimum)
+      1. Derive 3–4 candidate products from the brief + feel. Mix them:
+         - 1 candidate from the same product category as the brief (a peer/competitor)
+         - 2–3 candidates that match the *feel* but come from different categories (e.g., Linear, Bloomberg, Notion, Mercury, Vercel, Stripe — whatever fits the feel)
+      2. If \`WebSearch\` is available, run a search to validate the candidates exist and refine the list. Use \`WebFetch\` only to confirm a URL resolves — do not extract design tokens from the page.
+      3. Present as a decision question with \`multiSelect: true\`. Each option's \`label\` is the product name; each option's \`description\` is **one line explaining why it fits this brief**. Example: "Linear — calm SaaS register, line-based separation, similar density posture." Mark the strongest match with "(Recommended)".
+      4. The user picks **1–2** references. If they pick 3+, gently flag: "Picking 3+ references often produces conflicting tokens. Want to narrow to 2?" But honor their final choice.
 
-      "List at least 5 colors that exist naturally in this product's domain. Not brand colors — what would you see in the physical version of this thing?"
+      ### Topic 2b — Branch: "I'll name them myself"
 
-      Probes (one at a time, only if vague):
-      - What materials, environments, or objects define this domain?
-      - What emotional register do those colors carry?
+      Marker: \`[Phase 2 — User References]\`. Ask in free text: "Type 1–2 product names or URLs whose visual feel you want to borrow."
 
-      ### Topic 3: Signature element (1)
+      For each, confirm familiarity. If unfamiliar, use \`WebFetch\` (if available) to confirm the URL resolves, then ask the user to describe its feel in one line so there's an anchor.
 
-      "Name one element — visual, structural, or interaction — that could ONLY exist for this product. Not a generic design pattern."
+      ### Topic 2c — Branch: "Skip references"
 
-      Probes (one at a time, only if vague):
-      - What metaphor from the domain could become a UI element?
-      - What interaction would feel native to how users think?
-
-      ### Topic 4: Defaults to reject (3)
-
-      "Name 3 obvious choices for this interface type — visual or structural — that you want to reject. You can't avoid patterns you haven't named."
+      Move on. Downstream recommendations will be derived from the feel description alone.
 
       ---
 
-      ## Phase 3: Direction Proposal
+      ## Phase 3: Direction Synthesis
 
-      No questions here. You synthesize. Show your reasoning in this format:
+      Marker: \`[Phase 3 — Direction]\`. No new question yet. Write the direction in this exact shape:
 
       \`\`\`
-      Domain: [concepts from exploration that shaped this]
-      Color world: [colors that exist in this domain]
-      Signature: [one element specific to this product]
-      Rejecting: [default 1] → [alternative], [default 2] → [alternative], [default 3] → [alternative]
+      Brief:      [echo from Phase 1]
+      Feel:       [echo from Phase 1]
+      References: [list, one line per reference noting what trait will be borrowed]
 
-      Direction: [approach that connects the above]
+      Direction:  [2–3 sentences synthesizing the above. Be concrete: name the color
+                  world, the density posture, the typographic register, the depth
+                  strategy. This becomes the north star for every later token.]
       \`\`\`
 
-      Then ask: "Does that direction feel right?"
+      If Phase 2c was chosen (skip references), omit the \`References\` line and rely on \`Feel\` as the sole anchor — call this out explicitly in the Direction sentences.
 
-      Wait for confirmation. If they redirect, update the direction and ask again. Do not move to Phase 4 until confirmed.
+      Then a decision question:
+
+      - Question: "Does this direction match what you want?"
+      - Options: "Yes, continue" (Recommended) / "Adjust one thing" / "Try a different direction"
+
+      If "Adjust", ask what to change in free text and rewrite the Direction block, then re-ask. If "Different", go back to Phase 1/2 as directed.
+
+      Do not move to Phase 4 until the direction is confirmed.
 
       ---
 
-      ## Phase 4: Token Decisions
+      ## Phase 4: Tokens
 
-      Topics: \`Palette\`, \`Depth\`, \`Surfaces\`, \`Typography\`, \`Spacing\`, \`Radius\`. Use \`[Phase 4 — Topic K/6: TopicName]\`.
+      For each topic, every recommendation must be derived from the chosen references (or the feel, if Phase 2c was chosen). State the source in the one-line reason.
 
-      For each topic, get both the value AND the reason it fits the direction. Each answer must connect back to Phase 1 (the user, the task, the feeling) or Phase 2 (the domain).
+      ### Topic 1: Palette — propose-and-confirm
 
-      ### Topic 1: Palette
+      Marker: \`[Phase 4 — Palette]\`. Propose one palette in a code block:
 
-      "What are the foreground, secondary, muted, faint, and accent colors? For each, why does it fit?"
+      \`\`\`
+      --foreground: [value]   — [one-line reason]
+      --secondary:  [value]   — [reason]
+      --muted:      [value]   — [reason]
+      --faint:      [value]   — [reason]
+      --accent:     [value]   — [reason]
+      \`\`\`
 
-      (You may guide by proposing a starting palette derived from Phase 2's color world, but the user confirms each value.)
+      Decision question:
 
-      ### Topic 2: Depth strategy
+      - Question: "Use this palette?"
+      - Options: "Yes, use as proposed" (Recommended) / "Adjust specific colors" / "Different palette entirely"
 
-      "Borders-only, subtle shadows, or layered shadows? Why does that fit the direction?"
+      If "Adjust", ask in free text which colors and iterate. If "Different", propose another palette anchored differently and repeat.
 
-      ### Topic 3: Surfaces
+      ### Topic 2: Depth — discrete choice
 
-      "What background layers and elevation scale? Why?"
+      Marker: \`[Phase 4 — Depth]\`. Decision question:
 
-      ### Topic 4: Typography
+      - Question: "Depth strategy?"
+      - Options derived from references. Example shape:
+        - "Borders only (1px lines, zero shadow)" — mark Recommended if references favor it
+        - "Subtle shadows on raised surfaces"
+        - "Layered shadows for clear elevation"
 
-      "Which typeface, and at what scale and weights? Why this one and not the system default?"
+      ### Topic 3: Surfaces — discrete choice
 
-      ### Topic 5: Spacing
+      Marker: \`[Phase 4 — Surfaces]\`. Decision question:
 
-      "Base unit (4px or 8px) and scale? Why?"
+      - Question: "How many background layers?"
+      - Options: "1 layer (flat)" / "2 layers (paper + sheet)" / "3 layers (with raised modals)" — one Recommended based on references.
 
-      ### Topic 6: Radius
+      ### Topic 4: Typography — propose-and-confirm
 
-      "Sharp, soft, or rounded? What does it say about the product?"
+      Marker: \`[Phase 4 — Typography]\`. Propose 2–3 pairings. For each: name the typefaces and the signal they carry ("Inter + JetBrains Mono — neutral SaaS body, mono for tabular numbers").
+
+      Decision question:
+
+      - Question: "Which typography pairing?"
+      - Options: 2–3 named pairings (one Recommended)
+
+      After the pick, ask in free text: "Base size and weight set?" Propose values (e.g., "13px base, weights 400/500/600") and confirm.
+
+      ### Topic 5: Spacing base — discrete choice
+
+      Marker: \`[Phase 4 — Spacing]\`. Decision question:
+
+      - Question: "Spacing base unit?"
+      - Options: "4px (compressed scale)" / "8px (relaxed scale)" — one Recommended (4px for dense feels, 8px for airy feels)
+
+      ### Topic 6: Radius — discrete choice
+
+      Marker: \`[Phase 4 — Radius]\`. Decision question:
+
+      - Question: "Corner radius posture?"
+      - Options: "Sharp (0–2px)" / "Soft (4–8px)" / "Rounded (12px+)" — one Recommended based on references.
 
       ---
 
       ## Phase 5: Component Patterns
 
-      Open-ended. Use \`[Phase 5 — ComponentName]\` as the marker — the topic is the component currently being defined. The user decides when to stop.
+      ### Topic 1: Which atoms (multi-select)
 
-      Start by asking which components matter most for this product. Then for each one the user names, ask one at a time:
+      Marker: \`[Phase 5 — Atoms]\`. Decision question with \`multiSelect: true\`:
 
-      "For [component], what are the height, padding, radius, font (size + weight), and any domain-specific behavior? And why does it fit the direction?"
+      - Question: "Which atoms do you need defined now? You can add more later."
+      - Options (offer up to 4 per call; present in two passes if more are needed): Button, Input, Card, Badge, Modal, Nav, Page Container. Mark **Button**, **Input**, **Card** as Recommended baseline.
 
-      Don't push to enumerate every possible component. Stop when the user says they have enough.
+      ### Topic 2: Per-atom defaults
+
+      For each selected atom, marker becomes \`[Phase 5 — <AtomName>]\`. Propose a default block:
+
+      \`\`\`
+      [Atom name]
+        Height:  [value]
+        Padding: [value]
+        Radius:  [value, from Phase 4 / Radius]
+        Font:    [size, weight from Phase 4 / Typography]
+        States:  [default / hover / disabled — or whatever is relevant]
+      \`\`\`
+
+      Decision question:
+
+      - Question: "Use these defaults for [Atom]?"
+      - Options: "Yes" (Recommended) / "Adjust specific values" / "Skip this atom"
+
+      Don't push to enumerate every possible component. Stop when the selected atoms are covered.
 
       ---
 
-      ## Phase 6: Self-check (The Mandate)
+      ## Phase 6: Self-check (Token test only)
 
-      Topics: \`Swap\`, \`Squint\`, \`Signature\`, \`Token\`. Use \`[Phase 6 — Check K/4: TestName]\`.
+      Marker: \`[Phase 6 — Token Check]\`. Run only one check before saving.
 
-      Before saving, run these 4 checks against the decisions made in Phases 1-5. For each check, state the test, apply it honestly to the current system, report pass or fail, and if it fails, ask the user whether to revisit a specific earlier decision.
+      Read the chosen color and token names. Do they belong to the product domain or the chosen reference's vocabulary, or are they entirely generic (\`--bg-1\`, \`--gray-500\`, \`--primary\`)?
 
-      Do not skip checks. Do not rubber-stamp. The point of this phase is to catch defaults that slipped in.
+      - **Pass:** Token names carry some domain or reference meaning (e.g., \`--ink\`, \`--paper\`, \`--lamp\`, \`--gridline\`). Proceed to Phase 7.
+      - **Fail:** Tokens are entirely generic. Decision question:
+        - Question: "Token names are generic and don't connect to the direction. Rename them?"
+        - Options: "Yes, propose domain-flavored names" (Recommended) / "Keep generic names" / "I'll rename manually"
 
-      ### Check 1: Swap test
-
-      "If we swapped the chosen typeface (\`[Phase 4 — Topic 4]\` value) for the system default, would anything meaningful about this system change?"
-
-      - **Pass**: The typeface carries domain meaning or feeling; swapping breaks the intent.
-      - **Fail**: The typeface is interchangeable with a default. → Offer to revisit Phase 4 / Typography.
-
-      ### Check 2: Squint test
-
-      "If a user blurred their vision, would the chosen depth strategy and surface elevation still preserve hierarchy without anything jumping harshly?"
-
-      - **Pass**: Borders/shadows/contrast are calibrated so hierarchy survives blur. Nothing screams.
-      - **Fail**: Harsh borders, dramatic surface jumps, or flat surfaces that lose hierarchy. → Offer to revisit Phase 4 / Depth or Surfaces.
-
-      ### Check 3: Signature test
-
-      "Where in the component patterns (Phase 5) does the signature element from Phase 2 actually appear? Name at least one concrete place."
-
-      - **Pass**: The signature appears in at least one defined pattern with specifics.
-      - **Fail**: The signature was named in Phase 2 but doesn't show up anywhere in the patterns. → Offer to revisit Phase 5 to add it, or Phase 2 to reconsider the signature.
-
-      ### Check 4: Token test
-
-      "Read the chosen color and token names out loud. Do they belong to this product's domain (Phase 2 vocabulary), or are they generic names that would fit any project?"
-
-      - **Pass**: Token names carry domain meaning (e.g., \`--ledger-bg\`, \`--ink\`, \`--parchment\`).
-      - **Fail**: Tokens are generic (\`--bg-1\`, \`--gray-500\`). → Offer to revisit Phase 4 / Palette naming.
-
-      ---
-
-      After all 4 checks, summarize:
-
-      \`\`\`
-      Self-check results:
-      - Swap: [pass | fail — reason]
-      - Squint: [pass | fail — reason]
-      - Signature: [pass | fail — reason]
-      - Token: [pass | fail — reason]
-      \`\`\`
-
-      If any failed, do not proceed to save until either (a) the user revisits and updates, or (b) the user explicitly accepts the failure with reasoning. Don't bypass silently.
+      Swap / Squint / Signature checks are intentionally dropped — the reference-driven flow makes them either redundant (Signature) or unverifiable in text (Swap, Squint).
 
       ---
 
       ## Phase 7: Save
 
-      Show the full system as a single confirmation block, then ask: "Save this to \`design-spec/styles/style.md\`?"
+      Marker: \`[Phase 7 — Save]\`. Show the full preview as a single block. Decision question:
 
-      On confirmation, create \`design-spec/styles/\` if it doesn't exist, then write:
+      - Question: "Save this to design-spec/styles/style.md?"
+      - Options: "Save" (Recommended) / "Revise something first" / "Cancel"
+
+      On Save, create \`design-spec/styles/\` if missing, then write:
 
       \`\`\`markdown
       # Style System
 
       ## Direction
 
-      **Personality:** [Precision & Density | Warmth & Approachability | Sophistication & Trust | Boldness & Clarity | Utility & Function | Data & Analysis]
-      **Foundation:** [warm | cool | neutral | tinted]
-      **Depth:** [borders-only | subtle-shadows | layered-shadows]
+      [2–3 sentence Direction block from Phase 3]
+
+      ## References
+
+      - [name] — [one-line note on what trait was borrowed]
+      - [name] — [one-line note]
 
       ## Tokens
+
+      ### Colors
+
+          --foreground: [value]
+          --secondary:  [value]
+          --muted:      [value]
+          --faint:      [value]
+          --accent:     [value]
+
+      ### Typography
+      Font: [name(s)]
+      Scale: [values]
+      Weights: [values]
 
       ### Spacing
       Base: [4px | 8px]
       Scale: [values]
 
-      ### Colors
-      \`\`\`
-      --foreground: [value]
-      --secondary: [value]
-      --muted: [value]
-      --faint: [value]
-      --accent: [value]
-      \`\`\`
-
       ### Radius
       Scale: [values]
 
-      ### Typography
-      Font: [name]
-      Scale: [values]
-      Weights: [values]
+      ### Depth
+      Strategy: [borders-only | subtle-shadows | layered-shadows]
+
+      ### Surfaces
+      Layers: [list]
 
       ## Patterns
 
-      ### [Component Name]
+      ### [Atom name]
       - Height: [value]
       - Padding: [value]
       - Radius: [value]
       - Font: [size, weight]
-      - Usage: [when and how]
+      - States: [list]
 
       ## Decisions
 
       | Decision | Rationale | Date |
       |----------|-----------|------|
-      | [decision] | [why] | [YYYY-MM-DD] |
+      | [decision] | [why, tied to brief/feel/reference] | [YYYY-MM-DD] |
       \`\`\`
 
       Confirm: "Style system saved to \`design-spec/styles/style.md\`. It will be injected into all future artifact generation."
@@ -304,17 +345,15 @@ export function getStyleInitSlashCommand(): SlashCommandTemplate {
 
       ## Guardrails
 
-      - **One question per turn** — Never bundle. Never list multiple questions in one message.
-      - **Always show topic progress** — Prefix every question with \`[Phase N — Topic K/total: TopicName]\` (or \`[Phase N — TopicName]\` for open-ended phases) so the user knows where they are.
-      - **Track topics, not question count** — Multiple questions on the same topic share the same marker. Advance the marker only when the topic is genuinely complete.
-      - **Don't rush to the next topic** — A topic can need 1, 3, or 5 questions. Stay until it's clear.
-      - **Probes are not new topics** — Bullets are follow-ups for vague answers within the current topic. Use one at a time, never the whole list.
-      - **Don't default** — Every choice must be explainable. "It's common" fails.
-      - **Don't rush** — This conversation sets the foundation. Spend time on it.
-      - **Don't fake specificity** — Vague answers (from the user or from you) need pushback.
-      - **Do connect decisions to intent** — Every token traces back to Phase 1 or Phase 2.
-      - **Do confirm before saving** — Show the full system before writing the file.
-      - **Do offer to extend later** — The system grows. Patterns can be added after the fact.
+      - **Propose, don't extract.** Give concrete options with a clear recommendation; don't make the user generate ideas from a blank prompt.
+      - **Every recommendation must trace to an earlier answer.** Brief → feel → references → tokens. Never recommend at random; always say one line of why.
+      - **One decision question per turn.** Use the \`AskUserQuestion\` tool. If it's not in your tool list, fall back to the text format defined in "Asking Style".
+      - **Show phase progress.** Prefix every decision question with \`[Phase N — TopicName]\`. Same marker for follow-ups on the same topic.
+      - **Free text only where it makes sense.** Brief, feel, and "what to adjust" follow-ups. Everything else is a decision question.
+      - **No abstract metaphor questions.** No "what physical objects in this domain", no "single signature element", no "defaults to reject". The references handle that.
+      - **Honor skip.** If the user chose "Skip references", don't try to backfill metaphors later — recommend from the feel description alone.
+      - **One reflection line per answer.** Show the answer was used; don't lecture.
+      - **Confirm before saving.** Always show the full preview block first.
     `,
   };
 }
