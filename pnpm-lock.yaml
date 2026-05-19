@@ -4,6 +4,9 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+overrides:
+  design-spec: 'link:'
+
 importers:
 
   .:
@@ -17,6 +20,9 @@ importers:
       dedent:
         specifier: ^1.7.2
         version: 1.7.2
+      design-spec:
+        specifier: 'link:'
+        version: 'link:'
       es-toolkit:
         specifier: ^1.46.0
         version: 1.46.0
