@@ -150,7 +150,10 @@ export class InitCommand {
     return deduped;
   }
 
-  // TODO
+  // TODO: Add interactive selection mode for `init` when --tools is not provided.
+  // Should list available tools and let the user pick, using `installedTools` and
+  // `toolStates` to pre-check agents that are already configured.
+  // Until then, this delegates to resolveTools(), which requires the --tools option.
   private async getSelectedToolIds(_args: {
     projectPath: string;
     extendMode: boolean;
