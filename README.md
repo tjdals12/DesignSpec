@@ -306,5 +306,3 @@ design-spec context [path]
 ## License
 
 Released under the MIT License. See [LICENSE](LICENSE) for the full text.
-
-The prompt templates are adapted from [OpenSpec](https://github.com/Fission-AI/OpenSpec).

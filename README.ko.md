@@ -306,5 +306,3 @@ design-spec context [path]
 ## License
 
 이 프로젝트는 MIT License로 배포됩니다. 전문은 [LICENSE](LICENSE)에서 확인할 수 있습니다.
-
-프롬프트 템플릿은 [OpenSpec](https://github.com/Fission-AI/OpenSpec)을 참고해 작성했습니다.
