@@ -1,4 +1,6 @@
-<h1 align="center">DesignSpec</h1>
+<p align="center">
+  <img src="assets/banner.webp" alt="DesignSpec" width="100%">
+</p>
 
 <p align="center">
   <a href="README.md">English</a> | <a href="README.ko.md">한국어</a>
