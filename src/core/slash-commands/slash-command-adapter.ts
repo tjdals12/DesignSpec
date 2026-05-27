@@ -1,4 +1,4 @@
-import type { SlashCommandTemplate } from "./slasn-command-template.js";
+import type { SlashCommandTemplate } from "./slash-command-template.js";
 
 export abstract class SlashCommandAdapter {
   abstract readonly toolId: string;

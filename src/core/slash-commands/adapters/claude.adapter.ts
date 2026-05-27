@@ -1,7 +1,7 @@
 import path from "node:path";
 
 import { SlashCommandAdapter } from "../slash-command-adapter.js";
-import type { SlashCommandTemplate } from "../slasn-command-template.js";
+import type { SlashCommandTemplate } from "../slash-command-template.js";
 import { SLASH_COMMAND_NAMESPACE } from "#core/config.js";
 import { escapeYamlValue, formatTagsArray } from "#utils/yaml.utils.js";
 import { isUndefined } from "es-toolkit/compat";

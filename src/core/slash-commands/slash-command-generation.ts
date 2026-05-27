@@ -1,5 +1,5 @@
 import type { CommandIds } from "../config.js";
-import type { SlashCommandTemplate } from "./slasn-command-template.js";
+import type { SlashCommandTemplate } from "./slash-command-template.js";
 import { getApplyChangeSlashCommand } from "./templates/apply-change.command.js";
 import { getArchiveChangeSlashCommand } from "./templates/archive-change.command.js";
 import { getContinueChangeSlashCommand } from "./templates/continue-change.command.js";

@@ -1,5 +1,5 @@
 import dedent from "dedent";
-import type { SlashCommandTemplate } from "../slasn-command-template.js";
+import type { SlashCommandTemplate } from "../slash-command-template.js";
 
 export function getArchiveChangeSlashCommand(): SlashCommandTemplate {
   return {
