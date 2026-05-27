@@ -106,7 +106,7 @@ export class InitCommand {
     const raw = isUndefined(this._tools) ? "" : this._tools.trim();
     if (isEmpty(raw)) {
       throw new Error(
-        'The --tools option requires a value. Use "all", "none", or a comma-seperated list of tool IDs',
+        'The --tools option requires a value. Use "all", "none", or a comma-separated list of tool IDs',
       );
     }
 
