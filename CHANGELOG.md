@@ -1,3 +1,10 @@
+# [1.0.0-next.4](https://github.com/tjdals12/DesignSpec/compare/v1.0.0-next.3...v1.0.0-next.4) (2026-05-28)
+
+
+### Bug Fixes
+
+* include dist, bin, schemas in published package ([b51c4fd](https://github.com/tjdals12/DesignSpec/commit/b51c4fd3120e7985ba340570ec1758fb3c04b5c2))
+
 # [1.0.0-next.3](https://github.com/tjdals12/DesignSpec/compare/v1.0.0-next.2...v1.0.0-next.3) (2026-05-28)
 
 
