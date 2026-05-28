@@ -22,7 +22,7 @@ It also locks in the visual style — color, spacing, typography — so screens 
 
 ## Getting Started
 
-**Requires Node.js 20 or higher.**
+**Requires Node.js 22.13 or higher.**
 
 Install DesignSpec globally:
 
