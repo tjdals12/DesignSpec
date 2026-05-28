@@ -1,0 +1,313 @@
+name: default
+version: 1
+description: Default DesignSpec workflow
+artifacts:
+  - id: proposal
+    generates: proposal.md
+    description: High-level overview of why this change is needed, what changes, and what is impacted from a UI/product perspective
+    template: proposal.md
+    instruction: |
+      Create the proposal document that establishes WHY this change is needed from a UI/product perspective.
+
+      This is the foundation — `screens.md`, `pages/*.md`, and `components/*.md` all build on it.
+
+      Sections:
+      - **Why**: 1-2 sentences on the UI or product problem this change solves. What is broken, missing, or unclear in the current experience? Frame it from the user's or product's perspective, not from a technical or implementation angle.
+      - **What Changes**: High-level bullet list of pages and shared components included in this change. Note which pages are new vs modified, and which shared components are new vs updated. Mark changes that remove or restructure existing user flows with **BREAKING**. Do not list per-page or per-component details here — those belong in later artifacts.
+      - **Impact**: What parts of the product are affected and who is affected. Examples: which user roles see the change, which existing flows are altered, which surfaces (web, mobile, admin) are touched.
+
+      Keep it concise (1 page is usually enough). Focus on the "why" and the "what at a high level".
+      Per-page Purpose / Displayed Information / Actions / Layout / States belong in `pages/*.md`.
+      Per-component Role / Displayed Information / Actions / Layout / States belong in `components/*.md`.
+      The page-component inventory belongs in `screens.md`.
+
+      ## Out of scope
+
+      Do NOT include:
+      - API endpoints, request/response shape, data fetching
+      - MSW handlers, query-library setup
+      - Backend field names — use UI vocabulary
+      - Operational policy values (specific thresholds, limits, windows)
+      - Implementation paths (paths belong only in `tasks.md`)
+
+      ## Decisions, not deferrals
+
+      Each line must record a DECISION. Forbidden phrasings: "TBD", "later", "needs review", "to be decided", "to confirm", "to discuss", "next variant".
+
+      If something genuinely falls outside this artifact, use one explicit form:
+      - "out of design scope" — e.g., operational policy
+      - "deferred to a named successor change"
+      - "delegated to a named component"
+
+      Anything else means the decision should be made before sealing.
+    requires: []
+
+  - id: screens
+    generates: screens.md
+    description: Index of pages and shared components included in this change, with each page's purpose, type, and shared component usage
+    template: screens.md
+    instruction: |
+      Create the screens document that lists every page and shared component included in this change.
+
+      This is the index between `proposal.md` (the why) and `pages/*.md` / `components/*.md` (the per-artifact details).
+      It is the contract between phases — each entry here will need a corresponding file in `pages/` or `components/` later.
+
+      Sections:
+      - **Pages**: Every page included in this change. For each page:
+        - `Purpose`: The page's primary role from the user's perspective. What does the user come here to do, check, or understand?
+        - `Type`: `New` if the page does not exist yet and will be newly designed. `Modified` if the page already exists and is being changed as part of this change.
+        - `Uses`: Shared components used by this page as part of this change. List only components that are also included in this change. Use the exact component name from the Shared Components section below.
+      - **Shared Components**: Every shared component included in this change. For each component:
+        - `Role`: The component's responsibility in the UI. What problem does this component solve, or which part of the page is it responsible for?
+
+      Naming convention:
+      - Use kebab-case for page and component names (e.g., `space-list`, `space-status-badge`).
+      - Each page name becomes the filename `pages/<page-name>.md`.
+      - Each component name becomes the filename `components/<component-name>.md`.
+      - Check `design-spec/specs/` for existing pages and components before naming new ones.
+
+      One-way reference only:
+      - Pages reference components through `Uses`. The Shared Components section does NOT carry a `Used by` field. This avoids two-way drift between page and component lists.
+
+      Pages vs components — decide using these rules:
+      - A **page** is a standalone screen with a route or full-screen layout that the user navigates to directly.
+      - A **component** is a reusable UI unit that lives inside one or more pages. Forms, badges, filter bars, info cards, tables belong here — even when they look complex on their own. For example, `space-form` is a component, not a page, because it lives inside `space-create` and `space-edit`.
+
+      Keep entries short. The goal is a scannable inventory.
+      Per-page Displayed Information / Actions / Layout / States belong in `pages/*.md`.
+      Per-component Displayed Information / Actions / Layout / States belong in `components/*.md`.
+
+      Living document — this file may be updated by later phases:
+      - `Pages` and `Shared Components` listed here are an initial plan.
+      - During the `pages` phase, if a new component is discovered or a name needs to change, the agent will update this file to keep the inventory in sync.
+      - During the `components` phase, after reading every page in detail, the agent may add, remove, or rename entries in `Shared Components` to reflect what truly emerged as reusable. Treat the initial Shared Components list as a best guess, not a final contract.
+
+      Common pitfalls:
+      - Listing a page or component that is not in `What Changes` of `proposal.md`. Keep both in sync.
+      - Putting a page sub-section (e.g., a form, a filter bar) under Pages. Use the rule above — it almost always belongs under Shared Components.
+      - Writing per-page details (Layout, States, etc.) here. Those belong in the per-artifact files.
+      - Adding a `Used by` field to Shared Components. Stay one-way.
+      - Treating the initial Shared Components list as final. Components are an emergent abstraction — expect the list to be refined later.
+
+      ## Out of scope
+
+      Do NOT include:
+      - API endpoints, request/response shape, data fetching
+      - MSW handlers, query-library setup
+      - Backend field names — use UI vocabulary
+      - Operational policy values (specific thresholds, limits, windows)
+      - Implementation paths (paths belong only in `tasks.md`)
+    requires:
+      - proposal
+
+  - id: pages
+    generates: pages/*.md
+    description: Per-page UI design requirements covering purpose, displayed information, actions, layout, and states
+    template: page.md
+    instruction: |
+      Create one page document per page listed in `screens.md`'s `Pages` section.
+
+      Each file is created at `pages/<page-name>.md`. The filename MUST match the page name in `screens.md` exactly (kebab-case).
+
+      This is the document the agent reads most directly when designing or implementing the page.
+      The goal is to fix the page's design requirements so the agent does not make arbitrary decisions later.
+
+      Sections:
+      - **Purpose**: 1-2 sentences. The page's primary role from the user's perspective. What does the user come to this page to do, check, or understand? Do not repeat proposal-level background unless it is necessary for this page. Do not explain the whole change here.
+      - **Displayed Information**: Bullet list of what must be visible to the user. Include only page-level information that matters for design (e.g., "list of spaces with name, status, and last modified date", "summary card showing total occupancy"). Do NOT describe implementation details such as API field names or data types.
+      - **Actions**: Bullet list of what the user can do on this page. Include primary and secondary actions when they affect the layout or interaction (e.g., "create a new space", "filter by status", "delete a space"). Do NOT describe internal logic or backend processing here.
+      - **Layout**: Two required subsections.
+        - **Description**: Short prose on the page-level arrangement of sections, information, and actions. Examples: "top area with title and primary 'Create' action", "filter bar above the list", "main content split into a left sidebar and right detail pane". Do NOT go deep into visual styling, and do NOT describe component internals here (those belong in `components/*.md`).
+        - **Wireframe**: ASCII wireframe in a fenced code block that captures the page structure. The wireframe is what external design tools and the implementing agent rely on to reproduce the intent — give as much information as possible at this fidelity. Conventions: use box-drawing characters (`┌ ┐ └ ┘ │ ─ ├ ┤ ┬ ┴`), label elements in brackets (`[Page Title]`, `[Primary Action]`, `[Item Row]`), use `…` or repeated rows for repetition, and annotate dynamic regions briefly when helpful (e.g., `[Item Row] (loading)`, `[Empty State]`). Stay at page scale — do NOT draw component internals; refer to components by name (e.g., `[space-form]`). The wireframe captures arrangement and density, NOT pixel-perfect styling, exact dimensions, colors, or fonts.
+      - **States**: Bullet list of states the page must handle. Include only states that affect what the user sees on this page. Examples: `default`, `loading`, `empty`, `error`, `success`, `read-only`, `permission-restricted`. Use UI-perspective names — avoid backend phrasings like "fetch failed" or "API error"; rephrase as `error`, `partial-error`, `no-results`. If a state is not relevant for this page, do not force it in.
+      - **Notes**: Optional page-specific constraints or reminders that should not be missed when designing or implementing this page. Examples: "reuses an existing table pattern", "destructive actions should not be exposed as primary actions", "only visible to admins". Leave empty if there is nothing important to add.
+
+      Cross-references:
+      - The components used by this page should already be listed in `screens.md` under this page's `Uses`. Refer to them by name in this file (e.g., "uses `space-form` for the create flow").
+      - Per-component details (the component's own Displayed Information, Actions, Layout, States) belong in `components/<component-name>.md`, not here. At this phase, the component file does not exist yet — that is fine. Refer to the component by name and trust that the `components` phase will fix its requirements.
+
+      Refining `screens.md`:
+      - The Shared Components list in `screens.md` is an initial estimate. While writing this page, you may notice a reusable pattern that is not yet listed, or a listed component that turns out not to apply. When that happens, update `screens.md` to keep the inventory in sync (add, remove, or rename entries) and update this page's `Uses` accordingly.
+      - Do NOT inline component details here just to avoid touching `screens.md`. Keep the inventory authoritative.
+
+      Common pitfalls:
+      - Describing component internals (e.g., "the form has a name input, a description textarea, and a submit button"). Move that to the component's file.
+      - Forcing every page to have every state. Only include states that genuinely apply to this page.
+      - Using `Notes` to repeat `Purpose`. Notes is for information that does NOT fit anywhere else.
+      - Creating a `pages/<name>.md` for a page that is not listed in `screens.md`. Add it to `screens.md` first.
+
+      ## Out of scope
+
+      Do NOT include:
+      - API endpoints, request/response shape, data fetching
+      - MSW handlers, query-library setup
+      - Backend field names — use UI vocabulary
+      - Operational policy values (specific thresholds, limits, windows) — describe the rule, not the number
+      - Implementation paths (paths belong only in `tasks.md`)
+
+      ## Decisions, not deferrals
+
+      Each line — especially in Notes — must record a DECISION. Forbidden phrasings: "TBD", "later", "needs review", "to be decided", "to confirm", "to discuss", "next variant".
+
+      If something genuinely falls outside this artifact, use one explicit form:
+      - "out of design scope" — e.g., operational policy
+      - "deferred to a named successor change"
+      - "delegated to a named component"
+
+      Anything else means the decision should be made before sealing.
+
+      Keep each section focused. The goal is a clear, scannable contract that the agent can follow without making arbitrary decisions.
+    requires:
+      - screens
+
+  - id: components
+    generates: components/*.md
+    description: Per-component UI design requirements covering role, displayed information, actions, layout, and states
+    template: component.md
+    instruction: |
+      Create one component document for every shared component that should exist after reviewing all pages.
+
+      Each file is created at `components/<component-name>.md`. The filename uses kebab-case and must match the entry in `screens.md`'s `Shared Components` section.
+
+      A shared component is an emergent abstraction. By this phase, every page is already written, so you can decide what is truly reusable based on evidence — not on guesses made during the `screens` phase.
+
+      Workflow:
+      1. **Read every `pages/*.md`** in this change. You need full context before deciding what should be a shared component.
+      2. **Identify reusable patterns**. Look for layouts, controls, or information units that repeat across two or more pages, or that have a clear single responsibility worth isolating even if they appear once (e.g., a form reused between create and edit pages).
+      3. **Reconcile against `screens.md`**. The initial `Shared Components` list in `screens.md` was a best guess.
+         - Add components you discovered while reading pages.
+         - Remove components that turned out to not be reusable or not be needed.
+         - Rename for clarity if the original name no longer fits.
+         - Update `screens.md` to reflect the final list.
+      4. **Update `pages/*.md` to reference components properly**. If a page currently inlines details that are now covered by a shared component (e.g., it describes form fields directly), replace the inline description with a reference to the component (e.g., "uses `space-form` for the create flow") and ensure the page's `Uses` in `screens.md` lists the component.
+      5. **Create `components/<name>.md` for every component in the final list**, using the sections below.
+
+      Sections:
+      - **Role**: 1-2 sentences. The component's responsibility in the UI. What problem does this component solve, or which part of the page is it responsible for? Do NOT describe the whole page that uses it.
+      - **Displayed Information**: Bullet list of what this component shows. Include only information handled by this component itself. Do NOT repeat page-level information unless the component is directly responsible for it. Do NOT describe implementation details such as API fields or data types.
+      - **Actions**: Bullet list of what the user can do through this component. Include only actions that belong to the component (e.g., for a `space-form`: "submit", "cancel", "validate on blur"). Do NOT describe actions that belong to the page as a whole unless this component directly provides them.
+      - **Layout**: Required `Description` subsection, optional `Wireframe` subsection.
+        - **Description**: Short prose on how the component is structured internally — the arrangement of its own content, information, and actions. Examples: "label on top, input below, helper text aligned right", "icon + label + count, in a single row", "header / body / footer with the primary action in the footer". Do NOT describe the full page layout here. Do NOT go deep into visual styling unless the structure depends on it.
+        - **Wireframe** (optional): ASCII wireframe in a fenced code block when the structure is not self-evident from Description. Use the same conventions as page wireframes (box-drawing characters, bracketed labels, `…` for repetition, brief state annotations) but stay at component scope — do NOT draw the surrounding page. Skip (omit) this subsection entirely for components whose structure is obvious from the prose (e.g., a single-element badge). When a component has both a default and a meaningful alternate state structure, draw the default and annotate the variant inline rather than producing multiple wireframes.
+      - **States**: Bullet list of states this component must handle. Include only states that affect what the user sees in this component. Examples: `default`, `loading`, `empty`, `error`, `disabled`, `read-only`, `expanded`, `collapsed`. Use UI-perspective names — avoid backend phrasings like "fetch failed" or "API error"; rephrase as `error`, `partial-error`, `no-results`. If a state is not relevant, do not force it in.
+      - **Notes**: Optional component-specific constraints or reminders that should not be missed when designing or implementing this component. Examples: "reused across multiple pages — keep action order consistent", "should not expose destructive actions directly", "must work in both create and edit contexts". Leave empty if there is nothing important to add.
+
+      Cross-references:
+      - The reference is one-way: pages reference components through `Uses` in `screens.md`. Do NOT add a `Used by` field here. To find usage, search `screens.md`.
+      - Page-level concerns (overall page layout, page-level states, page-level information) belong in `pages/*.md`, not here.
+
+      Common pitfalls:
+      - Skipping the page-reading step and falling back on the initial `Shared Components` list in `screens.md`. The list is a guess; pages are evidence.
+      - Extracting a component that is only used in one place and has no clear standalone responsibility. When in doubt, keep it inlined in the page.
+      - Updating `components/*.md` and `screens.md` but forgetting to update `pages/*.md` to reference the new components. Pages must stay consistent with the final component list.
+      - Describing the whole page that the component lives in (e.g., "this form is on the create page, which has a header and a sidebar"). Stay scoped to the component.
+      - Adding a `Used by` field. The reference is one-way (page → component) by design.
+      - Forcing every component to have every state. A `space-status-badge` may only need `default` and a couple of variant states; a form needs more.
+
+      ## Out of scope
+
+      Do NOT include:
+      - API endpoints, request/response shape, data fetching
+      - MSW handlers, query-library setup
+      - Backend field names — use UI vocabulary
+      - Operational policy values (specific thresholds, limits, windows) — describe the rule, not the number
+      - Implementation paths (paths belong only in `tasks.md`)
+
+      ## Decisions, not deferrals
+
+      Each line — especially in Notes — must record a DECISION. Forbidden phrasings: "TBD", "later", "needs review", "to be decided", "to confirm", "to discuss", "next variant".
+
+      If something genuinely falls outside this artifact, use one explicit form:
+      - "out of design scope" — e.g., operational policy
+      - "deferred to a named successor change"
+      - "delegated to a named component"
+
+      Anything else means the decision should be made before sealing.
+
+      Keep each component file short enough to read in one screen, and clear enough that the same component renders identically on every page that uses it.
+    requires:
+      - screens
+      - pages
+
+  - id: tasks
+    generates: tasks.md
+    description: Implementation checklist that breaks the change into trackable units, grouped by shared components, pages, and integration concerns
+    template: tasks.md
+    instruction: |
+      Create the task list that breaks the design into trackable implementation units.
+
+      This is the bridge from design artifacts to actual code. The apply phase parses checkbox format to track progress, so tasks not using `- [ ]` won't be tracked.
+
+      **IMPORTANT: Follow the template below exactly.**
+
+      Guidelines:
+      - Group related tasks under `## N. Group Name` headings.
+      - Each task MUST be a checkbox: `- [ ] N.M Task description`.
+      - Tasks should be small enough to complete in one session.
+      - Order groups by implementation dependency: shared components first (since pages consume them), then pages, then integration concerns. This is the reverse of the design order, where pages were authored before components.
+      - Reference the artifact each task implements (e.g., "per `components/space-form.md`").
+      - Each task should be verifiable — you know it is done by checking the rendered UI or behavior.
+
+      Path discipline:
+      - For tasks that **create or modify files**, the task MUST include the concrete code path(s) (e.g., `src/components/SpaceForm/SpaceForm.tsx`). Tasks without paths are not actionable across sessions and force the agent to re-discover the codebase every time.
+      - **Inspect the existing codebase before writing tasks.** Look at how similar pages and components are organized today and follow the project's prevailing structure and naming conventions. Do NOT invent new conventions in tasks.
+      - When a task spans multiple files, list them all under the same task. Split into sub-tasks only when each file can be verified independently.
+      - Pair test files with the implementation file when the project has tests for similar units (e.g., co-located `*.test.tsx` next to the component).
+      - For integration tasks (routing, navigation, data fetching), point to the specific files that need to change (e.g., `src/router.tsx`, `src/components/Sidebar/Sidebar.tsx`).
+      - The DesignSpec artifact name (kebab-case, e.g., `space-form`) is independent from the code identifier (e.g., `SpaceForm`). Use the project's code naming convention for paths and identifiers, not the DesignSpec name.
+
+      Path-less tasks (allowed exceptions):
+      - Tasks that run a command, perform verification, or do manual QA do NOT need a path. Examples: `pnpm run lint`, `pnpm run format`, `pnpm test`, "Verify the create → edit flow in a browser", "Run a visual regression check". For these, write the command or the verification step clearly in the task description so the next session knows exactly how to repeat it.
+
+      Recommended group structure for the default schema:
+      1. **Shared Components** — One task per file in `components/*.md`. Build these first so pages can reuse them.
+      2. **Pages** — One task per file in `pages/*.md`. Pages consume the components above.
+      3. **Integration** — Cross-cutting work that does not belong to a specific page or component. Examples: routing, navigation entries, data fetching, state management, API wiring, tests.
+
+      Default to one task per artifact. Split a single artifact into multiple tasks only when it is genuinely large (e.g., a page with many distinct states or a complex form component).
+
+      Example (project uses PascalCase code, co-located tests):
+      ```
+      ## 1. Shared Components
+
+      - [ ] 1.1 Implement `SpaceStatusBadge` at `src/components/SpaceStatusBadge/SpaceStatusBadge.tsx` (+ `SpaceStatusBadge.test.tsx`) per `components/space-status-badge.md`
+      - [ ] 1.2 Implement `SpaceForm` at `src/components/SpaceForm/SpaceForm.tsx` (+ `SpaceForm.test.tsx`) per `components/space-form.md`
+
+      ## 2. Pages
+
+      - [ ] 2.1 Implement `SpaceListPage` at `src/pages/SpaceListPage/SpaceListPage.tsx` per `pages/space-list.md`
+      - [ ] 2.2 Implement `SpaceDetailPage` at `src/pages/SpaceDetailPage/SpaceDetailPage.tsx` per `pages/space-detail.md`
+      - [ ] 2.3 Implement `SpaceCreatePage` at `src/pages/SpaceCreatePage/SpaceCreatePage.tsx` per `pages/space-create.md`
+      - [ ] 2.4 Implement `SpaceEditPage` at `src/pages/SpaceEditPage/SpaceEditPage.tsx` per `pages/space-edit.md`
+
+      ## 3. Integration
+
+      - [ ] 3.1 Add routes for the new pages in `src/router.tsx`
+      - [ ] 3.2 Add a `Spaces` entry to `src/components/Sidebar/Sidebar.tsx`
+      - [ ] 3.3 Apply design tokens / fonts if missing in `src/styles/tokens.css`
+      - [ ] 3.4 Run `pnpm run lint && pnpm run format && pnpm run build`
+      - [ ] 3.5 Manual visual QA against the page wireframes (golden path + every documented state)
+      ```
+
+      Reference `pages/*.md` for what each page should do, `components/*.md` for what each component should do, and `proposal.md` for overall context.
+
+      ## Out of scope
+
+      Paths are required, but task descriptions stay design-implementation only. Do NOT include:
+      - Data fetching, API calls, MSW handlers, query libraries
+      - Backend field names or response shape
+      - Operational policy values
+    requires:
+      - pages
+      - components
+
+apply:
+  requires:
+    - proposal
+    - screens
+    - pages
+    - components
+    - tasks
+  instruction: |
+    Read context files, work through pending tasks in tasks.md, mark complete as you go.
+    Pause if you hit blockers or need clarification.
