@@ -1,0 +1,41 @@
+name: Release Please
+
+on:
+  push:
+    branches:
+      - main
+      - next
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+
+concurrency:
+  group: release-please-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  release-please:
+    name: Manage release PR
+    runs-on: ubuntu-latest
+    steps:
+      # PAT is required (not GITHUB_TOKEN) so the GitHub Release event
+      # created on merge triggers the publish workflow.
+      - name: Release Please (stable)
+        if: github.ref_name == 'main'
+        uses: googleapis/release-please-action@v5
+        with:
+          token: ${{ secrets.RELEASE_PLEASE_TOKEN }}
+          config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json
+          target-branch: main
+
+      - name: Release Please (prerelease)
+        if: github.ref_name == 'next'
+        uses: googleapis/release-please-action@v5
+        with:
+          token: ${{ secrets.RELEASE_PLEASE_TOKEN }}
+          config-file: release-please-next-config.json
+          manifest-file: .release-please-next-manifest.json
+          target-branch: next
