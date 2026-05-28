@@ -11,6 +11,12 @@
   "bin": {
     "design-spec": "./bin/design-spec.js"
   },
+  "files": [
+    "bin/",
+    "dist/",
+    "schemas/",
+    "THIRD-PARTY-NOTICES.md"
+  ],
   "engines": {
     "node": ">=22.13"
   },
