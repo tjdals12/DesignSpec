@@ -1,6 +1,6 @@
 {
   "name": "@tjdals12/design-spec",
-  "version": "1.0.0-next.2",
+  "version": "1.0.0-next.3",
   "description": "Spec-driven design requirements for AI coding agents",
   "type": "module",
   "repository": {
