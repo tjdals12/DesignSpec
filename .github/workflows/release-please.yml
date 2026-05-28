@@ -29,6 +29,7 @@ jobs:
           token: ${{ secrets.RELEASE_PLEASE_TOKEN }}
           config-file: release-please-config.json
           manifest-file: .release-please-manifest.json
+          target-branch: main
 
       - name: Release Please (prerelease)
         if: github.ref_name == 'next'
@@ -37,3 +38,4 @@ jobs:
           token: ${{ secrets.RELEASE_PLEASE_TOKEN }}
           config-file: release-please-next-config.json
           manifest-file: .release-please-next-manifest.json
+          target-branch: next
