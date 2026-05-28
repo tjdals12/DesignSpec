@@ -1,3 +1,10 @@
+# [1.0.0-next.3](https://github.com/tjdals12/DesignSpec/compare/v1.0.0-next.2...v1.0.0-next.3) (2026-05-28)
+
+
+### Bug Fixes
+
+* add Node shebang to design-spec bin entry ([5b104c9](https://github.com/tjdals12/DesignSpec/commit/5b104c9366fdf00993144e0954c86c4a6c29a725))
+
 # [1.0.0-next.2](https://github.com/tjdals12/DesignSpec/compare/v1.0.0-next.1...v1.0.0-next.2) (2026-05-28)
 
 
