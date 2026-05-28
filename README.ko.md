@@ -39,10 +39,10 @@ design-spec init --tools=all
 
 `--tools`로 사용할 에이전트를 지정합니다. 전부 설치하려면 `all`, 일부만 설치하려면 `claude,codex`처럼 값을 콤마로 묶습니다. 지원하는 에이전트는 다음과 같습니다.
 
-| 에이전트 | `--tools` 값 |
-| --- | --- |
-| Claude Code | `claude` |
-| Codex | `codex` |
+| 에이전트    | `--tools` 값 |
+| ----------- | ------------ |
+| Claude Code | `claude`     |
+| Codex       | `codex`      |
 
 초기화하면 에이전트에서 쓸 슬래시 커맨드가 생성됩니다. 실제 작업 흐름은 아래 [워크플로우](#워크플로우)를 참고하세요.
 
@@ -221,8 +221,8 @@ change의 페이지·컴포넌트 스펙을 마스터 스펙에 반영합니다.
 design-spec init [path] --tools <tools>
 ```
 
-| 옵션 | 설명 |
-| --- | --- |
+| 옵션              | 설명                                                                       |
+| ----------------- | -------------------------------------------------------------------------- |
 | `--tools <tools>` | 설치할 에이전트. `all`, `none`, 또는 `claude,codex`처럼 콤마로 지정 (필수) |
 
 ### `design-spec list`
@@ -233,11 +233,11 @@ design-spec init [path] --tools <tools>
 design-spec list [path] [options]
 ```
 
-| 옵션 | 설명 |
-| --- | --- |
+| 옵션        | 설명                               |
+| ----------- | ---------------------------------- |
 | `--changes` | change 목록 (옵션이 없으면 기본값) |
-| `--specs` | 스펙 목록 |
-| `--json` | JSON으로 출력 |
+| `--specs`   | 스펙 목록                          |
+| `--json`    | JSON으로 출력                      |
 
 ### `design-spec status`
 
@@ -247,10 +247,10 @@ change의 아티팩트 완료 상태를 보여줍니다.
 design-spec status [path] --change <id>
 ```
 
-| 옵션 | 설명 |
-| --- | --- |
+| 옵션            | 설명             |
+| --------------- | ---------------- |
 | `--change <id>` | 대상 change 이름 |
-| `--json` | JSON으로 출력 |
+| `--json`        | JSON으로 출력    |
 
 ### `design-spec new`
 
@@ -260,8 +260,8 @@ design-spec status [path] --change <id>
 design-spec new [path] --change <id>
 ```
 
-| 옵션 | 설명 |
-| --- | --- |
+| 옵션            | 설명               |
+| --------------- | ------------------ |
 | `--change <id>` | 생성할 change 이름 |
 
 ### `design-spec artifact-instructions`
@@ -272,11 +272,11 @@ design-spec new [path] --change <id>
 design-spec artifact-instructions [path] --change <id> --artifact <id>
 ```
 
-| 옵션 | 설명 |
-| --- | --- |
-| `--change <id>` | 대상 change 이름 |
+| 옵션              | 설명                                      |
+| ----------------- | ----------------------------------------- |
+| `--change <id>`   | 대상 change 이름                          |
 | `--artifact <id>` | 아티팩트 이름 (예: `proposal`, `screens`) |
-| `--json` | JSON으로 출력 |
+| `--json`          | JSON으로 출력                             |
 
 ### `design-spec apply-instructions`
 
@@ -286,10 +286,10 @@ design-spec artifact-instructions [path] --change <id> --artifact <id>
 design-spec apply-instructions [path] --change <id>
 ```
 
-| 옵션 | 설명 |
-| --- | --- |
+| 옵션            | 설명             |
+| --------------- | ---------------- |
 | `--change <id>` | 대상 change 이름 |
-| `--json` | JSON으로 출력 |
+| `--json`        | JSON으로 출력    |
 
 ### `design-spec context`
 
@@ -299,8 +299,8 @@ design-spec apply-instructions [path] --change <id>
 design-spec context [path]
 ```
 
-| 옵션 | 설명 |
-| --- | --- |
+| 옵션     | 설명          |
+| -------- | ------------- |
 | `--json` | JSON으로 출력 |
 
 ## License

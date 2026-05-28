@@ -20,7 +20,7 @@ Include only page-level information that matters for design.
 Do not describe implementation details such as API fields or data types.
 -->
 
-- 
+-
 
 ## Actions
 
@@ -32,7 +32,7 @@ Include primary and secondary actions when they affect the layout or interaction
 Do not describe internal logic or backend processing here.
 -->
 
-- 
+-
 
 ## Layout
 
@@ -65,6 +65,7 @@ Conventions:
 -->
 
 ```
+
 ```
 
 ## States
@@ -85,7 +86,7 @@ Examples:
 If a state is not relevant, do not force it in.
 -->
 
-- 
+-
 
 ## Notes
 

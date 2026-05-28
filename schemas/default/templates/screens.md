@@ -14,6 +14,7 @@ For each page, fill in the fields below using the following meanings:
 -->
 
 ### <Page Name>
+
 - Purpose:
 - Type: New | Modified
 - Uses:
@@ -28,4 +29,5 @@ For each component, fill in the fields below using the following meanings:
 -->
 
 ### <Component Name>
+
 - Role:

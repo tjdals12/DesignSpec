@@ -20,7 +20,7 @@ Do not repeat page-level information unless this component is directly responsib
 Do not describe implementation details such as API fields or data types.
 -->
 
-- 
+-
 
 ## Actions
 
@@ -32,7 +32,7 @@ Include only actions that belong to this component.
 Do not describe actions that belong to the page as a whole unless this component directly provides them.
 -->
 
-- 
+-
 
 ## Layout
 
@@ -84,7 +84,7 @@ Examples:
 If a state is not relevant, do not force it in.
 -->
 
-- 
+-
 
 ## Notes
 

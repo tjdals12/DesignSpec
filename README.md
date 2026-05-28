@@ -39,10 +39,10 @@ design-spec init --tools=all
 
 Use `--tools` to choose which agents to set up — `all` for every agent, or a comma-separated list like `claude,codex` for a subset. Supported agents:
 
-| Agent | `--tools` value |
-| --- | --- |
-| Claude Code | `claude` |
-| Codex | `codex` |
+| Agent       | `--tools` value |
+| ----------- | --------------- |
+| Claude Code | `claude`        |
+| Codex       | `codex`         |
 
 `init` generates the slash commands your agent will use. See [Workflow](#workflow) for how a change actually flows.
 
@@ -221,8 +221,8 @@ Initializes the project and generates the skills and slash commands.
 design-spec init [path] --tools <tools>
 ```
 
-| Option | Description |
-| --- | --- |
+| Option            | Description                                                                               |
+| ----------------- | ----------------------------------------------------------------------------------------- |
 | `--tools <tools>` | Agents to set up: `all`, `none`, or a comma-separated list like `claude,codex` (required) |
 
 ### `design-spec list`
@@ -233,11 +233,11 @@ Lists active changes and specs.
 design-spec list [path] [options]
 ```
 
-| Option | Description |
-| --- | --- |
+| Option      | Description                                      |
+| ----------- | ------------------------------------------------ |
 | `--changes` | List changes (the default when no flag is given) |
-| `--specs` | List specs |
-| `--json` | Output as JSON |
+| `--specs`   | List specs                                       |
+| `--json`    | Output as JSON                                   |
 
 ### `design-spec status`
 
@@ -247,10 +247,10 @@ Shows artifact completion status for a change.
 design-spec status [path] --change <id>
 ```
 
-| Option | Description |
-| --- | --- |
-| `--change <id>` | Target change |
-| `--json` | Output as JSON |
+| Option          | Description    |
+| --------------- | -------------- |
+| `--change <id>` | Target change  |
+| `--json`        | Output as JSON |
 
 ### `design-spec new`
 
@@ -260,8 +260,8 @@ Creates a new change.
 design-spec new [path] --change <id>
 ```
 
-| Option | Description |
-| --- | --- |
+| Option          | Description                  |
+| --------------- | ---------------------------- |
 | `--change <id>` | Name of the change to create |
 
 ### `design-spec artifact-instructions`
@@ -272,11 +272,11 @@ Prints the instructions for writing a specific artifact.
 design-spec artifact-instructions [path] --change <id> --artifact <id>
 ```
 
-| Option | Description |
-| --- | --- |
-| `--change <id>` | Target change |
+| Option            | Description                                |
+| ----------------- | ------------------------------------------ |
+| `--change <id>`   | Target change                              |
 | `--artifact <id>` | Artifact name (e.g. `proposal`, `screens`) |
-| `--json` | Output as JSON |
+| `--json`          | Output as JSON                             |
 
 ### `design-spec apply-instructions`
 
@@ -286,10 +286,10 @@ Prints the instructions for the implementation step.
 design-spec apply-instructions [path] --change <id>
 ```
 
-| Option | Description |
-| --- | --- |
-| `--change <id>` | Target change |
-| `--json` | Output as JSON |
+| Option          | Description    |
+| --------------- | -------------- |
+| `--change <id>` | Target change  |
+| `--json`        | Output as JSON |
 
 ### `design-spec context`
 
@@ -299,8 +299,8 @@ Prints the resolved project context and style system.
 design-spec context [path]
 ```
 
-| Option | Description |
-| --- | --- |
+| Option   | Description    |
+| -------- | -------------- |
 | `--json` | Output as JSON |
 
 ## License
