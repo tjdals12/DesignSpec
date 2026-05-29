@@ -22,6 +22,8 @@ import { buildSpecsDirPath } from "../spec/paths.js";
 import { buildStylesDirPath } from "../styles/paths.js";
 import { buildConfigPaths } from "../project-config/paths.js";
 import { PALETTE, PROGRESS_SPINNER } from "../ui.js";
+import { showWelcomeScreen } from "../welcome-screen.js";
+import { isInteractive } from "#utils/interactive.utils.js";
 
 const STARTER_CONFIG_CONTENT = `# DesignSpec project configuration.
 #
@@ -64,9 +66,11 @@ interface SetupResults {
 
 export class InitCommand {
   private readonly _tools?: string | undefined;
+  private readonly _interactive?: boolean | undefined;
 
-  constructor(options: { tools?: string }) {
+  constructor(options: { tools?: string; interactive?: boolean }) {
     this._tools = options.tools;
+    this._interactive = options.interactive;
   }
 
   async execute(targetPath: string): Promise<void> {
@@ -83,6 +87,10 @@ export class InitCommand {
     const installedTools = await getInstalledTools(projectPath);
 
     const toolStates = getToolStates(projectPath);
+
+    if (this.canPromptInteractively()) {
+      showWelcomeScreen();
+    }
 
     const selectedToolIds = await this.getSelectedToolIds({
       projectPath,
@@ -150,17 +158,81 @@ export class InitCommand {
     return deduped;
   }
 
-  // TODO: Add interactive selection mode for `init` when --tools is not provided.
-  // Should list available tools and let the user pick, using `installedTools` and
-  // `toolStates` to pre-check agents that are already configured.
-  // Until then, this delegates to resolveTools(), which requires the --tools option.
-  private async getSelectedToolIds(_args: {
+  private canPromptInteractively(): boolean {
+    if (this._interactive === false) return false;
+    if (!isUndefined(this._tools)) return false;
+    return isInteractive({ interactive: this._interactive });
+  }
+
+  private async getSelectedToolIds(args: {
     projectPath: string;
     extendMode: boolean;
     installedTools: AIToolOption[];
     toolStates: Map<string, ToolSkillStatus>;
   }): Promise<string[]> {
-    return this.resolveTools();
+    // An explicit --tools flag always wins and stays non-interactive.
+    if (!isUndefined(this._tools)) {
+      return this.resolveTools();
+    }
+
+    const { extendMode, installedTools, toolStates } = args;
+    const supportedToolIds = getSupportedToolIds();
+    const detectedToolIds = new Set(installedTools.map((tool) => tool.value));
+    const configuredToolIds = new Set(
+      [...toolStates.entries()].filter(([, status]) => status.configured).map(([toolId]) => toolId),
+    );
+    // Pre-check detected tools only on a fresh setup; on an extend/refresh run we
+    // pre-check the already-configured ones instead.
+    const shouldPreselectDetected = !extendMode && configuredToolIds.size === 0;
+
+    // Non-interactive: fall back to detected tools, or fail with guidance.
+    if (!this.canPromptInteractively()) {
+      if (detectedToolIds.size > 0) {
+        return [...detectedToolIds];
+      }
+      const supportedList = ["all", "none", ...supportedToolIds].join(", ");
+      throw new Error(
+        `No --tools provided and no AI tool directories detected. Re-run with --tools <value>, where value is one of: ${supportedList}`,
+      );
+    }
+
+    const { checkbox } = await import("@inquirer/prompts");
+
+    const choices = supportedToolIds
+      .map((toolId) => {
+        const tool = getToolById(toolId)!;
+        const configured = configuredToolIds.has(toolId);
+        const detected = detectedToolIds.has(toolId) && !configured;
+        const preSelected = configured || (shouldPreselectDetected && detected);
+        const label = configured ? " (configured)" : detected ? " (detected)" : "";
+
+        return {
+          name: `${tool.name}${chalk.dim(label)}`,
+          value: toolId,
+          checked: preSelected,
+          description: tool.description,
+          configured,
+          detected,
+        };
+      })
+      .sort((a, b) => {
+        if (a.configured !== b.configured) return a.configured ? -1 : 1;
+        if (a.detected !== b.detected) return a.detected ? -1 : 1;
+        return 0;
+      });
+
+    const selectedToolIds = await checkbox<string>({
+      message: "Select the AI tools to set up",
+      choices: choices.map(({ name, value, checked, description }) => ({
+        name,
+        value,
+        checked,
+        ...(isUndefined(description) ? {} : { description }),
+      })),
+      required: true,
+    });
+
+    return selectedToolIds;
   }
 
   private validateTools(

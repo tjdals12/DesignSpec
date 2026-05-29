@@ -112,3 +112,20 @@ describe("InitCommand — 실패", () => {
     await expect(new InitCommand({ tools: "unknown-tool" }).execute(tmpDir)).rejects.toThrow();
   });
 });
+
+describe("InitCommand — 비대화형 폴백", () => {
+  it("--no-interactive에서 감지된 tool이 없으면 에러를 던진다", async () => {
+    await expect(new InitCommand({ interactive: false }).execute(tmpDir)).rejects.toThrow();
+  });
+
+  it("--no-interactive에서 감지된 tool 디렉토리를 폴백으로 사용한다", async () => {
+    // .claude 디렉토리가 이미 있으면 감지되어 별도 지정 없이 설정된다.
+    await fs.mkdir(path.join(tmpDir, ".claude"), { recursive: true });
+
+    await new InitCommand({ interactive: false }).execute(tmpDir);
+
+    expect(
+      await pathExists(path.join(tmpDir, ".claude", "skills", "designspec-new-change", "SKILL.md")),
+    ).toBe(true);
+  });
+});

@@ -34,6 +34,8 @@ export interface AIToolOption {
   name: string;
   value: string;
   skillsDir: string;
+  /** Short, human-readable description shown on the interactive welcome screen. */
+  description?: string;
 }
 
 export interface AIToolInfo extends AIToolOption {
@@ -45,10 +47,12 @@ export const AI_TOOLS: AIToolOption[] = [
     name: "Codex",
     value: "codex",
     skillsDir: ".codex",
+    description: "OpenAI's coding agent CLI",
   },
   {
     name: "Claude Code",
     value: "claude",
     skillsDir: ".claude",
+    description: "Anthropic's agentic coding CLI",
   },
 ];

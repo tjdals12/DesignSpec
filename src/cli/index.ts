@@ -21,6 +21,7 @@ program
   .command("init [path]")
   .description("Initialize DesignSpec in your project")
   .option("--tools <tools>", toolsOptionDescription)
+  .option("--no-interactive", "Skip the interactive prompt and rely on --tools or detected tools")
   .addHelpText(
     "after",
     dedent`
@@ -28,9 +29,10 @@ program
       $ design-spec init
       $ design-spec init ./path/to
       $ design-spec init --tools=codex,claude
+      $ design-spec init --no-interactive
   `,
   )
-  .action(async (targetPath = ".", options: { tools?: string }) => {
+  .action(async (targetPath = ".", options: { tools?: string; interactive?: boolean }) => {
     try {
       const resolvedPath = path.resolve(targetPath);
 
