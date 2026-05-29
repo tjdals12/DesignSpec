@@ -167,7 +167,6 @@ export class InitCommand {
     installedTools: AIToolOption[];
     toolStates: Map<string, ToolSkillStatus>;
   }): Promise<string[]> {
-    // An explicit --tools flag always wins and stays non-interactive.
     if (!isUndefined(this._tools)) {
       return this.resolveTools();
     }
@@ -182,7 +181,6 @@ export class InitCommand {
     // pre-check the already-configured ones instead.
     const shouldPreselectDetected = !extendMode && configuredToolIds.size === 0;
 
-    // Non-interactive: fall back to detected tools, or fail with guidance.
     if (!this.canPromptInteractively()) {
       if (detectedToolIds.size > 0) {
         return [...detectedToolIds];
