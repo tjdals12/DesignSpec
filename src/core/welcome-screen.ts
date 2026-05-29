@@ -21,15 +21,27 @@ const BRIGHTNESS = [
   PALETTE.white,
 ];
 
+// Quick-start commands shown after setup. Names are padded to align their
+// one-line descriptions in a column.
+const QUICK_START: Array<{ command: string; description: string }> = [
+  { command: "/desx:style-init", description: "Set the style guideline (once)" },
+  { command: "/desx:new", description: "Start a change" },
+  { command: "/desx:continue", description: "Write the next artifact" },
+  { command: "/desx:apply", description: "Implement to spec" },
+];
+
 /**
  * Welcome text shown in the right column. Mostly monochrome to match
- * DesignSpec's white-on-black wireframe brand, with the Enter hint in cyan.
+ * DesignSpec's white-on-black wireframe brand, with command names in yellow
+ * and the Enter hint in cyan.
  *
  * The agent list is intentionally left out — the very next screen lets the
  * user pick agents (with descriptions), so repeating them here would be
  * redundant and would grow this screen as agents are added.
  */
 function getWelcomeText(): string[] {
+  const commandWidth = Math.max(...QUICK_START.map(({ command }) => command.length));
+
   return [
     PALETTE.white("DesignSpec"),
     PALETTE.midGray("Predictable UI for AI coding agents"),
@@ -37,6 +49,12 @@ function getWelcomeText(): string[] {
     PALETTE.white("init will:"),
     PALETTE.midGray("  • Create the design-spec/ workspace"),
     PALETTE.midGray("  • Generate skills and /desx:* slash commands"),
+    "",
+    PALETTE.white("Quick start after setup:"),
+    ...QUICK_START.map(({ command, description }) => {
+      const paddedCommand = chalk.yellow(command.padEnd(commandWidth));
+      return `  ${paddedCommand}  ${PALETTE.midGray(description)}`;
+    }),
     "",
     chalk.cyan("Press Enter to continue… "),
   ];
