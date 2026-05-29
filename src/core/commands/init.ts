@@ -89,7 +89,7 @@ export class InitCommand {
     const toolStates = getToolStates(projectPath);
 
     if (this.canPromptInteractively()) {
-      showWelcomeScreen();
+      await showWelcomeScreen();
     }
 
     const selectedToolIds = await this.getSelectedToolIds({

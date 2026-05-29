@@ -1,14 +1,9 @@
+import readline from "node:readline";
+
 import { AI_TOOLS } from "./config.js";
 import { PALETTE } from "./ui.js";
 
-/**
- * Prints a static welcome screen for the interactive `init` flow.
- *
- * It introduces DesignSpec, summarizes what `init` is about to do, and lists
- * the supported agents with a short description so the user knows what each
- * choice in the upcoming selection prompt means.
- */
-export function showWelcomeScreen(): void {
+function buildWelcomeLines(): string[] {
   const lines: string[] = [];
 
   lines.push("");
@@ -30,5 +25,39 @@ export function showWelcomeScreen(): void {
   }
   lines.push("");
 
-  console.log(lines.join("\n"));
+  return lines;
+}
+
+function waitForEnter(): Promise<void> {
+  return new Promise((resolve) => {
+    // Outside a TTY there is no one to press Enter; don't block.
+    if (!process.stdin.isTTY) {
+      resolve();
+      return;
+    }
+
+    const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
+    rl.question(PALETTE.midGray("  Press Enter to continue… "), () => {
+      rl.close();
+      resolve();
+    });
+  });
+}
+
+/**
+ * Shows the welcome screen for the interactive `init` flow, then waits for the
+ * user to press Enter and clears the screen before the tool-selection prompt.
+ *
+ * It introduces DesignSpec, summarizes what `init` is about to do, and lists
+ * the supported agents with a short description so the user knows what each
+ * choice in the upcoming selection prompt means.
+ */
+export async function showWelcomeScreen(): Promise<void> {
+  console.log(buildWelcomeLines().join("\n"));
+
+  await waitForEnter();
+
+  // Clear the welcome screen so the selection prompt starts on a clean view.
+  // No-op when stdout is not a TTY.
+  console.clear();
 }
