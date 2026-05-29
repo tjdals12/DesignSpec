@@ -1,6 +1,5 @@
 import chalk from "chalk";
 
-import { AI_TOOLS } from "./config.js";
 import { PALETTE } from "./ui.js";
 import { WELCOME_ANIMATION, WELCOME_PEAK_FRAME_INDEX } from "./ascii-patterns.js";
 
@@ -24,8 +23,11 @@ const BRIGHTNESS = [
 
 /**
  * Welcome text shown in the right column. Mostly monochrome to match
- * DesignSpec's white-on-black wireframe brand, with a couple of accents:
- * agent names in yellow and the Enter hint in cyan.
+ * DesignSpec's white-on-black wireframe brand, with the Enter hint in cyan.
+ *
+ * The agent list is intentionally left out — the very next screen lets the
+ * user pick agents (with descriptions), so repeating them here would be
+ * redundant and would grow this screen as agents are added.
  */
 function getWelcomeText(): string[] {
   return [
@@ -35,13 +37,6 @@ function getWelcomeText(): string[] {
     PALETTE.white("init will:"),
     PALETTE.midGray("  • Create the design-spec/ workspace"),
     PALETTE.midGray("  • Generate skills and /desx:* slash commands"),
-    "",
-    PALETTE.white("Supported agents:"),
-    ...AI_TOOLS.map((tool) => {
-      const name = `${PALETTE.midGray("  • ")}${chalk.yellow(tool.name)}`;
-      const description = tool.description ? PALETTE.midGray(` — ${tool.description}`) : "";
-      return `${name}${description}`;
-    }),
     "",
     chalk.cyan("Press Enter to continue… "),
   ];
