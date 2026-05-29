@@ -6,7 +6,7 @@ import { WELCOME_ANIMATION, WELCOME_PEAK_FRAME_INDEX } from "./ascii-patterns.js
 // Minimum terminal width for the side-by-side (logo + text) layout.
 const MIN_WIDTH = 60;
 // Fixed width of the logo column, including the gap before the text column.
-const ART_COLUMN_WIDTH = 16;
+const ART_COLUMN_WIDTH = 18;
 // Left margin applied to every rendered line.
 const MARGIN = "  ";
 
@@ -15,6 +15,7 @@ const MARGIN = "  ";
 const BRIGHTNESS = [
   PALETTE.darkGray,
   PALETTE.darkGray,
+  PALETTE.midGray,
   PALETTE.midGray,
   PALETTE.lightGray,
   PALETTE.white,
