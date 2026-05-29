@@ -1,3 +1,5 @@
+import chalk from "chalk";
+
 import { AI_TOOLS } from "./config.js";
 import { PALETTE } from "./ui.js";
 import { WELCOME_ANIMATION, WELCOME_PEAK_FRAME_INDEX } from "./ascii-patterns.js";
@@ -21,8 +23,9 @@ const BRIGHTNESS = [
 ];
 
 /**
- * Welcome text shown in the right column. Monochrome to match DesignSpec's
- * white-on-black wireframe brand.
+ * Welcome text shown in the right column. Mostly monochrome to match
+ * DesignSpec's white-on-black wireframe brand, with a couple of accents:
+ * agent names in yellow and the Enter hint in cyan.
  */
 function getWelcomeText(): string[] {
   return [
@@ -30,16 +33,17 @@ function getWelcomeText(): string[] {
     PALETTE.midGray("Predictable UI for AI coding agents"),
     "",
     PALETTE.white("init will:"),
-    PALETTE.lightGray("  • Create the design-spec/ workspace"),
-    PALETTE.lightGray("  • Generate skills and /desx:* slash commands"),
+    PALETTE.midGray("  • Create the design-spec/ workspace"),
+    PALETTE.midGray("  • Generate skills and /desx:* slash commands"),
     "",
     PALETTE.white("Supported agents:"),
     ...AI_TOOLS.map((tool) => {
+      const name = `${PALETTE.midGray("  • ")}${chalk.yellow(tool.name)}`;
       const description = tool.description ? PALETTE.midGray(` — ${tool.description}`) : "";
-      return `${PALETTE.lightGray(`  • ${tool.name}`)}${description}`;
+      return `${name}${description}`;
     }),
     "",
-    PALETTE.lightGray("Press Enter to continue… "),
+    chalk.cyan("Press Enter to continue… "),
   ];
 }
 
