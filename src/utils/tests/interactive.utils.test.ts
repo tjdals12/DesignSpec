@@ -26,10 +26,6 @@ describe("isInteractive", () => {
     expect(isInteractive()).toBe(true);
   });
 
-  it("interactive: false가 명시되면 false를 반환한다", () => {
-    expect(isInteractive({ interactive: false })).toBe(false);
-  });
-
   it("DESIGN_SPEC_INTERACTIVE=0이면 false를 반환한다", () => {
     process.env.DESIGN_SPEC_INTERACTIVE = "0";
     expect(isInteractive()).toBe(false);

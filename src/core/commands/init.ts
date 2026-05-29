@@ -66,11 +66,9 @@ interface SetupResults {
 
 export class InitCommand {
   private readonly _tools?: string | undefined;
-  private readonly _interactive?: boolean | undefined;
 
-  constructor(options: { tools?: string; interactive?: boolean }) {
+  constructor(options: { tools?: string }) {
     this._tools = options.tools;
-    this._interactive = options.interactive;
   }
 
   async execute(targetPath: string): Promise<void> {
@@ -159,9 +157,8 @@ export class InitCommand {
   }
 
   private canPromptInteractively(): boolean {
-    if (this._interactive === false) return false;
     if (!isUndefined(this._tools)) return false;
-    return isInteractive({ interactive: this._interactive });
+    return isInteractive();
   }
 
   private async getSelectedToolIds(args: {
