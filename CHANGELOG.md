@@ -1,3 +1,10 @@
+# [1.0.0-next.5](https://github.com/tjdals12/DesignSpec/compare/v1.0.0-next.4...v1.0.0-next.5) (2026-05-29)
+
+
+### Features
+
+* interactive tool selection for `init` with an animated welcome screen ([#16](https://github.com/tjdals12/DesignSpec/issues/16)) ([aa5adf0](https://github.com/tjdals12/DesignSpec/commit/aa5adf0785b87a975667fbc0ac1b7d52c1ad5632))
+
 # [1.0.0-next.4](https://github.com/tjdals12/DesignSpec/compare/v1.0.0-next.3...v1.0.0-next.4) (2026-05-28)
 
 
