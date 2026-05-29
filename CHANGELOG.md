@@ -1,3 +1,17 @@
+# 1.0.0 (2026-05-29)
+
+
+### Bug Fixes
+
+* add Node shebang to design-spec bin entry ([ffd4cb7](https://github.com/tjdals12/DesignSpec/commit/ffd4cb77a9a0c79737ef9c5a5e2f4bc1bdfb58e1))
+* include dist, bin, schemas in published package ([fd35715](https://github.com/tjdals12/DesignSpec/commit/fd35715f58952528ce7e47f1b2f31731f25f7e5f))
+* remove invalid link: dependency from package.json ([d5817d3](https://github.com/tjdals12/DesignSpec/commit/d5817d3f582f091bb7fdac65ca9526020f9c0558))
+
+
+### Features
+
+* initial public release ([fca27fb](https://github.com/tjdals12/DesignSpec/commit/fca27fbd92b7728c938991dd4f85d72c89c3c82f))
+
 # [1.0.0-next.4](https://github.com/tjdals12/DesignSpec/compare/v1.0.0-next.3...v1.0.0-next.4) (2026-05-28)
 
 
