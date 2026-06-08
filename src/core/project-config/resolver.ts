@@ -32,7 +32,9 @@ export async function resolveProjectConfig(projectPath: string): Promise<Project
     return null;
   }
 
-  if (parsed === null || typeof parsed !== "object") {
+  if (parsed === null || parsed === undefined) return null;
+
+  if (typeof parsed !== "object") {
     console.warn(`${resolvedPath} is not a valid YAML object`);
     return null;
   }

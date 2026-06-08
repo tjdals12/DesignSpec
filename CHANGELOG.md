@@ -1,3 +1,10 @@
+## [1.1.1-next.1](https://github.com/tjdals12/DesignSpec/compare/v1.1.0...v1.1.1-next.1) (2026-06-08)
+
+
+### Bug Fixes
+
+* do not warn on empty config.yaml ([bd27dbe](https://github.com/tjdals12/DesignSpec/commit/bd27dbe64a0a3f726142c69f9843622ee8176c8b))
+
 # [1.1.0](https://github.com/tjdals12/DesignSpec/compare/v1.0.0...v1.1.0) (2026-05-30)
 
 
