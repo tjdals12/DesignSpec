@@ -26,7 +26,7 @@
     "#workflows/*": "./dist/workflows/*"
   },
   "scripts": {
-    "build": "tsc",
+    "build": "tsc -p tsconfig.build.json",
     "dev:cli": "pnpm build && node bin/design-spec.js",
     "test": "vitest run",
     "test:watch": "vitest",

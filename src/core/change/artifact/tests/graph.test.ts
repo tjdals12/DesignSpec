@@ -3,7 +3,12 @@ import { ArtifactGraph } from "#core/change/artifact/graph.js";
 import type { SchemaYaml } from "#core/change/artifact/schema/schema.js";
 
 function makeSchema(artifacts: SchemaYaml["artifacts"]): SchemaYaml {
-  return { name: "test-schema", version: 1, artifacts };
+  return {
+    name: "test-schema",
+    version: 1,
+    artifacts,
+    apply: { requires: [], instruction: "Apply." },
+  };
 }
 
 function makeArtifact(id: string, requires: string[] = []): SchemaYaml["artifacts"][number] {
