@@ -18,7 +18,7 @@ afterEach(async () => {
 });
 
 function captureJsonOutput(): unknown {
-  const output = consoleSpy.mock.calls.map((args) => String(args[0])).join("\n");
+  const output = consoleSpy.mock.calls.map((args: unknown[]) => String(args[0])).join("\n");
   return JSON.parse(output);
 }
 
