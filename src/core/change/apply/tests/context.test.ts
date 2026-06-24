@@ -16,6 +16,7 @@ const buildSchema = (apply: { requires: string[]; instruction: string }): Schema
     },
   ],
   apply,
+  design: { requires: [], instruction: "Design." },
 });
 
 const buildTaskSummary = (total: number, completed: number): TaskSummary => ({

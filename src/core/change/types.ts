@@ -1,4 +1,5 @@
 import type { ArtifactGraph } from "./artifact/graph.js";
+import type { DesignContext } from "./design/context.js";
 import type { ApplyContext } from "./apply/context.js";
 
 export interface ArtifactStatus {
@@ -11,6 +12,7 @@ export interface ChangeContext {
   changeName: string;
   schemaName: string;
   artifactGraph: ArtifactGraph;
+  designContext: DesignContext;
   applyContext: ApplyContext;
   completedArtifacts: Set<string>;
 }
