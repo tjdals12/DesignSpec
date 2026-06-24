@@ -17,7 +17,7 @@ export async function resolveDesignInstructions(
   const designResult = designContext.resolve(completedArtifacts);
 
   const screensArtifact = artifactGraph.getArtifact("screens");
-  let screens = null;
+  let screens: string | null = null;
   if (screensArtifact) {
     screens = readSpec(changeDirPath, screensArtifact.generates);
   }
