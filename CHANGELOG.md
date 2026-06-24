@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/tjdals12/DesignSpec/compare/v1.1.1...v1.2.0) (2026-06-24)
+
+
+### Features
+
+* add design-instructions command ([#20](https://github.com/tjdals12/DesignSpec/issues/20)) ([d6802d8](https://github.com/tjdals12/DesignSpec/commit/d6802d8446b3a3d5dbc830f0c687a51092772033))
+
 # [1.2.0-next.1](https://github.com/tjdals12/DesignSpec/compare/v1.1.1-next.1...v1.2.0-next.1) (2026-06-24)
 
 
