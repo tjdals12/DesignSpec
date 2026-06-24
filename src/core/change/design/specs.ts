@@ -23,16 +23,12 @@ export function collectSpecs(changeDirPath: string, generates: string): SpecFile
 
   const specFiles: SpecFile[] = [];
   for (const relativePath of matches) {
-    const filePath = path.join(changeDirPath, relativePath);
-    const stat = fs.statSync(filePath, { throwIfNoEntry: false });
-    if (!stat || !stat.isFile()) {
+    const spec = readSpec(changeDirPath, relativePath);
+    if (spec === null) {
       continue;
     }
 
-    const content = fs.readFileSync(filePath, "utf-8");
-
     const name = path.basename(relativePath, ".md");
-    const spec = content.trim();
 
     specFiles.push({ name, spec });
   }
