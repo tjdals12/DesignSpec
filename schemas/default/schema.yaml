@@ -311,3 +311,31 @@ apply:
   instruction: |
     Read context files, work through pending tasks in tasks.md, mark complete as you go.
     Pause if you hit blockers or need clarification.
+
+design:
+  requires:
+    - screens
+    - pages
+    - components
+  instruction: |
+    Design every component and page in this change. Design the components first, then compose the pages from them.
+
+    For each component and page:
+
+    - Follow the project's style tokens for color, typography, spacing, radius, and depth exactly. Do not invent values the tokens do not define.
+    - Render every piece of information a spec lists. Use its copy verbatim; do not reword or translate it.
+    - Follow each spec's layout description and wireframe for arrangement, structure, and density. A wireframe sets ordering and density, not pixel-level dimensions, and is not a source of style.
+    - Render every declared state as a separate frame.
+    - Honor the constraints in each spec's notes.
+    - Do not invent information a spec does not provide. Where a spec marks something out of design scope, choose a restrained default that fits the style direction.
+
+    For each component:
+
+    - Design each component as a standalone, reusable unit on its own frame. Do not combine unrelated components into a single screen.
+    - A container component that holds other components places those children as instances rather than redrawing them.
+    - Also render one overview frame that shows every component together, one state each, as a gallery for reviewing the set at a glance. It is not a page — do not arrange the components into a layout or screen.
+
+    For each page:
+
+    - The components a page references by name are the reusable units designed above. Place them as instances where the wireframe references them by name; do not redraw them.
+    - Design each page as its own screen. Do not combine multiple pages into a single screen.

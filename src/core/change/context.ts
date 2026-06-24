@@ -3,6 +3,7 @@ import type { ChangeContext } from "./types.js";
 import { ArtifactGraph } from "./artifact/graph.js";
 import { ApplyContext } from "./apply/context.js";
 import { getCompletedArtifacts } from "./artifact/completion.js";
+import { DesignContext } from "./design/context.js";
 
 export async function loadChangeContext(
   projectPath: string,
@@ -11,6 +12,9 @@ export async function loadChangeContext(
   const schema = await resolveSchema();
 
   const schemaName = schema.name;
+
+  const designContext = new DesignContext(schema);
+
   const applyContext = new ApplyContext(schema);
 
   const artifactGraph = new ArtifactGraph(schema);
@@ -21,6 +25,7 @@ export async function loadChangeContext(
   return {
     changeName,
     schemaName,
+    designContext,
     applyContext,
     artifactGraph,
     completedArtifacts,
