@@ -23,6 +23,16 @@ DesignSpec makes the result predictable. You pin down what a screen should be be
 
 It also locks in the visual style — color, spacing, typography — so screens don't drift apart from one to the next.
 
+## Table of Contents
+
+- [Getting Started](#getting-started)
+- [Workflow](#workflow)
+- [Structure](#structure)
+- [Project Context](#project-context)
+- [Commands & Skills](#commands--skills)
+- [CLI](#cli)
+- [License](#license)
+
 ## Getting Started
 
 **Requires Node.js 22.13 or higher.**
@@ -293,6 +303,19 @@ Prints the instructions for the implementation step.
 
 ```text
 design-spec apply-instructions [path] --change <id>
+```
+
+| Option          | Description    |
+| --------------- | -------------- |
+| `--change <id>` | Target change  |
+| `--json`        | Output as JSON |
+
+### `design-spec design-instructions`
+
+Prints the design prompt for a change, covering all its components and pages, for reviewing the design in a design tool.
+
+```text
+design-spec design-instructions [path] --change <id>
 ```
 
 | Option          | Description    |

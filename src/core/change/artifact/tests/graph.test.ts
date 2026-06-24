@@ -8,6 +8,7 @@ function makeSchema(artifacts: SchemaYaml["artifacts"]): SchemaYaml {
     version: 1,
     artifacts,
     apply: { requires: [], instruction: "Apply." },
+    design: { requires: [], instruction: "Design." },
   };
 }
 

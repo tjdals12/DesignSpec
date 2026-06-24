@@ -22,6 +22,10 @@ apply:
   requires:
     - tasks
   instruction: Apply the change.
+design:
+  requires:
+    - tasks
+  instruction: Design.
 `;
 
 describe("parseSchema", () => {
@@ -52,6 +56,10 @@ apply:
   requires:
     - proposal
   instruction: Apply.
+design:
+  requires:
+    - proposal
+  instruction: Design.
 `;
       const schema = parseSchema(yaml);
       expect(schema.artifacts[0]?.requires).toEqual([]);
@@ -169,6 +177,9 @@ artifacts:
 apply:
   requires: [a]
   instruction: Apply.
+design:
+  requires: [a]
+  instruction: Design.
 `;
       expect(() => parseSchema(yaml)).toThrowError(SchemaValidationError);
     });
@@ -187,6 +198,9 @@ artifacts:
 apply:
   requires: [a]
   instruction: Apply.
+design:
+  requires: [a]
+  instruction: Design.
 `;
       expect(() => parseSchema(yaml)).toThrowError(SchemaValidationError);
     });

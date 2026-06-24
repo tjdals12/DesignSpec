@@ -23,6 +23,16 @@ DesignSpec은 그 결과를 예상한 대로 나오게 만듭니다. 코드를 �
 
 색·간격·타이포그래피 같은 스타일도 함께 정해두기 때문에, 화면마다 디자인이 달라지지 않습니다.
 
+## 목차
+
+- [시작하기](#시작하기)
+- [워크플로우](#워크플로우)
+- [구조](#구조)
+- [프로젝트 컨텍스트](#프로젝트-컨텍스트)
+- [커맨드 & 스킬](#커맨드--스킬)
+- [CLI 명령어](#cli-명령어)
+- [License](#license)
+
 ## 시작하기
 
 **Node.js 22.13 이상이 필요합니다.**
@@ -293,6 +303,19 @@ design-spec artifact-instructions [path] --change <id> --artifact <id>
 
 ```text
 design-spec apply-instructions [path] --change <id>
+```
+
+| 옵션            | 설명             |
+| --------------- | ---------------- |
+| `--change <id>` | 대상 change 이름 |
+| `--json`        | JSON으로 출력    |
+
+### `design-spec design-instructions`
+
+change의 컴포넌트와 페이지 전체를 담은 디자인 프롬프트를 출력합니다. 디자인 도구에서 디자인을 확인할 때 씁니다.
+
+```text
+design-spec design-instructions [path] --change <id>
 ```
 
 | 옵션            | 설명             |
