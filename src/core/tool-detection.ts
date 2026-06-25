@@ -17,14 +17,14 @@ export function getToolById(toolId: AIToolOption["value"]): AIToolOption | undef
 }
 
 export function getSupportedToolIds(): Array<AIToolOption["value"]> {
-  return AI_TOOLS.filter((tool) => !isEmpty(tool.skillsDir)).map((tool) => tool.value);
+  return AI_TOOLS.filter((tool) => !isEmpty(tool.skillsPath)).map((tool) => tool.value);
 }
 
 export async function getInstalledTools(projectPath: string): Promise<AIToolOption[]> {
   const installedTools: AIToolOption[] = [];
   for (const tool of AI_TOOLS) {
-    if (tool.skillsDir) {
-      const dirPath = path.resolve(projectPath, tool.skillsDir);
+    if (tool.detectionDir) {
+      const dirPath = path.resolve(projectPath, tool.detectionDir);
 
       const dirExists = await FileSystemUtils.directoryExists(dirPath);
       if (dirExists) {
@@ -37,7 +37,7 @@ export async function getInstalledTools(projectPath: string): Promise<AIToolOpti
 
 export function getToolSkillStatus(projectPath: string, toolId: string): ToolSkillStatus {
   const tool = AI_TOOLS.find((tool) => tool.value === toolId);
-  if (isUndefined(tool) || isUndefined(tool.skillsDir)) {
+  if (isUndefined(tool) || isUndefined(tool.skillsPath)) {
     return {
       configured: false,
       fullyConfigured: false,
@@ -45,10 +45,10 @@ export function getToolSkillStatus(projectPath: string, toolId: string): ToolSki
     };
   }
 
-  const skillsDirPath = path.join(projectPath, tool.skillsDir, "skills");
+  const skillsPath = path.join(projectPath, tool.skillsPath);
   let skillCount = 0;
   for (const skillId of SKILL_IDS) {
-    const skillFile = path.join(skillsDirPath, skillId, "SKILL.md");
+    const skillFile = path.join(skillsPath, skillId, "SKILL.md");
     const skillExists = fsSync.existsSync(skillFile);
     if (skillExists) {
       skillCount++;

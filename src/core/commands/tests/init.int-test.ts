@@ -61,41 +61,27 @@ describe("InitCommand — 디렉토리 구조", () => {
 describe("InitCommand — 스킬 파일 생성", () => {
   it("--tools=claude 지정 시 SKILL.md가 생성된다", async () => {
     await new InitCommand({ tools: "claude" }).execute(tmpDir);
-    expect(
-      await pathExists(path.join(tmpDir, ".claude", "skills", "designspec-new-change", "SKILL.md")),
-    ).toBe(true);
-  });
-
-  it("--tools=claude 지정 시 슬래시 커맨드 파일이 생성된다", async () => {
-    await new InitCommand({ tools: "claude" }).execute(tmpDir);
-    expect(await pathExists(path.join(tmpDir, ".claude", "commands", "desx", "new.md"))).toBe(true);
-    expect(await pathExists(path.join(tmpDir, ".claude", "commands", "desx", "continue.md"))).toBe(
+    expect(await pathExists(path.join(tmpDir, ".claude", "skills", "desx-new", "SKILL.md"))).toBe(
       true,
     );
   });
 
-  it("--tools=codex 지정 시 SKILL.md가 생성된다", async () => {
+  it("--tools=codex 지정 시 .agents/skills에 SKILL.md가 생성된다", async () => {
     await new InitCommand({ tools: "codex" }).execute(tmpDir);
-    expect(
-      await pathExists(path.join(tmpDir, ".codex", "skills", "designspec-new-change", "SKILL.md")),
-    ).toBe(true);
-  });
-
-  it("--tools=codex 지정 시 슬래시 커맨드 파일이 생성된다", async () => {
-    await new InitCommand({ tools: "codex" }).execute(tmpDir);
-    expect(await pathExists(path.join(tmpDir, ".codex", "prompts", "desx-new.md"))).toBe(true);
-    expect(await pathExists(path.join(tmpDir, ".codex", "prompts", "desx-continue.md"))).toBe(true);
+    expect(await pathExists(path.join(tmpDir, ".agents", "skills", "desx-new", "SKILL.md"))).toBe(
+      true,
+    );
   });
 
   it("--tools=none 지정 시 스킬 파일이 생성되지 않는다", async () => {
     await new InitCommand({ tools: "none" }).execute(tmpDir);
     expect(await pathExists(path.join(tmpDir, ".claude"))).toBe(false);
-    expect(await pathExists(path.join(tmpDir, ".codex"))).toBe(false);
+    expect(await pathExists(path.join(tmpDir, ".agents"))).toBe(false);
   });
 
   it("이미 초기화된 디렉토리에서 재실행하면 스킬 파일을 덮어쓴다", async () => {
     await new InitCommand({ tools: "claude" }).execute(tmpDir);
-    const skillPath = path.join(tmpDir, ".claude", "skills", "designspec-new-change", "SKILL.md");
+    const skillPath = path.join(tmpDir, ".claude", "skills", "desx-new", "SKILL.md");
     await fs.writeFile(skillPath, "custom content");
     await new InitCommand({ tools: "claude" }).execute(tmpDir);
     const content = await fs.readFile(skillPath, "utf-8");
@@ -120,8 +106,8 @@ describe("InitCommand — 비대화형 폴백", () => {
 
     await new InitCommand({}).execute(tmpDir);
 
-    expect(
-      await pathExists(path.join(tmpDir, ".claude", "skills", "designspec-new-change", "SKILL.md")),
-    ).toBe(true);
+    expect(await pathExists(path.join(tmpDir, ".claude", "skills", "desx-new", "SKILL.md"))).toBe(
+      true,
+    );
   });
 });

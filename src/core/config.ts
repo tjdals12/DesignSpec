@@ -3,37 +3,25 @@ export const METADATA_FILENAME = ".design-spec.yaml";
 export const CONFIG_FILENAMES = ["config.yaml", "config.yml"] as const;
 
 export const SKILL_IDS = [
-  "designspec-new-change",
-  "designspec-continue-change",
-  "designspec-ff-change",
-  "designspec-apply-change",
-  "designspec-sync-specs",
-  "designspec-archive-change",
-  "designspec-verify-change",
-  "designspec-explore",
-  "designspec-style-init",
+  "desx-new",
+  "desx-continue",
+  "desx-ff",
+  "desx-apply",
+  "desx-sync",
+  "desx-archive",
+  "desx-verify",
+  "desx-explore",
+  "desx-style-init",
 ] as const;
 export type SkillIds = (typeof SKILL_IDS)[number];
-
-export const SLASH_COMMAND_NAMESPACE = "desx";
-
-export const COMMAND_IDS = [
-  "new",
-  "continue",
-  "ff",
-  "apply",
-  "sync",
-  "archive",
-  "verify",
-  "explore",
-  "style-init",
-] as const;
-export type CommandIds = (typeof COMMAND_IDS)[number];
 
 export interface AIToolOption {
   name: string;
   value: string;
-  skillsDir: string;
+  /** Relative path where DesignSpec writes this tool's skills (e.g. ".claude/skills"). */
+  skillsPath: string;
+  /** Optional dir whose presence marks the tool as already set up (e.g. ".claude"). */
+  detectionDir?: string;
   /** Short, human-readable description shown on the interactive welcome screen. */
   description?: string;
 }
@@ -46,13 +34,15 @@ export const AI_TOOLS: AIToolOption[] = [
   {
     name: "Codex",
     value: "codex",
-    skillsDir: ".codex",
+    skillsPath: ".agents/skills",
+    detectionDir: ".codex",
     description: "OpenAI's coding agent CLI",
   },
   {
     name: "Claude Code",
     value: "claude",
-    skillsDir: ".claude",
+    skillsPath: ".claude/skills",
+    detectionDir: ".claude",
     description: "Anthropic's agentic coding CLI",
   },
 ];

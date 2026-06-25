@@ -3,7 +3,7 @@ import type { SkillTemplate } from "../skill-templates.js";
 
 export function getVerifyChangeSkillTemplate(): SkillTemplate {
   return {
-    name: "designspec-verify-change",
+    name: "desx-verify",
     description:
       "Verify that an implementation matches the change artifacts. Use when the user wants to validate that implementation is complete, correct, and coherent before archiving.",
     instructions: dedent`

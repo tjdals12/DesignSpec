@@ -20,39 +20,39 @@ export interface SkillTemplateEntry {
 export function getSkillTemplates(): SkillTemplateEntry[] {
   const all: SkillTemplateEntry[] = [
     {
-      id: "designspec-new-change",
+      id: "desx-new",
       template: getNewChangeSkillTemplate(),
     },
     {
-      id: "designspec-continue-change",
+      id: "desx-continue",
       template: getContinueChangeSkillTemplate(),
     },
     {
-      id: "designspec-ff-change",
+      id: "desx-ff",
       template: getFastForwardSkillTemplate(),
     },
     {
-      id: "designspec-apply-change",
+      id: "desx-apply",
       template: getApplyChangeSkillTemplate(),
     },
     {
-      id: "designspec-sync-specs",
+      id: "desx-sync",
       template: getSyncSpecsSkillTemplate(),
     },
     {
-      id: "designspec-archive-change",
+      id: "desx-archive",
       template: getArchiveChangeSkillTemplate(),
     },
     {
-      id: "designspec-verify-change",
+      id: "desx-verify",
       template: getVerifyChangeSkillTemplate(),
     },
     {
-      id: "designspec-explore",
+      id: "desx-explore",
       template: getExploreSkillTemplate(),
     },
     {
-      id: "designspec-style-init",
+      id: "desx-style-init",
       template: getStyleInitSkillTemplate(),
     },
   ];

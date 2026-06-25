@@ -29,7 +29,7 @@ DesignSpec은 그 결과를 예상한 대로 나오게 만듭니다. 코드를 �
 - [워크플로우](#워크플로우)
 - [구조](#구조)
 - [프로젝트 컨텍스트](#프로젝트-컨텍스트)
-- [커맨드 & 스킬](#커맨드--스킬)
+- [스킬](#스킬)
 - [CLI 명령어](#cli-명령어)
 - [License](#license)
 
@@ -63,7 +63,7 @@ design-spec init --tools=all
 | Claude Code | `claude`     |
 | Codex       | `codex`      |
 
-초기화하면 에이전트에서 쓸 슬래시 커맨드가 생성됩니다. 실제 작업 흐름은 아래 [워크플로우](#워크플로우)를 참고하세요.
+초기화하면 에이전트에서 쓸 스킬이 생성됩니다. 실제 작업 흐름은 아래 [워크플로우](#워크플로우)를 참고하세요.
 
 ## 워크플로우
 
@@ -72,26 +72,26 @@ design-spec init --tools=all
 **최초 1회:**
 
 ```text
-/desx:style-init
+/desx-style-init
 ```
 
 **필요할 때:**
 
 ```text
-/desx:explore
+/desx-explore
 ```
 
 **change마다:**
 
 ```text
-/desx:new → (/desx:continue | /desx:ff) → /desx:apply → /desx:verify → /desx:sync → /desx:archive
+/desx-new → (/desx-continue | /desx-ff) → /desx-apply → /desx-verify → /desx-sync → /desx-archive
 ```
 
-먼저 `/desx:style-init`으로 프로젝트의 스타일 가이드라인을 한 번 잡아둡니다. 이후 모든 작업이 이 기준을 따릅니다.
+먼저 `/desx-style-init`으로 프로젝트의 스타일 가이드라인을 한 번 잡아둡니다. 이후 모든 작업이 이 기준을 따릅니다.
 
-무엇을 만들지 아직 분명하지 않다면 `/desx:explore`로 먼저 생각을 정리할 수 있습니다.
+무엇을 만들지 아직 분명하지 않다면 `/desx-explore`로 먼저 생각을 정리할 수 있습니다.
 
-`/desx:new`로 change를 시작하고 화면별 요구사항을 아티팩트로 작성합니다. 하나씩 검토하며 가려면 `/desx:continue`, 한 번에 만들려면 `/desx:ff`를 씁니다. 회원가입 change라면 이런 구조가 만들어집니다.
+`/desx-new`로 change를 시작하고 화면별 요구사항을 아티팩트로 작성합니다. 하나씩 검토하며 가려면 `/desx-continue`, 한 번에 만들려면 `/desx-ff`를 씁니다. 회원가입 change라면 이런 구조가 만들어집니다.
 
 ```text
 design-spec/changes/add-signup/
@@ -104,7 +104,7 @@ design-spec/changes/add-signup/
 └── tasks.md
 ```
 
-요구사항이 준비되면 `/desx:apply`로 구현하고, `/desx:verify`로 결과가 아티팩트와 맞는지 확인합니다. 마지막으로 `/desx:sync`로 스펙을 마스터 스펙에 반영하고 `/desx:archive`로 change를 보관합니다.
+요구사항이 준비되면 `/desx-apply`로 구현하고, `/desx-verify`로 결과가 아티팩트와 맞는지 확인합니다. 마지막으로 `/desx-sync`로 스펙을 마스터 스펙에 반영하고 `/desx-archive`로 change를 보관합니다.
 
 이렇게 요구사항을 먼저 고정한 뒤 구현으로 넘어가기 때문에, 화면이 처음 의도한 대로 만들어집니다.
 
@@ -152,89 +152,89 @@ contextFiles:
 
 설정한 내용은 `design-spec context`로 확인할 수 있습니다.
 
-## 커맨드 & 스킬
+## 스킬
 
-이 커맨드들은 AI 코딩 어시스턴트의 채팅에서 호출합니다. 슬래시 커맨드와 스킬 두 형태로 제공되며, 괄호 안은 대응되는 스킬 이름입니다.
+이 스킬들은 AI 코딩 어시스턴트의 채팅에서 호출합니다. `init`이 설정한 에이전트마다 설치하며, 각 스킬은 `/desx-new`처럼 이름으로 호출합니다.
 
-### `/desx:style-init`
+### `/desx-style-init`
 
-대화를 통해 프로젝트의 스타일 가이드라인을 작성합니다. 색·간격·타이포그래피 기준을 정해 `design-spec/styles/`에 저장하고, 이후 모든 아티팩트 작성과 구현에 주입됩니다. 프로젝트당 한 번 실행합니다. (스킬: `designspec-style-init`)
+대화를 통해 프로젝트의 스타일 가이드라인을 작성합니다. 색·간격·타이포그래피 기준을 정해 `design-spec/styles/`에 저장하고, 이후 모든 아티팩트 작성과 구현에 주입됩니다. 프로젝트당 한 번 실행합니다.
 
 ```text
-/desx:style-init
+/desx-style-init
 ```
 
-### `/desx:explore`
+### `/desx-explore`
 
-무엇을 만들지 아직 분명하지 않을 때, 대화로 아이디어와 요구사항을 구체화합니다. (스킬: `designspec-explore`)
+무엇을 만들지 아직 분명하지 않을 때, 대화로 아이디어와 요구사항을 구체화합니다.
 
 ```text
-/desx:explore [탐색할 주제]
+/desx-explore [탐색할 주제]
 ```
 
-### `/desx:new`
+### `/desx-new`
 
-새 change를 생성합니다. 작업할 화면과 컴포넌트를 담을 디렉터리를 만듭니다. (스킬: `designspec-new-change`)
+새 change를 생성합니다. 작업할 화면과 컴포넌트를 담을 디렉터리를 만듭니다.
 
 ```text
-/desx:new [change 이름 또는 설명]
+/desx-new [change 이름 또는 설명]
 ```
 
-### `/desx:continue`
+### `/desx-continue`
 
-change의 다음 아티팩트를 하나씩 차례로 작성합니다. (스킬: `designspec-continue-change`)
+change의 다음 아티팩트를 하나씩 차례로 작성합니다.
 
 ```text
-/desx:continue [change 이름]
+/desx-continue [change 이름]
 ```
 
-### `/desx:ff`
+### `/desx-ff`
 
-필요한 아티팩트를 한 번에 작성합니다. (스킬: `designspec-ff-change`)
+필요한 아티팩트를 한 번에 작성합니다.
 
 ```text
-/desx:ff [change 이름 또는 설명]
+/desx-ff [change 이름 또는 설명]
 ```
 
-### `/desx:apply`
+### `/desx-apply`
 
-아티팩트와 스타일 가이드라인을 기준으로 화면을 구현합니다. (스킬: `designspec-apply-change`)
+아티팩트와 스타일 가이드라인을 기준으로 화면을 구현합니다.
 
 ```text
-/desx:apply [change 이름]
+/desx-apply [change 이름]
 ```
 
-### `/desx:verify`
+### `/desx-verify`
 
-구현이 아티팩트의 요구사항과 맞는지 검증합니다. (스킬: `designspec-verify-change`)
+구현이 아티팩트의 요구사항과 맞는지 검증합니다.
 
 ```text
-/desx:verify [change 이름]
+/desx-verify [change 이름]
 ```
 
-### `/desx:sync`
+### `/desx-sync`
 
-change의 페이지·컴포넌트 스펙을 마스터 스펙에 반영합니다. (스킬: `designspec-sync-specs`)
+change의 페이지·컴포넌트 스펙을 마스터 스펙에 반영합니다.
 
 ```text
-/desx:sync [change 이름]
+/desx-sync [change 이름]
 ```
 
-### `/desx:archive`
+### `/desx-archive`
 
-완료된 change를 보관합니다. (스킬: `designspec-archive-change`)
+완료된 change를 보관합니다.
 
 ```text
-/desx:archive [change 이름]
+/desx-archive [change 이름]
 ```
 
 ## CLI 명령어
 
-`design-spec` CLI는 프로젝트 초기화, change 생성과 상태 확인, 아티팩트 지시문과 컨텍스트 출력을 위한 터미널 명령을 제공합니다. 앞의 [커맨드 & 스킬](#커맨드--스킬)에서 다룬 슬래시 커맨드와 함께 쓰입니다. 모든 명령은 대상 경로를 인자로 받으며, 생략하면 현재 디렉터리를 사용합니다.
+`design-spec` CLI는 프로젝트 초기화, change 생성과 상태 확인, 아티팩트 지시문과 컨텍스트 출력을 위한 터미널 명령을 제공합니다. 앞의 [스킬](#스킬)에서 다룬 스킬과 함께 쓰입니다. 모든 명령은 대상 경로를 인자로 받으며, 생략하면 현재 디렉터리를 사용합니다.
 
 ### `design-spec init`
 
-프로젝트를 초기화하고 스킬·슬래시 커맨드를 생성합니다.
+프로젝트를 초기화하고 스킬을 생성합니다.
 
 ```text
 design-spec init [path] --tools <tools>

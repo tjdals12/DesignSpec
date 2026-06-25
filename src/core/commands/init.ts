@@ -15,8 +15,6 @@ import {
   type ToolSkillStatus,
 } from "../tool-detection.js";
 import { generateSkillContent, getSkillTemplates } from "../skills/skill-generation.js";
-import { getSlashCommandTemplates } from "../slash-commands/slash-command-generation.js";
-import { SlashCommandAdapterRegistry } from "../slash-commands/slash-command-adapter-registry.js";
 import { buildArchivesDirPath, buildChangesDirPath } from "../change/paths.js";
 import { buildSpecsDirPath } from "../spec/paths.js";
 import { buildStylesDirPath } from "../styles/paths.js";
@@ -61,7 +59,6 @@ interface SetupResults {
   createdTools: Array<AIToolInfo>;
   refreshedTools: Array<AIToolInfo>;
   failedTools: Array<{ name: string; error: string }>;
-  commandSkipped: Array<AIToolInfo["value"]>;
 }
 
 export class InitCommand {
@@ -103,7 +100,7 @@ export class InitCommand {
 
     await this.scaffoldConfigFile(projectPath);
 
-    const results = await this.generateSkillsAndCommands(projectPath, validatedTools);
+    const results = await this.generateSkills(projectPath, validatedTools);
 
     this.printResults(results);
   }
@@ -239,7 +236,7 @@ export class InitCommand {
     for (const toolId of toolIds) {
       const tool = getToolById(toolId)!;
 
-      if (isUndefined(tool.skillsDir)) {
+      if (isUndefined(tool.skillsPath)) {
         const supportedToolIds = getSupportedToolIds();
         throw new Error(
           `Tool '${toolId}' does not support skill generation.\nTools with skill generation support:\n  ${supportedToolIds.join("\n  ")}`,
@@ -301,45 +298,28 @@ export class InitCommand {
     });
   }
 
-  private async generateSkillsAndCommands(
+  private async generateSkills(
     projectPath: string,
     tools: Array<AIToolInfo>,
   ): Promise<SetupResults> {
     const createdTools: Array<AIToolInfo> = [];
     const refreshedTools: Array<AIToolInfo> = [];
     const failedTools: Array<{ name: string; error: string }> = [];
-    const commandSkipped: Array<AIToolInfo["value"]> = [];
 
     const skillTemplates = getSkillTemplates();
-    const slashCommandTemplates = getSlashCommandTemplates();
 
     for (const tool of tools) {
       const spinner = ora(`Setting up ${tool.name}...`).start();
 
       try {
-        const skillsDir = path.join(projectPath, tool.skillsDir, "skills");
+        const skillsPath = path.join(projectPath, tool.skillsPath);
 
         for (const { id, template } of skillTemplates) {
-          const skillDir = path.join(skillsDir, id);
+          const skillDir = path.join(skillsPath, id);
           const skillFile = path.join(skillDir, "SKILL.md");
           const skillContent = generateSkillContent(template);
 
           await FileSystemUtils.writeFile(skillFile, skillContent);
-        }
-
-        const adapter = SlashCommandAdapterRegistry.get(tool.value);
-        if (adapter) {
-          for (const { id, template } of slashCommandTemplates) {
-            const slashCommandFilePath = adapter.getFilePath(id);
-            const slashCommandFile = path.isAbsolute(slashCommandFilePath)
-              ? slashCommandFilePath
-              : path.join(projectPath, slashCommandFilePath);
-            const slashCommandContent = adapter.formatFile(template);
-
-            await FileSystemUtils.writeFile(slashCommandFile, slashCommandContent);
-          }
-        } else {
-          commandSkipped.push(tool.value);
         }
 
         spinner.succeed(`Setup complete for ${tool.name}`);
@@ -360,7 +340,6 @@ export class InitCommand {
       createdTools,
       refreshedTools,
       failedTools,
-      commandSkipped,
     };
   }
 
@@ -369,7 +348,7 @@ export class InitCommand {
     console.log(chalk.bold("DesignSpec Setup Complete"));
     console.log();
 
-    const { createdTools, refreshedTools, failedTools, commandSkipped } = results;
+    const { createdTools, refreshedTools, failedTools } = results;
     if (createdTools.length > 0) {
       console.log(`Created: ${createdTools.map((tool) => tool.name).join(", ")}`);
     }
@@ -380,16 +359,11 @@ export class InitCommand {
     const successfulTools = [...createdTools, ...refreshedTools];
     if (successfulTools.length > 0) {
       const toolDirs = [
-        ...new Set(successfulTools.map((tool) => path.join(tool.skillsDir, "/"))),
+        ...new Set(successfulTools.map((tool) => path.join(tool.skillsPath, "/"))),
       ].join(", ");
       const skillCount = getSkillTemplates().length;
-      const commandCount = getSlashCommandTemplates().length;
-      if (skillCount > 0 && commandCount > 0) {
-        console.log(`${skillCount} skills and ${commandCount} commands in ${toolDirs}`);
-      } else if (skillCount > 0) {
+      if (skillCount > 0) {
         console.log(`${skillCount} skills in ${toolDirs}`);
-      } else if (commandCount > 0) {
-        console.log(`${commandCount} commands in ${toolDirs}`);
       }
     }
 
@@ -401,13 +375,9 @@ export class InitCommand {
       );
     }
 
-    if (commandSkipped.length > 0) {
-      console.log(chalk.dim(`Commands skipped for: ${commandSkipped.join(", ")} (no adapter)`));
-    }
-
     if (createdTools.length > 0 || refreshedTools.length > 0) {
       console.log();
-      console.log(chalk.white("Restart your IDE for slash commands to take effect."));
+      console.log(chalk.white("Restart your IDE for skills to take effect."));
     }
 
     console.log();

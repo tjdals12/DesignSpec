@@ -3,7 +3,7 @@ import type { SkillTemplate } from "../skill-templates.js";
 
 export function getContinueChangeSkillTemplate(): SkillTemplate {
   return {
-    name: "designspec-continue-change",
+    name: "desx-continue",
     description:
       "Continue working on a DesignSpec change by creating the next artifact. Use when the user wants to progress their change, create the next artifact, or continue their workflow.",
     instructions: dedent`

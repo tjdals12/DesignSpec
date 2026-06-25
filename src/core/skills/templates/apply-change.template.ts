@@ -3,7 +3,7 @@ import type { SkillTemplate } from "../skill-templates.js";
 
 export function getApplyChangeSkillTemplate(): SkillTemplate {
   return {
-    name: "designspec-apply-change",
+    name: "desx-apply",
     description:
       "Implement tasks from a DesignSpec change. Use when the user wants to start implementing, continue implementation, or work through tasks.",
     instructions: dedent`
@@ -37,7 +37,7 @@ export function getApplyChangeSkillTemplate(): SkillTemplate {
        - \`instruction\`: Dynamic instruction based on current state
 
        **Handle states:**
-       - If \`state: "blocked"\`: show the warning and missing artifacts, suggest using the \`designspec-continue-change\` skill to create them. STOP.
+       - If \`state: "blocked"\`: show the warning and missing artifacts, suggest using the \`desx-continue\` skill to create them. STOP.
        - If \`state: "all_done"\`: congratulate the user, suggest archiving. STOP.
        - If \`state: "ready"\`: proceed to implementation.
 
@@ -155,7 +155,7 @@ export function getApplyChangeSkillTemplate(): SkillTemplate {
 
     This skill supports the "actions on a change" model:
 
-    - **Can be invoked anytime**: After the \`designspec-continue-change\` skill produces \`tasks.md\`, after partial implementation, interleaved with other actions.
+    - **Can be invoked anytime**: After the \`desx-continue\` skill produces \`tasks.md\`, after partial implementation, interleaved with other actions.
     - **Allows artifact updates**: If implementation reveals design issues, suggest updating the relevant artifact — work fluidly, not phase-locked.
     `,
   };

@@ -25,10 +25,10 @@ const BRIGHTNESS = [
 // Quick-start commands shown after setup. Names are padded to align their
 // one-line descriptions in a column.
 const QUICK_START: Array<{ command: string; description: string }> = [
-  { command: "/desx:style-init", description: "Set the style guideline (once)" },
-  { command: "/desx:new", description: "Start a change" },
-  { command: "/desx:continue", description: "Write the next artifact" },
-  { command: "/desx:apply", description: "Implement to spec" },
+  { command: "/desx-style-init", description: "Set the style guideline (once)" },
+  { command: "/desx-new", description: "Start a change" },
+  { command: "/desx-continue", description: "Write the next artifact" },
+  { command: "/desx-apply", description: "Implement to spec" },
 ];
 
 /**
@@ -49,7 +49,7 @@ function getWelcomeText(): string[] {
     "",
     PALETTE.white("init will:"),
     PALETTE.midGray("  • Create the design-spec/ workspace"),
-    PALETTE.midGray("  • Generate skills and /desx:* slash commands"),
+    PALETTE.midGray("  • Generate the /desx-* skills"),
     "",
     PALETTE.white("Quick start after setup:"),
     ...QUICK_START.map(({ command, description }) => {
