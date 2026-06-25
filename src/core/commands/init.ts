@@ -188,32 +188,28 @@ export class InitCommand {
       );
     }
 
-    const { checkbox } = await import("@inquirer/prompts");
+    const { searchableMultiSelect } = await import("../prompts/searchable-multi-select.js");
 
     const choices = supportedToolIds.map((toolId) => {
       const tool = getToolById(toolId)!;
       const configured = configuredToolIds.has(toolId);
       const detected = detectedToolIds.has(toolId) && !configured;
       const preSelected = configured || (shouldPreselectDetected && detected);
-      const label = configured ? " (configured)" : detected ? " (detected)" : "";
 
       return {
-        name: `${tool.name}${chalk.dim(label)}`,
+        name: tool.name,
         value: toolId,
-        checked: preSelected,
-        description: tool.description,
+        ...(isUndefined(tool.description) ? {} : { description: tool.description }),
+        configured,
+        detected,
+        preSelected,
       };
     });
 
-    const selectedToolIds = await checkbox<string>({
+    const selectedToolIds = await searchableMultiSelect({
       message: "Select the AI tools to set up",
-      choices: choices.map(({ name, value, checked, description }) => ({
-        name,
-        value,
-        checked,
-        ...(isUndefined(description) ? {} : { description }),
-      })),
-      required: true,
+      choices,
+      validate: (selected) => selected.length > 0 || "Select at least one tool",
     });
 
     return selectedToolIds;
