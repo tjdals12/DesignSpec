@@ -45,4 +45,10 @@ export const AI_TOOLS: AIToolOption[] = [
     detectionDir: ".claude",
     description: "Anthropic's agentic coding CLI",
   },
+  {
+    name: "Antigravity",
+    value: "antigravity",
+    skillsPath: ".agents/skills",
+    description: "Google's agentic coding CLI",
+  },
 ];

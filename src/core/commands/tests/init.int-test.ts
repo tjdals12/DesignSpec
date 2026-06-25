@@ -73,6 +73,13 @@ describe("InitCommand — 스킬 파일 생성", () => {
     );
   });
 
+  it("--tools=antigravity 지정 시 .agents/skills에 SKILL.md가 생성된다", async () => {
+    await new InitCommand({ tools: "antigravity" }).execute(tmpDir);
+    expect(await pathExists(path.join(tmpDir, ".agents", "skills", "desx-new", "SKILL.md"))).toBe(
+      true,
+    );
+  });
+
   it("--tools=none 지정 시 스킬 파일이 생성되지 않는다", async () => {
     await new InitCommand({ tools: "none" }).execute(tmpDir);
     expect(await pathExists(path.join(tmpDir, ".claude"))).toBe(false);
