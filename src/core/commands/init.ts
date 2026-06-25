@@ -190,28 +190,20 @@ export class InitCommand {
 
     const { checkbox } = await import("@inquirer/prompts");
 
-    const choices = supportedToolIds
-      .map((toolId) => {
-        const tool = getToolById(toolId)!;
-        const configured = configuredToolIds.has(toolId);
-        const detected = detectedToolIds.has(toolId) && !configured;
-        const preSelected = configured || (shouldPreselectDetected && detected);
-        const label = configured ? " (configured)" : detected ? " (detected)" : "";
+    const choices = supportedToolIds.map((toolId) => {
+      const tool = getToolById(toolId)!;
+      const configured = configuredToolIds.has(toolId);
+      const detected = detectedToolIds.has(toolId) && !configured;
+      const preSelected = configured || (shouldPreselectDetected && detected);
+      const label = configured ? " (configured)" : detected ? " (detected)" : "";
 
-        return {
-          name: `${tool.name}${chalk.dim(label)}`,
-          value: toolId,
-          checked: preSelected,
-          description: tool.description,
-          configured,
-          detected,
-        };
-      })
-      .sort((a, b) => {
-        if (a.configured !== b.configured) return a.configured ? -1 : 1;
-        if (a.detected !== b.detected) return a.detected ? -1 : 1;
-        return 0;
-      });
+      return {
+        name: `${tool.name}${chalk.dim(label)}`,
+        value: toolId,
+        checked: preSelected,
+        description: tool.description,
+      };
+    });
 
     const selectedToolIds = await checkbox<string>({
       message: "Select the AI tools to set up",
