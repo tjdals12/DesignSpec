@@ -58,4 +58,17 @@ export const AI_TOOLS: AIToolOption[] = [
     detectionDir: ".cursor",
     description: "Anysphere's AI code editor and CLI",
   },
+  {
+    name: "GitHub Copilot",
+    value: "copilot",
+    skillsPath: ".agents/skills",
+    description: "GitHub's AI coding agent",
+  },
+  {
+    name: "OpenCode",
+    value: "opencode",
+    skillsPath: ".agents/skills",
+    detectionDir: ".opencode",
+    description: "Open-source agentic coding CLI",
+  },
 ];

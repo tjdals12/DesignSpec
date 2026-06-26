@@ -58,12 +58,14 @@ design-spec init --tools=all
 
 `--tools`로 사용할 에이전트를 지정합니다. 전부 설치하려면 `all`, 일부만 설치하려면 `claude,codex`처럼 값을 콤마로 묶습니다. 지원하는 에이전트는 다음과 같습니다.
 
-| 에이전트    | `--tools` 값  |
-| ----------- | ------------- |
-| Claude Code | `claude`      |
-| Codex       | `codex`       |
-| Antigravity | `antigravity` |
-| Cursor      | `cursor`      |
+| 에이전트       | `--tools` 값  | 스킬 경로        |
+| -------------- | ------------- | ---------------- |
+| Claude Code    | `claude`      | `.claude/skills` |
+| Codex          | `codex`       | `.agents/skills` |
+| Antigravity    | `antigravity` | `.agents/skills` |
+| Cursor         | `cursor`      | `.agents/skills` |
+| GitHub Copilot | `copilot`     | `.agents/skills` |
+| OpenCode       | `opencode`    | `.agents/skills` |
 
 초기화하면 에이전트에서 쓸 스킬이 생성됩니다. 실제 작업 흐름은 아래 [워크플로우](#워크플로우)를 참고하세요.
 

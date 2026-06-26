@@ -58,12 +58,14 @@ design-spec init --tools=all
 
 Use `--tools` to choose which agents to set up — `all` for every agent, or a comma-separated list like `claude,codex` for a subset. Supported agents:
 
-| Agent       | `--tools` value |
-| ----------- | --------------- |
-| Claude Code | `claude`        |
-| Codex       | `codex`         |
-| Antigravity | `antigravity`   |
-| Cursor      | `cursor`        |
+| Agent          | `--tools` value | Skills path      |
+| -------------- | --------------- | ---------------- |
+| Claude Code    | `claude`        | `.claude/skills` |
+| Codex          | `codex`         | `.agents/skills` |
+| Antigravity    | `antigravity`   | `.agents/skills` |
+| Cursor         | `cursor`        | `.agents/skills` |
+| GitHub Copilot | `copilot`       | `.agents/skills` |
+| OpenCode       | `opencode`      | `.agents/skills` |
 
 `init` generates the skills your agent will use. See [Workflow](#workflow) for how a change actually flows.
 
