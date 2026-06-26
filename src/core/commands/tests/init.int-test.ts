@@ -80,6 +80,13 @@ describe("InitCommand — 스킬 파일 생성", () => {
     );
   });
 
+  it("--tools=cursor 지정 시 .agents/skills에 SKILL.md가 생성된다", async () => {
+    await new InitCommand({ tools: "cursor" }).execute(tmpDir);
+    expect(await pathExists(path.join(tmpDir, ".agents", "skills", "desx-new", "SKILL.md"))).toBe(
+      true,
+    );
+  });
+
   it("--tools=none 지정 시 스킬 파일이 생성되지 않는다", async () => {
     await new InitCommand({ tools: "none" }).execute(tmpDir);
     expect(await pathExists(path.join(tmpDir, ".claude"))).toBe(false);
@@ -114,6 +121,16 @@ describe("InitCommand — 비대화형 폴백", () => {
     await new InitCommand({}).execute(tmpDir);
 
     expect(await pathExists(path.join(tmpDir, ".claude", "skills", "desx-new", "SKILL.md"))).toBe(
+      true,
+    );
+  });
+
+  it("비대화형 환경에서 .cursor 디렉토리를 감지해 .agents/skills에 스킬을 생성한다", async () => {
+    await fs.mkdir(path.join(tmpDir, ".cursor"), { recursive: true });
+
+    await new InitCommand({}).execute(tmpDir);
+
+    expect(await pathExists(path.join(tmpDir, ".agents", "skills", "desx-new", "SKILL.md"))).toBe(
       true,
     );
   });

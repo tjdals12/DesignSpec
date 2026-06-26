@@ -63,6 +63,7 @@ design-spec init --tools=all
 | Claude Code | `claude`      |
 | Codex       | `codex`       |
 | Antigravity | `antigravity` |
+| Cursor      | `cursor`      |
 
 초기화하면 에이전트에서 쓸 스킬이 생성됩니다. 실제 작업 흐름은 아래 [워크플로우](#워크플로우)를 참고하세요.
 

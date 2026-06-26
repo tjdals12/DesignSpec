@@ -63,6 +63,7 @@ Use `--tools` to choose which agents to set up — `all` for every agent, or a c
 | Claude Code | `claude`        |
 | Codex       | `codex`         |
 | Antigravity | `antigravity`   |
+| Cursor      | `cursor`        |
 
 `init` generates the skills your agent will use. See [Workflow](#workflow) for how a change actually flows.
 

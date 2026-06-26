@@ -51,4 +51,11 @@ export const AI_TOOLS: AIToolOption[] = [
     skillsPath: ".agents/skills",
     description: "Google's agentic coding CLI",
   },
+  {
+    name: "Cursor",
+    value: "cursor",
+    skillsPath: ".agents/skills",
+    detectionDir: ".cursor",
+    description: "Anysphere's AI code editor and CLI",
+  },
 ];
