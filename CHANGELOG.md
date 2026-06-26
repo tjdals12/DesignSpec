@@ -1,3 +1,10 @@
+# [2.0.0-next.2](https://github.com/tjdals12/DesignSpec/compare/v2.0.0-next.1...v2.0.0-next.2) (2026-06-26)
+
+
+### Features
+
+* remove pre-2.0.0 legacy artifacts on init ([#23](https://github.com/tjdals12/DesignSpec/issues/23)) ([f615ef8](https://github.com/tjdals12/DesignSpec/commit/f615ef8c84e9588068e4b062f2858b0c5e925201))
+
 # [2.0.0-next.1](https://github.com/tjdals12/DesignSpec/compare/v1.2.0...v2.0.0-next.1) (2026-06-26)
 
 
