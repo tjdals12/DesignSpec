@@ -41,26 +41,26 @@ describe("generateSkillContent", () => {
 
   it("metadata.author를 지정하지 않으면 기본값 design-spec이 사용된다", () => {
     const content = generateSkillContent(makeTemplate());
-    expect(content).toContain("author: design-spec");
+    expect(content).toContain('author: "design-spec"');
   });
 
   it("metadata.author를 지정하면 해당 값이 사용된다", () => {
     const content = generateSkillContent(
       makeTemplate({ metadata: { author: "custom-author", version: "2.0" } }),
     );
-    expect(content).toContain("author: custom-author");
+    expect(content).toContain('author: "custom-author"');
   });
 
   it("metadata.version을 지정하지 않으면 기본값 1.0이 사용된다", () => {
     const content = generateSkillContent(makeTemplate());
-    expect(content).toContain("version: 1.0");
+    expect(content).toContain('version: "1.0"');
   });
 
   it("metadata.version을 지정하면 해당 값이 사용된다", () => {
     const content = generateSkillContent(
       makeTemplate({ metadata: { author: "design-spec", version: "2.5" } }),
     );
-    expect(content).toContain("version: 2.5");
+    expect(content).toContain('version: "2.5"');
   });
 
   it("YAML frontmatter 구분자(---)가 포함된다", () => {

@@ -77,8 +77,8 @@ export function generateSkillContent(template: SkillTemplate): string {
   license: ${license}
   compatibility: ${compatibility}
   metadata:
-    author: ${metadata?.author ?? "design-spec"}
-    version: ${metadata?.version ?? "1.0"}
+    author: "${metadata?.author ?? "design-spec"}"
+    version: "${metadata?.version ?? "1.0"}"
   ---
 
   ${instructions}
