@@ -117,6 +117,40 @@ describe("InitCommand — 스킬 파일 생성", () => {
   });
 });
 
+describe("InitCommand — 레거시 정리", () => {
+  it("2.0.0 이전 고아 아티팩트를 제거하고 현행 스킬을 생성한다", async () => {
+    await fs.mkdir(path.join(tmpDir, ".claude", "skills", "designspec-new-change"), {
+      recursive: true,
+    });
+    await fs.writeFile(
+      path.join(tmpDir, ".claude", "skills", "designspec-new-change", "SKILL.md"),
+      "old",
+    );
+    await fs.mkdir(path.join(tmpDir, ".claude", "commands", "desx"), { recursive: true });
+    await fs.writeFile(path.join(tmpDir, ".claude", "commands", "desx", "new.md"), "old");
+    await fs.mkdir(path.join(tmpDir, ".codex", "prompts"), { recursive: true });
+    await fs.writeFile(path.join(tmpDir, ".codex", "prompts", "desx-new.md"), "old");
+
+    await new InitCommand({ tools: "claude" }).execute(tmpDir);
+
+    expect(await pathExists(path.join(tmpDir, ".claude", "skills", "designspec-new-change"))).toBe(
+      false,
+    );
+    expect(await pathExists(path.join(tmpDir, ".claude", "commands", "desx"))).toBe(false);
+    expect(await pathExists(path.join(tmpDir, ".codex", "prompts", "desx-new.md"))).toBe(false);
+    expect(await pathExists(path.join(tmpDir, ".claude", "skills", "desx-new", "SKILL.md"))).toBe(
+      true,
+    );
+  });
+
+  it("레거시가 없으면 현행 스킬만 생성한다", async () => {
+    await new InitCommand({ tools: "claude" }).execute(tmpDir);
+    expect(await pathExists(path.join(tmpDir, ".claude", "skills", "desx-new", "SKILL.md"))).toBe(
+      true,
+    );
+  });
+});
+
 describe("InitCommand — 실패", () => {
   it("--tools 없이 실행하면 에러를 던진다", async () => {
     await expect(new InitCommand({}).execute(tmpDir)).rejects.toThrow();

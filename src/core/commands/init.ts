@@ -15,6 +15,9 @@ import {
   type ToolSkillStatus,
 } from "../tool-detection.js";
 import { generateSkillContent, getSkillTemplates } from "../skills/skill-generation.js";
+import { detectLegacyArtifacts } from "../legacy/detection.js";
+import { cleanupLegacyArtifacts } from "../legacy/cleanup.js";
+import { formatCleanupSummary } from "../legacy/format.js";
 import { buildArchivesDirPath, buildChangesDirPath } from "../change/paths.js";
 import { buildSpecsDirPath } from "../spec/paths.js";
 import { buildStylesDirPath } from "../styles/paths.js";
@@ -96,6 +99,8 @@ export class InitCommand {
 
     const validatedTools = this.validateTools(toolStates, selectedToolIds);
 
+    await this.handleLegacyCleanup(projectPath);
+
     await this.createDirectoryStructure(projectPath, extendMode);
 
     await this.scaffoldConfigFile(projectPath);
@@ -103,6 +108,20 @@ export class InitCommand {
     const results = await this.generateSkills(projectPath, validatedTools);
 
     this.printResults(results);
+  }
+
+  private async handleLegacyCleanup(projectPath: string): Promise<void> {
+    const detection = await detectLegacyArtifacts(projectPath);
+    if (!detection.hasLegacyArtifacts) {
+      return;
+    }
+
+    const result = await cleanupLegacyArtifacts(projectPath, detection);
+    const summary = formatCleanupSummary(result);
+    if (summary) {
+      console.log();
+      console.log(summary);
+    }
   }
 
   private resolveTools(): string[] {
