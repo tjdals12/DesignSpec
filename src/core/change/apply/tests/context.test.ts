@@ -93,7 +93,7 @@ describe("ApplyContext", () => {
       );
       const result = context.resolve(new Set(["proposal"]), buildTaskSummary(3, 1));
       expect(result.instruction).toContain("Missing artifacts: tasks");
-      expect(result.instruction).toContain("designspec-continue-change");
+      expect(result.instruction).toContain("desx-continue");
     });
 
     it("여러 의존 artifact가 누락되면 모두 콤마로 나열한다", () => {
@@ -136,7 +136,7 @@ describe("ApplyContext", () => {
       );
       const result = context.resolve(new Set(["proposal"]), buildTaskSummary(0, 0));
       expect(result.instruction).toContain("tasks.md has no tasks");
-      expect(result.instruction).toContain("designspec-continue-change");
+      expect(result.instruction).toContain("desx-continue");
     });
 
     it("artifact 누락과 빈 tasks가 동시 발생 시 missing artifacts 메시지가 우선한다", () => {

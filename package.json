@@ -1,6 +1,6 @@
 {
   "name": "@tjdals12/design-spec",
-  "version": "1.2.0",
+  "version": "2.0.0-next.2",
   "description": "Spec-driven design requirements for AI coding agents",
   "type": "module",
   "repository": {
@@ -70,6 +70,7 @@
     "vitest": "^4.1.5"
   },
   "dependencies": {
+    "@inquirer/core": "11.2.0",
     "@inquirer/prompts": "^8.5.0",
     "chalk": "^5.6.2",
     "commander": "^14.0.3",

@@ -34,10 +34,10 @@ export class ApplyContext {
     let instruction = this._instruction;
     if (state === "blocked") {
       if (missingArtifacts.length > 0) {
-        instruction = `Cannot apply this change yet. Missing artifacts: ${missingArtifacts.join(", ")}.\nUse the designspec-continue-change skill to create the missing artifacts first.`;
+        instruction = `Cannot apply this change yet. Missing artifacts: ${missingArtifacts.join(", ")}.\nUse the desx-continue skill to create the missing artifacts first.`;
       } else {
         instruction =
-          "tasks.md has no tasks. Use the designspec-continue-change skill to regenerate the tasks artifact.";
+          "tasks.md has no tasks. Use the desx-continue skill to regenerate the tasks artifact.";
       }
     } else if (state === "all_done") {
       instruction = "All tasks are complete. This change is ready to be archived.";

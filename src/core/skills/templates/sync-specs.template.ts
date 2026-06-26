@@ -3,7 +3,7 @@ import type { SkillTemplate } from "../skill-templates.js";
 
 export function getSyncSpecsSkillTemplate(): SkillTemplate {
   return {
-    name: "designspec-sync-specs",
+    name: "desx-sync",
     description:
       "Sync a DesignSpec change's page and component specs into the master specs directory. Use when the user wants to update master specs from a change without archiving.",
     instructions: dedent`
