@@ -1,3 +1,18 @@
+# [2.0.0-next.1](https://github.com/tjdals12/DesignSpec/compare/v1.2.0...v2.0.0-next.1) (2026-06-26)
+
+
+* feat!: deliver the workflow as Agent Skills and expand agent support ([#22](https://github.com/tjdals12/DesignSpec/issues/22)) ([7c441ed](https://github.com/tjdals12/DesignSpec/commit/7c441ed5e790697516308ca722d3165c363f19e2))
+
+
+### BREAKING CHANGES
+
+* `init` no longer generates `/desx:*` slash commands;
+the workflow is delivered as `desx-*` skills. Skill ids changed from
+`designspec-*` to `desx-*`, and Codex skills now live in
+`.agents/skills`.
+
+🤖 Generated with [Claude Code](https://claude.com/claude-code)
+
 # [1.2.0](https://github.com/tjdals12/DesignSpec/compare/v1.1.1...v1.2.0) (2026-06-24)
 
 
