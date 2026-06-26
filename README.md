@@ -29,7 +29,7 @@ It also locks in the visual style — color, spacing, typography — so screens 
 - [Workflow](#workflow)
 - [Structure](#structure)
 - [Project Context](#project-context)
-- [Commands & Skills](#commands--skills)
+- [Skills](#skills)
 - [CLI](#cli)
 - [License](#license)
 
@@ -58,12 +58,16 @@ design-spec init --tools=all
 
 Use `--tools` to choose which agents to set up — `all` for every agent, or a comma-separated list like `claude,codex` for a subset. Supported agents:
 
-| Agent       | `--tools` value |
-| ----------- | --------------- |
-| Claude Code | `claude`        |
-| Codex       | `codex`         |
+| Agent          | `--tools` value | Skills path      |
+| -------------- | --------------- | ---------------- |
+| Claude Code    | `claude`        | `.claude/skills` |
+| Codex          | `codex`         | `.agents/skills` |
+| Antigravity    | `antigravity`   | `.agents/skills` |
+| Cursor         | `cursor`        | `.agents/skills` |
+| GitHub Copilot | `copilot`       | `.agents/skills` |
+| OpenCode       | `opencode`      | `.agents/skills` |
 
-`init` generates the slash commands your agent will use. See [Workflow](#workflow) for how a change actually flows.
+`init` generates the skills your agent will use. See [Workflow](#workflow) for how a change actually flows.
 
 ## Workflow
 
@@ -72,26 +76,26 @@ Say you're building a sign-up screen.
 **Once:**
 
 ```text
-/desx:style-init
+/desx-style-init
 ```
 
 **When you need it:**
 
 ```text
-/desx:explore
+/desx-explore
 ```
 
 **Per change:**
 
 ```text
-/desx:new → (/desx:continue | /desx:ff) → /desx:apply → /desx:verify → /desx:sync → /desx:archive
+/desx-new → (/desx-continue | /desx-ff) → /desx-apply → /desx-verify → /desx-sync → /desx-archive
 ```
 
-Start with `/desx:style-init` to set the project's style guideline once — everything afterward follows it.
+Start with `/desx-style-init` to set the project's style guideline once — everything afterward follows it.
 
-If you're not yet sure what to build, `/desx:explore` lets you think it through first.
+If you're not yet sure what to build, `/desx-explore` lets you think it through first.
 
-`/desx:new` starts a change, and you capture each screen's requirements as artifacts — `/desx:continue` to go one at a time, or `/desx:ff` to generate them in a single pass. A sign-up change ends up looking like this:
+`/desx-new` starts a change, and you capture each screen's requirements as artifacts — `/desx-continue` to go one at a time, or `/desx-ff` to generate them in a single pass. A sign-up change ends up looking like this:
 
 ```text
 design-spec/changes/add-signup/
@@ -104,7 +108,7 @@ design-spec/changes/add-signup/
 └── tasks.md
 ```
 
-Once the requirements are in place, `/desx:apply` implements them and `/desx:verify` checks the result against the artifacts. Finally, `/desx:sync` folds the change's specs into the master specs and `/desx:archive` files the finished change away.
+Once the requirements are in place, `/desx-apply` implements them and `/desx-verify` checks the result against the artifacts. Finally, `/desx-sync` folds the change's specs into the master specs and `/desx-archive` files the finished change away.
 
 Because the requirements are fixed before implementation starts, the screen comes out the way you intended.
 
@@ -152,89 +156,89 @@ contextFiles:
 
 Run `design-spec context` to see the resolved result.
 
-## Commands & Skills
+## Skills
 
-You invoke these in your AI assistant's chat. Each one ships as both a slash command and a skill; the name in parentheses is the matching skill.
+These are skills your AI assistant runs from chat. `init` installs them for every agent you set up, and you invoke each by its name, such as `/desx-new`.
 
-### `/desx:style-init`
+### `/desx-style-init`
 
-Builds the project's style guideline through a conversation. It settles on color, spacing, and typography, saves them under `design-spec/styles/`, and injects them into every artifact and implementation afterward. Run once per project. (skill: `designspec-style-init`)
+Builds the project's style guideline through a conversation. It settles on color, spacing, and typography, saves them under `design-spec/styles/`, and injects them into every artifact and implementation afterward. Run once per project.
 
 ```text
-/desx:style-init
+/desx-style-init
 ```
 
-### `/desx:explore`
+### `/desx-explore`
 
-Think through ideas and sharpen requirements when you're not yet sure what to build. (skill: `designspec-explore`)
+Think through ideas and sharpen requirements when you're not yet sure what to build.
 
 ```text
-/desx:explore [topic]
+/desx-explore [topic]
 ```
 
-### `/desx:new`
+### `/desx-new`
 
-Starts a new change — creates the directory that will hold its screens and components. (skill: `designspec-new-change`)
+Starts a new change — creates the directory that will hold its screens and components.
 
 ```text
-/desx:new [change-name or description]
+/desx-new [change-name or description]
 ```
 
-### `/desx:continue`
+### `/desx-continue`
 
-Writes the change's next artifact, one at a time. (skill: `designspec-continue-change`)
+Writes the change's next artifact, one at a time.
 
 ```text
-/desx:continue [change-name]
+/desx-continue [change-name]
 ```
 
-### `/desx:ff`
+### `/desx-ff`
 
-Generates the needed artifacts in a single pass. (skill: `designspec-ff-change`)
+Generates the needed artifacts in a single pass.
 
 ```text
-/desx:ff [change-name or description]
+/desx-ff [change-name or description]
 ```
 
-### `/desx:apply`
+### `/desx-apply`
 
-Implements the screens against the artifacts and the style guideline. (skill: `designspec-apply-change`)
+Implements the screens against the artifacts and the style guideline.
 
 ```text
-/desx:apply [change-name]
+/desx-apply [change-name]
 ```
 
-### `/desx:verify`
+### `/desx-verify`
 
-Checks the implementation against the artifacts' requirements. (skill: `designspec-verify-change`)
+Checks the implementation against the artifacts' requirements.
 
 ```text
-/desx:verify [change-name]
+/desx-verify [change-name]
 ```
 
-### `/desx:sync`
+### `/desx-sync`
 
-Folds the change's page and component specs into the master specs. (skill: `designspec-sync-specs`)
+Folds the change's page and component specs into the master specs.
 
 ```text
-/desx:sync [change-name]
+/desx-sync [change-name]
 ```
 
-### `/desx:archive`
+### `/desx-archive`
 
-Archives a finished change. (skill: `designspec-archive-change`)
+Archives a finished change.
 
 ```text
-/desx:archive [change-name]
+/desx-archive [change-name]
 ```
 
 ## CLI
 
-The `design-spec` CLI provides terminal commands for initializing a project, creating and inspecting changes, and printing artifact instructions and context. It works alongside the slash commands covered in [Commands & Skills](#commands--skills). Every command takes a target path and defaults to the current directory.
+The `design-spec` CLI provides terminal commands for initializing a project, creating and inspecting changes, and printing artifact instructions and context. It works alongside the skills covered in [Skills](#skills). Every command takes a target path and defaults to the current directory.
 
 ### `design-spec init`
 
-Initializes the project and generates the skills and slash commands.
+Initializes the project and generates the skills.
 
 ```text
 design-spec init [path] --tools <tools>

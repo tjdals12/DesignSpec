@@ -3,7 +3,7 @@ import type { SkillTemplate } from "../skill-templates.js";
 
 export function getFastForwardSkillTemplate(): SkillTemplate {
   return {
-    name: "designspec-ff-change",
+    name: "desx-ff",
     description:
       "Fast-forward through DesignSpec artifact creation. Use when the user wants to quickly create every artifact required for implementation in one go, without stepping through each artifact individually.",
     instructions: dedent`
@@ -28,7 +28,7 @@ export function getFastForwardSkillTemplate(): SkillTemplate {
        \`\`\`
        This creates a scaffolded change at \`design-spec/changes/<name>/\` with the selected schema.
 
-       If a change with that name already exists, suggest continuing it via the \`designspec-continue-change\` skill instead. Do NOT overwrite.
+       If a change with that name already exists, suggest continuing it via the \`desx-continue\` skill instead. Do NOT overwrite.
 
     3. **Get the artifact build order**
        \`\`\`bash
@@ -118,8 +118,8 @@ export function getFastForwardSkillTemplate(): SkillTemplate {
     - Verify each artifact file exists after writing before moving to the next.
     - Prefer reasonable decisions over stalling, but ask the user when scope is genuinely unclear.
     - **\`context\` and \`rules\` are constraints for YOU, not content for the file** — do NOT copy \`<context>\`, \`<rules>\`, or \`<project_context>\` blocks into any artifact.
-    - If a change with the chosen name already exists, redirect to \`designspec-continue-change\` instead of overwriting.
-    - This skill does NOT implement code. After artifacts are done, hand off to \`designspec-apply-change\`.
+    - If a change with the chosen name already exists, redirect to \`desx-continue\` instead of overwriting.
+    - This skill does NOT implement code. After artifacts are done, hand off to \`desx-apply\`.
     `,
   };
 }

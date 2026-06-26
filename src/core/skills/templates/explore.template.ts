@@ -3,7 +3,7 @@ import type { SkillTemplate } from "../skill-templates.js";
 
 export function getExploreSkillTemplate(): SkillTemplate {
   return {
-    name: "designspec-explore",
+    name: "desx-explore",
     description:
       "Enter explore mode — a thinking partner for exploring UI/design ideas, investigating problems, and clarifying requirements. Use when the user wants to think through something before or during a change.",
     instructions: dedent`
@@ -134,7 +134,7 @@ export function getExploreSkillTemplate(): SkillTemplate {
     \`design-spec context\` tells you what the project has already established:
     - Inline project context from \`design-spec/config.yaml\` (tech stack, conventions)
     - Any \`contextFiles\` the user has linked
-    - The style system from \`design-spec/styles/style.md\` (direction, tokens, component patterns) if \`desx:style-init\` has been run
+    - The style system from \`design-spec/styles/style.md\` (direction, tokens, component patterns) if \`desx-style-init\` has been run
 
     **Treat the context output as ground truth. Do not re-ask things that are already answered there.** If the style system says the personality is "Precision & Density" with a specific palette, don't ask the user what feel they want. If \`config.yaml\` describes the tech stack, don't ask about it. Reference what's there and build on it.
 

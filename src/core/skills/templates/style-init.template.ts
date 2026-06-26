@@ -3,7 +3,7 @@ import type { SkillTemplate } from "../skill-templates.js";
 
 export function getStyleInitSkillTemplate(): SkillTemplate {
   return {
-    name: "designspec-style-init",
+    name: "desx-style-init",
     description:
       "Initialize the project's style system by guiding through intentional design decisions — visual personality, tokens, and component patterns — and saving the result to design-spec/styles/style.md.",
     instructions: dedent`
