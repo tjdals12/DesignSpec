@@ -31,31 +31,23 @@ export function getStyleInitSkillTemplate(): SkillTemplate {
 
     ## Question Modes
 
-    Every question is one of two modes. Pick the mode by the shape of the answer space, not by phase difficulty.
+    Two kinds of question, decided by the shape of the answer space — not by phase difficulty:
 
-    **Open questions** — Phase 1, Phase 2, and Phase 5. The user's own words are the point. Ask conversationally, no options. Offering choices here would put words in the user's mouth.
+    - **Open** (Phases 1, 2, 5): the user's own words are the point. Ask in prose, no options.
+    - **Choice** (Step 0, Phases 3, 4, 6, 7): the answers are enumerable. Give options with exactly one marked "(Recommended)" and a one-line reason per option drawn from this conversation. If you have an interactive question tool — in Claude Code, \`AskUserQuestion\` — you must use it rather than typing the options as prose; otherwise use the numbered-list form below. A set of options is still one question, and free-form answers always win.
 
-    **Choice questions** — Step 0, Phase 3, Phase 4, Phase 6, and Phase 7. The answer space is enumerable. Always present options, mark exactly ONE as recommended, and give the reason for each option — grounded in this specific conversation, not in "common practice."
+    Numbered-list form, for agents without a question tool:
 
-    For choice questions:
+    \`\`\`
+    [Phase 4 — Topic 2/6: Depth]
+    What depth strategy fits this direction?
 
-    - **If an interactive question tool is available** (e.g. AskUserQuestion in Claude Code), use it: one option per choice, the recommended option first with "(Recommended)" in its label, and each option's description carrying the rationale. Put the progress marker in the question text.
-    - **If no such tool is available**, emulate it in plain markdown and end with "Reply with a number or in your own words.":
+    1. **borders-only** ⭐ Recommended — matches the cold, terminal-like feeling from Phase 1; hierarchy survives on flat surfaces
+    2. subtle-shadows — softer than the direction calls for
+    3. layered-shadows — consumer-app feel, at odds with the density you described
 
-      \`\`\`
-      [Phase 4 — Topic 2/6: Depth]
-      What depth strategy fits this direction?
-
-      1. **borders-only** ⭐ Recommended — matches the cold, terminal-like feeling from Phase 1; hierarchy survives on flat surfaces
-      2. subtle-shadows — softer than the direction calls for
-      3. layered-shadows — consumer-app feel, at odds with the density you described
-
-      Reply with a number or in your own words.
-      \`\`\`
-
-    - A set of options is still ONE question. This does not conflict with the one-question-per-turn rule.
-    - A recommendation is a starting point, not a decision. Free-form answers always win over the options.
-    - Never recommend without a reason the user can check. In Step 0 and Phase 6 the reason comes from what you observed (the file's state, the check's result); from Phase 3 onward, design recommendations trace back to Phase 1 or Phase 2. If you can't justify a recommendation yet, you're not ready to ask — probe the earlier topic instead.
+    Reply with a number or in your own words.
+    \`\`\`
 
     ---
 
@@ -339,8 +331,7 @@ export function getStyleInitSkillTemplate(): SkillTemplate {
     - **Track topics, not question count** — Multiple questions on the same topic share the same marker. Advance the marker only when the topic is genuinely complete.
     - **Don't rush to the next topic** — A topic can need 1, 3, or 5 questions. Stay until it's clear.
     - **Probes are not new topics** — Bullets are follow-ups for vague answers within the current topic. Use one at a time, never the whole list.
-    - **Choice questions carry a recommendation** — Options without a marked recommendation and per-option rationale are lazy. Use the interactive question tool when available; otherwise the markdown format from Question Modes.
-    - **Options never trap** — The user can always answer outside the presented options. Free-form wins.
+    - **Choice questions** — One "(Recommended)" option and a reason each; use the question tool if you have one (Claude Code: \`AskUserQuestion\`), else a numbered list. Free-form answers always win.
     - **Don't default** — Every choice must be explainable. "It's common" fails.
     - **Don't rush** — This conversation sets the foundation. Spend time on it.
     - **Don't fake specificity** — Vague answers (from the user or from you) need pushback.
