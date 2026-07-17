@@ -5,7 +5,7 @@ export function getStyleInitSkillTemplate(): SkillTemplate {
   return {
     name: "desx-style-init",
     description:
-      "Initialize the project's style system by guiding through intentional design decisions — visual personality, tokens, and component patterns — and saving the result to design-spec/styles/style.md.",
+      "Initialize the project's style system by guiding through intentional design decisions — visual personality, tokens, and foundational primitives — and saving the result to design-spec/styles/style.md.",
     instructions: dedent`
     Initialize the project's style system. Guide the user through intentional design decisions and save the result to \`design-spec/styles/style.md\`.
 
@@ -73,7 +73,7 @@ export function getStyleInitSkillTemplate(): SkillTemplate {
     - Honor what the user says. Don't overwrite without confirmation.
 
     **If the file does not exist:**
-    - Announce the plan in topic terms: "We'll go through 6 phases plus a save step. Phase 1 (Intent) covers 3 topics, Phase 2 (Domain) covers 4, Phase 3 is a direction proposal, Phase 4 (Tokens) covers 6, Phase 5 (Component patterns) is open-ended, Phase 6 (Self-check) runs 4 quality checks before saving. Each topic takes as many questions as it needs to be clear — I'll show topic progress on every question."
+    - Announce the plan in topic terms: "We'll go through 6 phases plus a save step. Phase 1 (Intent) covers 3 topics, Phase 2 (Domain) covers 4, Phase 3 is a direction proposal, Phase 4 (Tokens) covers 6, Phase 5 defines a few foundational primitives, Phase 6 (Self-check) runs 4 quality checks before saving. Each topic takes as many questions as it needs to be clear — I'll show topic progress on every question."
     - Then proceed with Phase 1.
 
     ---
@@ -206,15 +206,19 @@ export function getStyleInitSkillTemplate(): SkillTemplate {
 
     ---
 
-    ## Phase 5: Component Patterns
+    ## Phase 5: Foundational Primitives
 
-    Open-ended. Use \`[Phase 5 — ComponentName]\` as the marker — the topic is the component currently being defined. The user decides when to stop.
+    Open-ended. Use \`[Phase 5 — PrimitiveName]\` as the marker — the topic is the primitive currently being defined. The user decides when to stop.
 
-    Start by asking which components matter most for this product. Then for each one the user names, ask one at a time:
+    **Scope: primitives only, not feature components.** This phase defines the reusable atoms every screen is built from — button, input, card, badge, and the signature element from Phase 2. It does NOT enumerate feature components like a sign-up form or a transaction list. Those don't exist yet; they emerge per change, where each screen's requirements are captured. What you define here is the seed those changes reuse and extend — not a complete catalog.
 
-    "For [component], what are the height, padding, radius, font (size + weight), and any domain-specific behavior? And why does it fit the direction?"
+    Why this phase exists: the Phase 4 tokens (spacing, radius, type scale) are abstract until something is built from them. Defining a few primitives proves the tokens compose, and gives every future change fixed dimensions to reuse instead of reinventing them — which is the drift this whole system prevents. The signature element in particular needs a concrete home here; Phase 6 checks that it actually landed somewhere.
 
-    Don't push to enumerate every possible component. Stop when the user says they have enough.
+    Start by confirming the primitive set — the handful of atoms this product leans on most, plus the signature. Then for each one, ask one at a time:
+
+    "For [primitive], what are the height, padding, radius, font (size + weight), and any domain-specific behavior? And why does it fit the direction?"
+
+    Keep the set small. Stop once the core primitives and the signature are defined — feature-level components are the job of changes, not this phase.
 
     ---
 
@@ -242,10 +246,10 @@ export function getStyleInitSkillTemplate(): SkillTemplate {
 
     ### Check 3: Signature test
 
-    "Where in the component patterns (Phase 5) does the signature element from Phase 2 actually appear? Name at least one concrete place."
+    "Where in the foundational primitives (Phase 5) does the signature element from Phase 2 actually appear? Name at least one concrete place."
 
-    - **Pass**: The signature appears in at least one defined pattern with specifics.
-    - **Fail**: The signature was named in Phase 2 but doesn't show up anywhere in the patterns. → Offer to revisit Phase 5 to add it, or Phase 2 to reconsider the signature.
+    - **Pass**: The signature appears in at least one defined primitive with specifics.
+    - **Fail**: The signature was named in Phase 2 but doesn't show up anywhere in the primitives. → Offer to revisit Phase 5 to add it, or Phase 2 to reconsider the signature.
 
     ### Check 4: Token test
 
@@ -308,9 +312,9 @@ export function getStyleInitSkillTemplate(): SkillTemplate {
     Scale: [values]
     Weights: [values]
 
-    ## Patterns
+    ## Primitives
 
-    ### [Component Name]
+    ### [Primitive Name]
     - Height: [value]
     - Padding: [value]
     - Radius: [value]
@@ -342,7 +346,7 @@ export function getStyleInitSkillTemplate(): SkillTemplate {
     - **Don't fake specificity** — Vague answers (from the user or from you) need pushback.
     - **Do connect decisions to intent** — Every token traces back to Phase 1 or Phase 2.
     - **Do confirm before saving** — Show the full system before writing the file.
-    - **Do offer to extend later** — The system grows. Patterns can be added after the fact.
+    - **Do offer to extend later** — The system grows. Primitives can be added after the fact.
     `,
   };
 }
