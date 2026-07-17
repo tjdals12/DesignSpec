@@ -1,3 +1,10 @@
+# [2.1.0-next.3](https://github.com/tjdals12/DesignSpec/compare/v2.1.0-next.2...v2.1.0-next.3) (2026-07-17)
+
+
+### Bug Fixes
+
+* **explore:** require the question tool and per-option rationale for decisions ([60ce7e7](https://github.com/tjdals12/DesignSpec/commit/60ce7e7c7574395a889d9244400bfcf6e5276dd6))
+
 # [2.1.0-next.2](https://github.com/tjdals12/DesignSpec/compare/v2.1.0-next.1...v2.1.0-next.2) (2026-07-17)
 
 
