@@ -1,3 +1,10 @@
+# [2.1.0-next.4](https://github.com/tjdals12/DesignSpec/compare/v2.1.0-next.3...v2.1.0-next.4) (2026-07-17)
+
+
+### Bug Fixes
+
+* **tasks:** keep tasks.md to implementation units, defer checks and QA ([3018026](https://github.com/tjdals12/DesignSpec/commit/301802639645391e20b53246a0c0719a15575f1a))
+
 # [2.1.0-next.3](https://github.com/tjdals12/DesignSpec/compare/v2.1.0-next.2...v2.1.0-next.3) (2026-07-17)
 
 
