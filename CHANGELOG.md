@@ -1,3 +1,10 @@
+# [2.1.0-next.2](https://github.com/tjdals12/DesignSpec/compare/v2.1.0-next.1...v2.1.0-next.2) (2026-07-17)
+
+
+### Bug Fixes
+
+* **style-init:** make the interactive question tool mandatory for choice questions ([4c15891](https://github.com/tjdals12/DesignSpec/commit/4c1589160dfe147b65668f38f1c9a120e78effbe))
+
 # [2.1.0-next.1](https://github.com/tjdals12/DesignSpec/compare/v2.0.0...v2.1.0-next.1) (2026-07-17)
 
 
