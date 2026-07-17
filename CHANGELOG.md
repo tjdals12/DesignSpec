@@ -1,3 +1,10 @@
+# [2.1.0-next.1](https://github.com/tjdals12/DesignSpec/compare/v2.0.0...v2.1.0-next.1) (2026-07-17)
+
+
+### Features
+
+* **style-init:** add choice-question mode with recommendations ([e7f067e](https://github.com/tjdals12/DesignSpec/commit/e7f067e80f3f7e26bb46eb94f849708d772c4867))
+
 # [2.0.0](https://github.com/tjdals12/DesignSpec/compare/v1.2.0...v2.0.0) (2026-06-26)
 
 
