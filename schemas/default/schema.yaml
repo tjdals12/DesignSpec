@@ -256,13 +256,14 @@ artifacts:
       - For integration tasks (routing, navigation, data fetching), point to the specific files that need to change (e.g., `src/router.tsx`, `src/components/Sidebar/Sidebar.tsx`).
       - The DesignSpec artifact name (kebab-case, e.g., `space-form`) is independent from the code identifier (e.g., `SpaceForm`). Use the project's code naming convention for paths and identifiers, not the DesignSpec name.
 
-      Path-less tasks (allowed exceptions):
-      - Tasks that run a command, perform verification, or do manual QA do NOT need a path. Examples: `pnpm run lint`, `pnpm run format`, `pnpm test`, "Verify the create → edit flow in a browser", "Run a visual regression check". For these, write the command or the verification step clearly in the task description so the next session knows exactly how to repeat it.
+      Not tasks:
+      - Running commands (`pnpm run lint`, `pnpm test`, `pnpm run build`) — the apply phase runs the project's checks as standard hygiene.
+      - Verification or manual QA ("Verify the flow in a browser", "visual regression check") — verifying the result is a separate step, not part of the task list.
 
       Recommended group structure for the default schema:
       1. **Shared Components** — One task per file in `components/*.md`. Build these first so pages can reuse them.
       2. **Pages** — One task per file in `pages/*.md`. Pages consume the components above.
-      3. **Integration** — Cross-cutting work that does not belong to a specific page or component. Examples: routing, navigation entries, data fetching, state management, API wiring, tests.
+      3. **Integration** — Cross-cutting work that does not belong to a specific page or component. Examples: routing, navigation entries, data fetching, state management, API wiring.
 
       Default to one task per artifact. Split a single artifact into multiple tasks only when it is genuinely large (e.g., a page with many distinct states or a complex form component).
 
@@ -285,8 +286,6 @@ artifacts:
       - [ ] 3.1 Add routes for the new pages in `src/router.tsx`
       - [ ] 3.2 Add a `Spaces` entry to `src/components/Sidebar/Sidebar.tsx`
       - [ ] 3.3 Apply design tokens / fonts if missing in `src/styles/tokens.css`
-      - [ ] 3.4 Run `pnpm run lint && pnpm run format && pnpm run build`
-      - [ ] 3.5 Manual visual QA against the page wireframes (golden path + every documented state)
       ```
 
       Reference `pages/*.md` for what each page should do, `components/*.md` for what each component should do, and `proposal.md` for overall context.

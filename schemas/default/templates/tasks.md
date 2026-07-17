@@ -6,7 +6,7 @@ Implementation checklist for this change.
 Order groups by implementation dependency:
 1. Shared Components — one task per file in `components/*.md`. Build first so pages can reuse them.
 2. Pages — one task per file in `pages/*.md`.
-3. Integration — cross-cutting work (routing, navigation, data fetching, state, API, tests).
+3. Integration — cross-cutting work (routing, navigation, data fetching, state, API).
 
 Each task MUST be a checkbox: `- [ ] N.M Task description`.
 The apply phase parses this format to track progress, so tasks that don't use `- [ ]` won't be tracked.
