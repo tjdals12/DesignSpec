@@ -62,14 +62,14 @@ export function getExploreSkillTemplate(): SkillTemplate {
 
     ## Asking decision questions
 
-    In the Deciding stance, ask with the **AskUserQuestion tool** instead of free-form text:
+    In the Deciding stance, present the choice as options, not free-form text. If you have an interactive question tool — in Claude Code, \`AskUserQuestion\` — you must use it; otherwise lay the options out as a numbered markdown list ending with "Reply with a number or in your own words."
 
-    - 2-4 mutually exclusive options
-    - Mark the recommendation with "(Recommended)" — first in the list
-    - Use the \`preview\` field for ASCII mockups when options differ visually (layout, density, arrangement) — enables side-by-side comparison
+    - 2-4 mutually exclusive options, each with a one-line reason it fits
+    - Mark the recommendation "(Recommended)" — first in the list
+    - Use AskUserQuestion's \`preview\` field for ASCII mockups when options differ visually — side-by-side comparison
     - One question per call when the decision blocks the next step
 
-    Free-form prose is the right shape for Surveying — don't force AskUserQuestion when brainstorming.
+    Free-form prose is the right shape for Surveying — don't force options when brainstorming.
 
     ---
 
