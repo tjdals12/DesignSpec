@@ -29,6 +29,36 @@ export function getStyleInitSkillTemplate(): SkillTemplate {
 
     ---
 
+    ## Question Modes
+
+    Every question is one of two modes. Pick the mode by the shape of the answer space, not by phase difficulty.
+
+    **Open questions** — Phase 1, Phase 2, and Phase 5. The user's own words are the point. Ask conversationally, no options. Offering choices here would put words in the user's mouth.
+
+    **Choice questions** — Step 0, Phase 3, Phase 4, Phase 6, and Phase 7. The answer space is enumerable. Always present options, mark exactly ONE as recommended, and give the reason for each option — grounded in this specific conversation, not in "common practice."
+
+    For choice questions:
+
+    - **If an interactive question tool is available** (e.g. AskUserQuestion in Claude Code), use it: one option per choice, the recommended option first with "(Recommended)" in its label, and each option's description carrying the rationale. Put the progress marker in the question text.
+    - **If no such tool is available**, emulate it in plain markdown and end with "Reply with a number or in your own words.":
+
+      \`\`\`
+      [Phase 4 — Topic 2/6: Depth]
+      What depth strategy fits this direction?
+
+      1. **borders-only** ⭐ Recommended — matches the cold, terminal-like feeling from Phase 1; hierarchy survives on flat surfaces
+      2. subtle-shadows — softer than the direction calls for
+      3. layered-shadows — consumer-app feel, at odds with the density you described
+
+      Reply with a number or in your own words.
+      \`\`\`
+
+    - A set of options is still ONE question. This does not conflict with the one-question-per-turn rule.
+    - A recommendation is a starting point, not a decision. Free-form answers always win over the options.
+    - Never recommend without a reason the user can check. In Step 0 and Phase 6 the reason comes from what you observed (the file's state, the check's result); from Phase 3 onward, design recommendations trace back to Phase 1 or Phase 2. If you can't justify a recommendation yet, you're not ready to ask — probe the earlier topic instead.
+
+    ---
+
     ## Step 0: Check Existing System
 
     Before anything else:
@@ -39,7 +69,7 @@ export function getStyleInitSkillTemplate(): SkillTemplate {
 
     **If the file exists:**
     - Show a summary of the current system (Direction, key tokens)
-    - Ask: "A style system already exists. Do you want to review it, update specific decisions, or start fresh?"
+    - Ask as a choice question: review it / update specific decisions / start fresh. Recommend based on what you see — a sparse file suggests starting fresh, a full one suggests targeted updates.
     - Honor what the user says. Don't overwrite without confirmation.
 
     **If the file does not exist:**
@@ -127,7 +157,7 @@ export function getStyleInitSkillTemplate(): SkillTemplate {
 
     ## Phase 3: Direction Proposal
 
-    No questions here. You synthesize. Show your reasoning in this format:
+    Nothing to probe here. You synthesize. Show your reasoning in this format:
 
     \`\`\`
     Domain: [concepts from exploration that shaped this]
@@ -138,7 +168,7 @@ export function getStyleInitSkillTemplate(): SkillTemplate {
     Direction: [approach that connects the above]
     \`\`\`
 
-    Then ask: "Does that direction feel right?"
+    Then ask as a choice question: adopt this direction / adjust something (name what feels off) — recommending adoption with a one-line reason tying it back to their own Phase 1-2 answers.
 
     Wait for confirmation. If they redirect, update the direction and ask again. Do not move to Phase 4 until confirmed.
 
@@ -148,33 +178,31 @@ export function getStyleInitSkillTemplate(): SkillTemplate {
 
     Topics: \`Palette\`, \`Depth\`, \`Surfaces\`, \`Typography\`, \`Spacing\`, \`Radius\`. Use \`[Phase 4 — Topic K/6: TopicName]\`.
 
-    For each topic, get both the value AND the reason it fits the direction. Each answer must connect back to Phase 1 (the user, the task, the feeling) or Phase 2 (the domain).
+    Every topic here is a **choice question**: derive 2-4 candidate values from the confirmed direction, recommend one, and give the reason each candidate fits or falls short. The user confirms, picks another, or answers free-form. Record both the value AND the reason it fits — each decision must connect back to Phase 1 (the user, the task, the feeling) or Phase 2 (the domain).
 
     ### Topic 1: Palette
 
-    "What are the foreground, secondary, muted, faint, and accent colors? For each, why does it fit?"
-
-    (You may guide by proposing a starting palette derived from Phase 2's color world, but the user confirms each value.)
+    Propose 2-3 candidate palettes (foreground, secondary, muted, faint, accent) built from Phase 2's color world. Each candidate is one option; describe the register it carries. The user confirms one, then adjust individual values if they want.
 
     ### Topic 2: Depth strategy
 
-    "Borders-only, subtle shadows, or layered shadows? Why does that fit the direction?"
+    Options: borders-only / subtle shadows / layered shadows. Recommend the one the direction implies.
 
     ### Topic 3: Surfaces
 
-    "What background layers and elevation scale? Why?"
+    Propose candidate background-layer and elevation scales that match the chosen depth strategy.
 
     ### Topic 4: Typography
 
-    "Which typeface, and at what scale and weights? Why this one and not the system default?"
+    Propose 2-4 candidate typefaces with scale and weights. Say why each would or wouldn't beat the system default for this product.
 
     ### Topic 5: Spacing
 
-    "Base unit (4px or 8px) and scale? Why?"
+    Options: 4px base / 8px base, each with a scale. Recommend by density — connect to the Phase 1 feeling.
 
     ### Topic 6: Radius
 
-    "Sharp, soft, or rounded? What does it say about the product?"
+    Options: sharp / soft / rounded, with concrete values. Say what each would communicate about this product.
 
     ---
 
@@ -194,7 +222,7 @@ export function getStyleInitSkillTemplate(): SkillTemplate {
 
     Topics: \`Swap\`, \`Squint\`, \`Signature\`, \`Token\`. Use \`[Phase 6 — Check K/4: TestName]\`.
 
-    Before saving, run these 4 checks against the decisions made in Phases 1-5. For each check, state the test, apply it honestly to the current system, report pass or fail, and if it fails, ask the user whether to revisit a specific earlier decision.
+    Before saving, run these 4 checks against the decisions made in Phases 1-5. For each check, state the test, apply it honestly to the current system, report pass or fail, and if it fails, ask a choice question: revisit the specific earlier decision (recommended — name which phase and topic) / accept the failure with reasoning.
 
     Do not skip checks. Do not rubber-stamp. The point of this phase is to catch defaults that slipped in.
 
@@ -244,7 +272,7 @@ export function getStyleInitSkillTemplate(): SkillTemplate {
 
     ## Phase 7: Save
 
-    Show the full system as a single confirmation block, then ask: "Save this to \`design-spec/styles/style.md\`?"
+    Show the full system as a single confirmation block, then ask as a choice question: save to \`design-spec/styles/style.md\` (recommended) / adjust something first.
 
     On confirmation, create \`design-spec/styles/\` if it doesn't exist, then write:
 
@@ -307,6 +335,8 @@ export function getStyleInitSkillTemplate(): SkillTemplate {
     - **Track topics, not question count** — Multiple questions on the same topic share the same marker. Advance the marker only when the topic is genuinely complete.
     - **Don't rush to the next topic** — A topic can need 1, 3, or 5 questions. Stay until it's clear.
     - **Probes are not new topics** — Bullets are follow-ups for vague answers within the current topic. Use one at a time, never the whole list.
+    - **Choice questions carry a recommendation** — Options without a marked recommendation and per-option rationale are lazy. Use the interactive question tool when available; otherwise the markdown format from Question Modes.
+    - **Options never trap** — The user can always answer outside the presented options. Free-form wins.
     - **Don't default** — Every choice must be explainable. "It's common" fails.
     - **Don't rush** — This conversation sets the foundation. Spend time on it.
     - **Don't fake specificity** — Vague answers (from the user or from you) need pushback.
