@@ -1,3 +1,31 @@
+# [2.1.0-next.4](https://github.com/tjdals12/DesignSpec/compare/v2.1.0-next.3...v2.1.0-next.4) (2026-07-17)
+
+
+### Bug Fixes
+
+* **tasks:** keep tasks.md to implementation units, defer checks and QA ([3018026](https://github.com/tjdals12/DesignSpec/commit/301802639645391e20b53246a0c0719a15575f1a))
+
+# [2.1.0-next.3](https://github.com/tjdals12/DesignSpec/compare/v2.1.0-next.2...v2.1.0-next.3) (2026-07-17)
+
+
+### Bug Fixes
+
+* **explore:** require the question tool and per-option rationale for decisions ([60ce7e7](https://github.com/tjdals12/DesignSpec/commit/60ce7e7c7574395a889d9244400bfcf6e5276dd6))
+
+# [2.1.0-next.2](https://github.com/tjdals12/DesignSpec/compare/v2.1.0-next.1...v2.1.0-next.2) (2026-07-17)
+
+
+### Bug Fixes
+
+* **style-init:** make the interactive question tool mandatory for choice questions ([4c15891](https://github.com/tjdals12/DesignSpec/commit/4c1589160dfe147b65668f38f1c9a120e78effbe))
+
+# [2.1.0-next.1](https://github.com/tjdals12/DesignSpec/compare/v2.0.0...v2.1.0-next.1) (2026-07-17)
+
+
+### Features
+
+* **style-init:** add choice-question mode with recommendations ([e7f067e](https://github.com/tjdals12/DesignSpec/commit/e7f067e80f3f7e26bb46eb94f849708d772c4867))
+
 # [2.0.0](https://github.com/tjdals12/DesignSpec/compare/v1.2.0...v2.0.0) (2026-06-26)
 
 

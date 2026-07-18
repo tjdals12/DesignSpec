@@ -150,6 +150,7 @@ export function getApplyChangeSkillTemplate(): SkillTemplate {
     - If implementation reveals a design issue, pause and suggest updating the relevant \`pages/*.md\` or \`components/*.md\` rather than silently diverging from the spec.
     - Pause on errors, blockers, or unclear requirements — don't guess.
     - Keep going through tasks until done or blocked.
+    - After the tasks are implemented, run the project's checks — lint, format, build, and tests if present — and fix failures before reporting completion. These are standard hygiene, not tracked tasks in \`tasks.md\`.
 
     **Fluid Workflow Integration**
 

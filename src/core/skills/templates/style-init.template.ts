@@ -5,7 +5,7 @@ export function getStyleInitSkillTemplate(): SkillTemplate {
   return {
     name: "desx-style-init",
     description:
-      "Initialize the project's style system by guiding through intentional design decisions — visual personality, tokens, and component patterns — and saving the result to design-spec/styles/style.md.",
+      "Initialize the project's style system by guiding through intentional design decisions — visual personality, tokens, and foundational primitives — and saving the result to design-spec/styles/style.md.",
     instructions: dedent`
     Initialize the project's style system. Guide the user through intentional design decisions and save the result to \`design-spec/styles/style.md\`.
 
@@ -29,6 +29,28 @@ export function getStyleInitSkillTemplate(): SkillTemplate {
 
     ---
 
+    ## Question Modes
+
+    Two kinds of question, decided by the shape of the answer space — not by phase difficulty:
+
+    - **Open** (Phases 1, 2, 5): the user's own words are the point. Ask in prose, no options.
+    - **Choice** (Step 0, Phases 3, 4, 6, 7): the answers are enumerable. Give options with exactly one marked "(Recommended)" and a one-line reason per option drawn from this conversation. If you have an interactive question tool — in Claude Code, \`AskUserQuestion\` — you must use it rather than typing the options as prose; otherwise use the numbered-list form below. A set of options is still one question, and free-form answers always win.
+
+    Numbered-list form, for agents without a question tool:
+
+    \`\`\`
+    [Phase 4 — Topic 2/6: Depth]
+    What depth strategy fits this direction?
+
+    1. **borders-only** ⭐ Recommended — matches the cold, terminal-like feeling from Phase 1; hierarchy survives on flat surfaces
+    2. subtle-shadows — softer than the direction calls for
+    3. layered-shadows — consumer-app feel, at odds with the density you described
+
+    Reply with a number or in your own words.
+    \`\`\`
+
+    ---
+
     ## Step 0: Check Existing System
 
     Before anything else:
@@ -39,11 +61,11 @@ export function getStyleInitSkillTemplate(): SkillTemplate {
 
     **If the file exists:**
     - Show a summary of the current system (Direction, key tokens)
-    - Ask: "A style system already exists. Do you want to review it, update specific decisions, or start fresh?"
+    - Ask as a choice question: review it / update specific decisions / start fresh. Recommend based on what you see — a sparse file suggests starting fresh, a full one suggests targeted updates.
     - Honor what the user says. Don't overwrite without confirmation.
 
     **If the file does not exist:**
-    - Announce the plan in topic terms: "We'll go through 6 phases plus a save step. Phase 1 (Intent) covers 3 topics, Phase 2 (Domain) covers 4, Phase 3 is a direction proposal, Phase 4 (Tokens) covers 6, Phase 5 (Component patterns) is open-ended, Phase 6 (Self-check) runs 4 quality checks before saving. Each topic takes as many questions as it needs to be clear — I'll show topic progress on every question."
+    - Announce the plan in topic terms: "We'll go through 6 phases plus a save step. Phase 1 (Intent) covers 3 topics, Phase 2 (Domain) covers 4, Phase 3 is a direction proposal, Phase 4 (Tokens) covers 6, Phase 5 defines a few foundational primitives, Phase 6 (Self-check) runs 4 quality checks before saving. Each topic takes as many questions as it needs to be clear — I'll show topic progress on every question."
     - Then proceed with Phase 1.
 
     ---
@@ -127,7 +149,7 @@ export function getStyleInitSkillTemplate(): SkillTemplate {
 
     ## Phase 3: Direction Proposal
 
-    No questions here. You synthesize. Show your reasoning in this format:
+    Nothing to probe here. You synthesize. Show your reasoning in this format:
 
     \`\`\`
     Domain: [concepts from exploration that shaped this]
@@ -138,7 +160,7 @@ export function getStyleInitSkillTemplate(): SkillTemplate {
     Direction: [approach that connects the above]
     \`\`\`
 
-    Then ask: "Does that direction feel right?"
+    Then ask as a choice question: adopt this direction / adjust something (name what feels off) — recommending adoption with a one-line reason tying it back to their own Phase 1-2 answers.
 
     Wait for confirmation. If they redirect, update the direction and ask again. Do not move to Phase 4 until confirmed.
 
@@ -148,45 +170,47 @@ export function getStyleInitSkillTemplate(): SkillTemplate {
 
     Topics: \`Palette\`, \`Depth\`, \`Surfaces\`, \`Typography\`, \`Spacing\`, \`Radius\`. Use \`[Phase 4 — Topic K/6: TopicName]\`.
 
-    For each topic, get both the value AND the reason it fits the direction. Each answer must connect back to Phase 1 (the user, the task, the feeling) or Phase 2 (the domain).
+    Every topic here is a **choice question**: derive 2-4 candidate values from the confirmed direction, recommend one, and give the reason each candidate fits or falls short. The user confirms, picks another, or answers free-form. Record both the value AND the reason it fits — each decision must connect back to Phase 1 (the user, the task, the feeling) or Phase 2 (the domain).
 
     ### Topic 1: Palette
 
-    "What are the foreground, secondary, muted, faint, and accent colors? For each, why does it fit?"
-
-    (You may guide by proposing a starting palette derived from Phase 2's color world, but the user confirms each value.)
+    Propose 2-3 candidate palettes (foreground, secondary, muted, faint, accent) built from Phase 2's color world. Each candidate is one option; describe the register it carries. The user confirms one, then adjust individual values if they want.
 
     ### Topic 2: Depth strategy
 
-    "Borders-only, subtle shadows, or layered shadows? Why does that fit the direction?"
+    Options: borders-only / subtle shadows / layered shadows. Recommend the one the direction implies.
 
     ### Topic 3: Surfaces
 
-    "What background layers and elevation scale? Why?"
+    Propose candidate background-layer and elevation scales that match the chosen depth strategy.
 
     ### Topic 4: Typography
 
-    "Which typeface, and at what scale and weights? Why this one and not the system default?"
+    Propose 2-4 candidate typefaces with scale and weights. Say why each would or wouldn't beat the system default for this product.
 
     ### Topic 5: Spacing
 
-    "Base unit (4px or 8px) and scale? Why?"
+    Options: 4px base / 8px base, each with a scale. Recommend by density — connect to the Phase 1 feeling.
 
     ### Topic 6: Radius
 
-    "Sharp, soft, or rounded? What does it say about the product?"
+    Options: sharp / soft / rounded, with concrete values. Say what each would communicate about this product.
 
     ---
 
-    ## Phase 5: Component Patterns
+    ## Phase 5: Foundational Primitives
 
-    Open-ended. Use \`[Phase 5 — ComponentName]\` as the marker — the topic is the component currently being defined. The user decides when to stop.
+    Open-ended. Use \`[Phase 5 — PrimitiveName]\` as the marker — the topic is the primitive currently being defined. The user decides when to stop.
 
-    Start by asking which components matter most for this product. Then for each one the user names, ask one at a time:
+    **Scope: primitives only, not feature components.** This phase defines the reusable atoms every screen is built from — button, input, card, badge, and the signature element from Phase 2. It does NOT enumerate feature components like a sign-up form or a transaction list. Those don't exist yet; they emerge per change, where each screen's requirements are captured. What you define here is the seed those changes reuse and extend — not a complete catalog.
 
-    "For [component], what are the height, padding, radius, font (size + weight), and any domain-specific behavior? And why does it fit the direction?"
+    Why this phase exists: the Phase 4 tokens (spacing, radius, type scale) are abstract until something is built from them. Defining a few primitives proves the tokens compose, and gives every future change fixed dimensions to reuse instead of reinventing them — which is the drift this whole system prevents. The signature element in particular needs a concrete home here; Phase 6 checks that it actually landed somewhere.
 
-    Don't push to enumerate every possible component. Stop when the user says they have enough.
+    Start by confirming the primitive set — the handful of atoms this product leans on most, plus the signature. Then for each one, ask one at a time:
+
+    "For [primitive], what are the height, padding, radius, font (size + weight), and any domain-specific behavior? And why does it fit the direction?"
+
+    Keep the set small. Stop once the core primitives and the signature are defined — feature-level components are the job of changes, not this phase.
 
     ---
 
@@ -194,7 +218,7 @@ export function getStyleInitSkillTemplate(): SkillTemplate {
 
     Topics: \`Swap\`, \`Squint\`, \`Signature\`, \`Token\`. Use \`[Phase 6 — Check K/4: TestName]\`.
 
-    Before saving, run these 4 checks against the decisions made in Phases 1-5. For each check, state the test, apply it honestly to the current system, report pass or fail, and if it fails, ask the user whether to revisit a specific earlier decision.
+    Before saving, run these 4 checks against the decisions made in Phases 1-5. For each check, state the test, apply it honestly to the current system, report pass or fail, and if it fails, ask a choice question: revisit the specific earlier decision (recommended — name which phase and topic) / accept the failure with reasoning.
 
     Do not skip checks. Do not rubber-stamp. The point of this phase is to catch defaults that slipped in.
 
@@ -214,10 +238,10 @@ export function getStyleInitSkillTemplate(): SkillTemplate {
 
     ### Check 3: Signature test
 
-    "Where in the component patterns (Phase 5) does the signature element from Phase 2 actually appear? Name at least one concrete place."
+    "Where in the foundational primitives (Phase 5) does the signature element from Phase 2 actually appear? Name at least one concrete place."
 
-    - **Pass**: The signature appears in at least one defined pattern with specifics.
-    - **Fail**: The signature was named in Phase 2 but doesn't show up anywhere in the patterns. → Offer to revisit Phase 5 to add it, or Phase 2 to reconsider the signature.
+    - **Pass**: The signature appears in at least one defined primitive with specifics.
+    - **Fail**: The signature was named in Phase 2 but doesn't show up anywhere in the primitives. → Offer to revisit Phase 5 to add it, or Phase 2 to reconsider the signature.
 
     ### Check 4: Token test
 
@@ -244,7 +268,7 @@ export function getStyleInitSkillTemplate(): SkillTemplate {
 
     ## Phase 7: Save
 
-    Show the full system as a single confirmation block, then ask: "Save this to \`design-spec/styles/style.md\`?"
+    Show the full system as a single confirmation block, then ask as a choice question: save to \`design-spec/styles/style.md\` (recommended) / adjust something first.
 
     On confirmation, create \`design-spec/styles/\` if it doesn't exist, then write:
 
@@ -280,9 +304,9 @@ export function getStyleInitSkillTemplate(): SkillTemplate {
     Scale: [values]
     Weights: [values]
 
-    ## Patterns
+    ## Primitives
 
-    ### [Component Name]
+    ### [Primitive Name]
     - Height: [value]
     - Padding: [value]
     - Radius: [value]
@@ -307,12 +331,13 @@ export function getStyleInitSkillTemplate(): SkillTemplate {
     - **Track topics, not question count** — Multiple questions on the same topic share the same marker. Advance the marker only when the topic is genuinely complete.
     - **Don't rush to the next topic** — A topic can need 1, 3, or 5 questions. Stay until it's clear.
     - **Probes are not new topics** — Bullets are follow-ups for vague answers within the current topic. Use one at a time, never the whole list.
+    - **Choice questions** — One "(Recommended)" option and a reason each; use the question tool if you have one (Claude Code: \`AskUserQuestion\`), else a numbered list. Free-form answers always win.
     - **Don't default** — Every choice must be explainable. "It's common" fails.
     - **Don't rush** — This conversation sets the foundation. Spend time on it.
     - **Don't fake specificity** — Vague answers (from the user or from you) need pushback.
     - **Do connect decisions to intent** — Every token traces back to Phase 1 or Phase 2.
     - **Do confirm before saving** — Show the full system before writing the file.
-    - **Do offer to extend later** — The system grows. Patterns can be added after the fact.
+    - **Do offer to extend later** — The system grows. Primitives can be added after the fact.
     `,
   };
 }
