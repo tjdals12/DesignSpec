@@ -34,7 +34,7 @@ export function getStyleInitSkillTemplate(): SkillTemplate {
     Two kinds of question, decided by the shape of the answer space — not by phase difficulty:
 
     - **Open** (Phases 1, 2, 5): the user's own words are the point. Ask in prose, no options.
-    - **Choice** (Step 0, Phases 3, 4, 6, 7): the answers are enumerable. Give options with exactly one marked "(Recommended)" and a one-line reason per option drawn from this conversation. If you have an interactive question tool — in Claude Code, \`AskUserQuestion\` — you must use it rather than typing the options as prose; otherwise use the numbered-list form below. A set of options is still one question, and free-form answers always win.
+    - **Choice** (Step 0, Phases 3, 4, 6, 7): the answers are enumerable. Give options with exactly one marked "(Recommended)" and a one-line reason per option drawn from this conversation. If you have an interactive question tool (Claude Code: \`AskUserQuestion\`, Grok: \`ask_user_question\`) you must use it rather than typing the options as prose; otherwise use the numbered-list form below. A set of options is still one question, and free-form answers always win.
 
     Numbered-list form, for agents without a question tool:
 
@@ -331,7 +331,7 @@ export function getStyleInitSkillTemplate(): SkillTemplate {
     - **Track topics, not question count** — Multiple questions on the same topic share the same marker. Advance the marker only when the topic is genuinely complete.
     - **Don't rush to the next topic** — A topic can need 1, 3, or 5 questions. Stay until it's clear.
     - **Probes are not new topics** — Bullets are follow-ups for vague answers within the current topic. Use one at a time, never the whole list.
-    - **Choice questions** — One "(Recommended)" option and a reason each; use the question tool if you have one (Claude Code: \`AskUserQuestion\`), else a numbered list. Free-form answers always win.
+    - **Choice questions** — One "(Recommended)" option and a reason each; use the question tool if you have one (Claude Code: \`AskUserQuestion\`, Grok: \`ask_user_question\`), else a numbered list. Free-form answers always win.
     - **Don't default** — Every choice must be explainable. "It's common" fails.
     - **Don't rush** — This conversation sets the foundation. Spend time on it.
     - **Don't fake specificity** — Vague answers (from the user or from you) need pushback.

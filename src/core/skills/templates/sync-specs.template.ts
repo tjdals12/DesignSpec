@@ -17,7 +17,7 @@ export function getSyncSpecsSkillTemplate(): SkillTemplate {
 
     1. **If no change name provided, prompt for selection**
 
-       Run \`design-spec list --json\` to get available changes. Use the **AskUserQuestion tool** to let the user select.
+       Run \`design-spec list --json\` to get available changes. Use the interactive question tool (Claude Code: \`AskUserQuestion\`, Grok: \`ask_user_question\`) to let the user select.
 
        Show changes that have spec artifacts (any \`pages/*.md\` or \`components/*.md\` in the change directory).
 

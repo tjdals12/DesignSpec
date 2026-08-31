@@ -18,7 +18,7 @@ export function getApplyChangeSkillTemplate(): SkillTemplate {
        If a name is provided, use it. Otherwise:
        - Infer from conversation context if the user mentioned a change
        - Auto-select if only one active change exists
-       - If ambiguous, run \`design-spec list --json\` to get available changes and use the **AskUserQuestion tool** to let the user select
+       - If ambiguous, run \`design-spec list --json\` to get available changes and use the interactive question tool (Claude Code: \`AskUserQuestion\`, Grok: \`ask_user_question\`) to let the user select
 
        Always announce: "Using change: <name>" and how to override.
 

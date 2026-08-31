@@ -15,7 +15,7 @@ export function getVerifyChangeSkillTemplate(): SkillTemplate {
 
     1. **If no change name provided, prompt for selection**
 
-       Run \`design-spec list --json\` to get available changes. Use the **AskUserQuestion tool** to let the user select.
+       Run \`design-spec list --json\` to get available changes. Use the interactive question tool (Claude Code: \`AskUserQuestion\`, Grok: \`ask_user_question\`) to let the user select.
 
        Show changes that have implementation tasks (\`tasks.md\` exists).
        Include the schema used for each change if available.
