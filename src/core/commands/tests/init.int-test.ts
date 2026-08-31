@@ -101,10 +101,18 @@ describe("InitCommand — 스킬 파일 생성", () => {
     );
   });
 
+  it("--tools=grok 지정 시 .grok/skills에 SKILL.md가 생성된다", async () => {
+    await new InitCommand({ tools: "grok" }).execute(tmpDir);
+    expect(await pathExists(path.join(tmpDir, ".grok", "skills", "desx-new", "SKILL.md"))).toBe(
+      true,
+    );
+  });
+
   it("--tools=none 지정 시 스킬 파일이 생성되지 않는다", async () => {
     await new InitCommand({ tools: "none" }).execute(tmpDir);
     expect(await pathExists(path.join(tmpDir, ".claude"))).toBe(false);
     expect(await pathExists(path.join(tmpDir, ".agents"))).toBe(false);
+    expect(await pathExists(path.join(tmpDir, ".grok"))).toBe(false);
   });
 
   it("이미 초기화된 디렉토리에서 재실행하면 스킬 파일을 덮어쓴다", async () => {
@@ -189,6 +197,16 @@ describe("InitCommand — 비대화형 폴백", () => {
     await new InitCommand({}).execute(tmpDir);
 
     expect(await pathExists(path.join(tmpDir, ".agents", "skills", "desx-new", "SKILL.md"))).toBe(
+      true,
+    );
+  });
+
+  it("비대화형 환경에서 .grok 디렉토리를 감지해 .grok/skills에 스킬을 생성한다", async () => {
+    await fs.mkdir(path.join(tmpDir, ".grok"), { recursive: true });
+
+    await new InitCommand({}).execute(tmpDir);
+
+    expect(await pathExists(path.join(tmpDir, ".grok", "skills", "desx-new", "SKILL.md"))).toBe(
       true,
     );
   });
