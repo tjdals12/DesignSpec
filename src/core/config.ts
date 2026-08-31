@@ -71,4 +71,11 @@ export const AI_TOOLS: AIToolOption[] = [
     detectionDir: ".opencode",
     description: "Open-source agentic coding CLI",
   },
+  {
+    name: "Grok",
+    value: "grok",
+    skillsPath: ".grok/skills",
+    detectionDir: ".grok",
+    description: "xAI's agentic coding CLI",
+  },
 ];
