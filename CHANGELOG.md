@@ -1,3 +1,10 @@
+# [2.2.0-next.1](https://github.com/tjdals12/DesignSpec/compare/v2.1.0...v2.2.0-next.1) (2026-08-31)
+
+
+### Features
+
+* add Grok as a supported agent ([#26](https://github.com/tjdals12/DesignSpec/issues/26)) ([f7a6c65](https://github.com/tjdals12/DesignSpec/commit/f7a6c651c5c1cdda4b7a9f9a2cccba5e355c6e81))
+
 # [2.1.0](https://github.com/tjdals12/DesignSpec/compare/v2.0.0...v2.1.0) (2026-07-18)
 
 
