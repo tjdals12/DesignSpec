@@ -1,3 +1,10 @@
+## [2.2.1](https://github.com/tjdals12/DesignSpec/compare/v2.2.0...v2.2.1) (2026-09-04)
+
+
+### Bug Fixes
+
+* rename Grok Build integration ([745c0fd](https://github.com/tjdals12/DesignSpec/commit/745c0fd8ddc67de641c45ee3c78534553c1a4088))
+
 # [2.2.0](https://github.com/tjdals12/DesignSpec/compare/v2.1.0...v2.2.0) (2026-08-31)
 
 
