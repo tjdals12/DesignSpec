@@ -66,7 +66,7 @@ Use `--tools` to choose which agents to set up — `all` for every agent, or a c
 | Cursor         | `cursor`        | `.agents/skills` |
 | GitHub Copilot | `copilot`       | `.agents/skills` |
 | OpenCode       | `opencode`      | `.agents/skills` |
-| Grok           | `grok`          | `.grok/skills`   |
+| Grok Build     | `grok`          | `.grok/skills`   |
 
 `init` generates the skills your agent will use. See [Workflow](#workflow) for how a change actually flows.
 

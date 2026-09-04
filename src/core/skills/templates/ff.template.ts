@@ -15,7 +15,7 @@ export function getFastForwardSkillTemplate(): SkillTemplate {
 
     1. **If no clear input provided, ask what they want to design**
 
-       Use the interactive question tool (Claude Code: \`AskUserQuestion\`, Grok: \`ask_user_question\`; open-ended, no preset options) to ask:
+       Use the interactive question tool (Claude Code: \`AskUserQuestion\`, Grok Build: \`ask_user_question\`; open-ended, no preset options) to ask:
        > "What design change do you want to work on? Describe the pages, flows, or shared components you want to design or update."
 
        From their description, derive a kebab-case name (e.g., "add settings notifications page" → \`add-settings-notifications\`).
@@ -81,7 +81,7 @@ export function getFastForwardSkillTemplate(): SkillTemplate {
           - Loop back to (a).
 
        **If writing an artifact surfaces a design decision that hasn't been made**:
-       - Pause the ff sweep, switch to the Deciding stance, and resolve it with one question-tool call (Claude Code: \`AskUserQuestion\`, Grok: \`ask_user_question\`) before continuing.
+       - Pause the ff sweep, switch to the Deciding stance, and resolve it with one question-tool call (Claude Code: \`AskUserQuestion\`, Grok Build: \`ask_user_question\`) before continuing.
        - Do NOT make implicit decisions and bury them in the artifact.
        - Minor wording or label choices can be decided inline — but anything that affects layout, states, slot capacity, or component shape requires a pause.
 

@@ -15,7 +15,7 @@ export function getNewChangeSkillTemplate(): SkillTemplate {
 
     1. **If no input provided, ask what they want to design**
 
-       Use the interactive question tool (Claude Code: \`AskUserQuestion\`, Grok: \`ask_user_question\`; open-ended, no preset options) to ask:
+       Use the interactive question tool (Claude Code: \`AskUserQuestion\`, Grok Build: \`ask_user_question\`; open-ended, no preset options) to ask:
        > "What design change do you want to work on? Describe the pages or shared components you want to design or update."
 
        From their description, derive a kebab-case name (e.g., "add space management screens" → \`add-space-management\`).

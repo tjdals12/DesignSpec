@@ -66,7 +66,7 @@ design-spec init --tools=all
 | Cursor         | `cursor`      | `.agents/skills` |
 | GitHub Copilot | `copilot`     | `.agents/skills` |
 | OpenCode       | `opencode`    | `.agents/skills` |
-| Grok           | `grok`        | `.grok/skills`   |
+| Grok Build     | `grok`        | `.grok/skills`   |
 
 초기화하면 에이전트에서 쓸 스킬이 생성됩니다. 실제 작업 흐름은 아래 [워크플로우](#워크플로우)를 참고하세요.
 

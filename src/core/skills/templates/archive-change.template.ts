@@ -15,7 +15,7 @@ export function getArchiveChangeSkillTemplate(): SkillTemplate {
 
     1. **If no change name provided, prompt for selection**
 
-       Run \`design-spec list --json\` to get available changes. Use the interactive question tool (Claude Code: \`AskUserQuestion\`, Grok: \`ask_user_question\`) to let the user select.
+       Run \`design-spec list --json\` to get available changes. Use the interactive question tool (Claude Code: \`AskUserQuestion\`, Grok Build: \`ask_user_question\`) to let the user select.
 
        Show only active changes (not already archived).
        Include the schema used for each change if available.

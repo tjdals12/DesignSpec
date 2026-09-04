@@ -72,7 +72,7 @@ export const AI_TOOLS: AIToolOption[] = [
     description: "Open-source agentic coding CLI",
   },
   {
-    name: "Grok",
+    name: "Grok Build",
     value: "grok",
     skillsPath: ".grok/skills",
     detectionDir: ".grok",

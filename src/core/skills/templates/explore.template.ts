@@ -62,7 +62,7 @@ export function getExploreSkillTemplate(): SkillTemplate {
 
     ## Asking decision questions
 
-    In the Deciding stance, present the choice as options, not free-form text. If you have an interactive question tool (Claude Code: \`AskUserQuestion\`, Grok: \`ask_user_question\`) you must use it; otherwise lay the options out as a numbered markdown list ending with "Reply with a number or in your own words."
+    In the Deciding stance, present the choice as options, not free-form text. If you have an interactive question tool (Claude Code: \`AskUserQuestion\`, Grok Build: \`ask_user_question\`) you must use it; otherwise lay the options out as a numbered markdown list ending with "Reply with a number or in your own words."
 
     - 2-4 mutually exclusive options, each with a one-line reason it fits
     - Mark the recommendation "(Recommended)" — first in the list

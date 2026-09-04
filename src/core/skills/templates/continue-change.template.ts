@@ -15,7 +15,7 @@ export function getContinueChangeSkillTemplate(): SkillTemplate {
 
     1. **If no change name provided, prompt for selection**
 
-       Run \`design-spec list --json\` to get available changes sorted by most recently modified. Then use the interactive question tool (Claude Code: \`AskUserQuestion\`, Grok: \`ask_user_question\`) to let the user select which change to work on.
+       Run \`design-spec list --json\` to get available changes sorted by most recently modified. Then use the interactive question tool (Claude Code: \`AskUserQuestion\`, Grok Build: \`ask_user_question\`) to let the user select which change to work on.
 
        Present the top 3-4 most recently modified changes as options, showing:
        - Change name
