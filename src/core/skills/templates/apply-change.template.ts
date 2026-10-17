@@ -66,7 +66,9 @@ export function getApplyChangeSkillTemplate(): SkillTemplate {
 
        For each pending task in \`tasks\` (where \`completed: false\`):
        - Show which task is being worked on (the task text)
-       - Make the code changes required by the task
+       - Make the code changes required by the task, following the page and component specs
+       - For new data-dependent UI, provide realistic representative data and local state so the specified content, states, and interactions can be reviewed immediately
+       - Preserve working data connections and behavior when modifying existing UI
        - Keep changes minimal and focused on the task at hand
        - Mark the task complete in \`tasks.md\`: \`- [ ]\` → \`- [x]\` (match the exact task line)
        - Continue to the next task
@@ -143,7 +145,7 @@ export function getApplyChangeSkillTemplate(): SkillTemplate {
     **Guardrails**
     - Always read every file in \`contextFiles\` before starting implementation. The page and component design files (\`pages/*.md\`, \`components/*.md\`) are the contract — do not improvise UI decisions that conflict with them.
     - Use \`contextFiles\` from CLI output as authoritative — don't assume specific file names.
-    - The \`<project_context>\` block in the CLI output is project-wide guidance for YOU (visual personality, conventions, references). Follow it while writing code, but do NOT copy the block itself into any file.
+    - Use \`<project_context>\` and development instructions to guide implementation, keeping the context block itself out of files. User-facing content follows the page and component specs. Implementation choices belong in code or developer-facing reports unless the specs explicitly require their display in the UI.
     - Update the task checkbox in \`tasks.md\` immediately after completing each task. Do not batch checkbox updates.
     - Match the exact task line when toggling \`- [ ]\` → \`- [x]\` so the parser keeps progress in sync.
     - Keep code changes minimal and scoped to each task.

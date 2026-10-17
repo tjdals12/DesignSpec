@@ -253,7 +253,7 @@ artifacts:
       - **Inspect the existing codebase before writing tasks.** Look at how similar pages and components are organized today and follow the project's prevailing structure and naming conventions. Do NOT invent new conventions in tasks.
       - When a task spans multiple files, list them all under the same task. Split into sub-tasks only when each file can be verified independently.
       - Pair test files with the implementation file when the project has tests for similar units (e.g., co-located `*.test.tsx` next to the component).
-      - For integration tasks (routing, navigation, data fetching), point to the specific files that need to change (e.g., `src/router.tsx`, `src/components/Sidebar/Sidebar.tsx`).
+      - For integration tasks (routing, navigation, shared UI state), point to the specific files that need to change (e.g., `src/router.tsx`, `src/components/Sidebar/Sidebar.tsx`).
       - The DesignSpec artifact name (kebab-case, e.g., `space-form`) is independent from the code identifier (e.g., `SpaceForm`). Use the project's code naming convention for paths and identifiers, not the DesignSpec name.
 
       Not tasks:
@@ -263,7 +263,7 @@ artifacts:
       Recommended group structure for the default schema:
       1. **Shared Components** — One task per file in `components/*.md`. Build these first so pages can reuse them.
       2. **Pages** — One task per file in `pages/*.md`. Pages consume the components above.
-      3. **Integration** — Cross-cutting work that does not belong to a specific page or component. Examples: routing, navigation entries, data fetching, state management, API wiring.
+      3. **Integration** — Cross-cutting UI work that does not belong to a specific page or component. Examples: routing, navigation entries, shared UI state.
 
       Default to one task per artifact. Split a single artifact into multiple tasks only when it is genuinely large (e.g., a page with many distinct states or a complex form component).
 

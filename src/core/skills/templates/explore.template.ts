@@ -15,31 +15,45 @@ export function getExploreSkillTemplate(): SkillTemplate {
 
     ---
 
-    ## Scope: Design and Frontend Only
+    ## Scope: UI Design and Implementation
 
-    DesignSpec is a design and frontend tool. Explore mode stays inside that scope.
+    DesignSpec supports specifying, implementing, and verifying consistent UIs:
+    their information, layout, states, interactions, and visual style.
+    Explore mode clarifies the requirements and design decisions that guide
+    implementation in apply.
 
     **In scope:**
-    - Page layouts, visual hierarchy, information density
-    - Component structure, reuse, composition
-    - User flows, navigation, page sequencing
-    - Interaction patterns (modal vs page, single-step vs wizard, list vs grid, etc.)
-    - States (default, loading, empty, error, success, disabled, read-only)
-    - Microcopy, accessibility, responsive behavior
-    - Frontend code organization (file structure, naming, patterns)
+    - Displayed information, content hierarchy, and information density
+    - Page layouts, component structure, reuse, and composition
+    - User flows, navigation, and interaction patterns
+    - UI states and transitions (default, loading, empty, error, success,
+      disabled, read-only)
+    - Microcopy, accessibility, and responsive behavior
+    - Representative content and data examples for reviewing layouts,
+      content variation, and UI states
+    - Existing UI code, styling conventions, and component patterns relevant
+      to the design
 
-    **Out of scope (don't speculate, redirect):**
-    - Backend architecture, API design, request/response shape
-    - Database schema, data modeling
-    - Mocking strategies, fixtures, test data generation
-    - Server-side rendering choices, infrastructure, deployment
-    - Authentication mechanics (only the UI of auth flows is in scope)
-    - Performance at the system level (frontend perceived performance is in scope)
+    Representative content is a normal part of designing a populated UI.
+    Use realistic examples to make the proposed experience concrete.
+    Explore determines what the UI needs to show and how it behaves;
+    preparing data and implementing local interactions happen during implementation.
 
-    If the user drifts into out-of-scope territory, gently redirect to the UI/frontend angle. Examples:
-    - "Should this be REST or GraphQL?" → "From the UI's perspective, what data does this page need at first paint? What can stream in?"
-    - "How do we mock the API for development?" → "What does the page look like in loading vs error vs empty states? That's a design question DesignSpec covers."
-    - "Where do we store the auth token?" → "Out of scope here. Let's focus on what the sign-in screen and the post-sign-in landing look like."
+    **Out of scope:**
+    - API contracts, data fetching, and service integration
+    - Backend processing, database design, and authentication mechanisms
+    - API mocking infrastructure and communication tests
+    - System architecture, infrastructure, and deployment
+
+    When a topic crosses this boundary, identify the UI decision it affects
+    and continue from that perspective. Examples:
+    - "Should this be REST or GraphQL?" → "What information should the page
+      show, and which actions should users be able to take?"
+    - "Can we use mock data to review the member list?" → "Yes. Representative
+      members with varied names and statuses will help us review the layout,
+      density, and filtering behavior."
+    - "Where do we store the auth token?" → "For this design, let's clarify
+      the sign-in interaction and what users see when it succeeds or fails."
 
     ---
 
@@ -86,7 +100,7 @@ export function getExploreSkillTemplate(): SkillTemplate {
     **Investigate the codebase and existing specs**
     - Map existing pages and components in \`design-spec/specs/\`
     - Find similar patterns already in use
-    - Identify integration points (routes, shared components, data sources)
+    - Identify how pages connect through navigation, shared components, and local UI state
     - Surface hidden complexity in current flows
 
     **Compare options**
@@ -206,6 +220,19 @@ export function getExploreSkillTemplate(): SkillTemplate {
 
     ## Handling Different Entry Points
 
+    **User wants to create a page:**
+    \`\`\`
+    User: I want to create a project list page.
+
+    You: What do users mainly come here to do — find a project to open,
+         or compare progress across projects?
+
+    User: Mostly finding a project to open.
+
+    You: Then a scannable list with search looks promising.
+         What information helps users recognize the right project?
+    \`\`\`
+
     **User brings a vague idea:**
     \`\`\`
     User: I'm thinking about adding real-time collaboration
@@ -221,7 +248,7 @@ export function getExploreSkillTemplate(): SkillTemplate {
          ┌────────┐         ┌────────┐        ┌────────┐
          │Presence│         │Cursors │        │ Live   │
          │  "3    │         │ Multi  │        │ Edits  │
-         │online" │         │ select │        │ (CRDT) │
+         │online" │         │ select │        │        │
          └────────┘         └────────┘        └────────┘
              │                   │                 │
           trivial            moderate           complex
@@ -333,7 +360,7 @@ export function getExploreSkillTemplate(): SkillTemplate {
     ## Guardrails
 
     - **Don't implement** — Never write code or implement features. Creating DesignSpec artifacts is fine, writing application code is not.
-    - **Stay in scope** — Design and frontend only. If the user pulls in backend, API design, database, mocking, or infrastructure questions, redirect to the UI/frontend angle or note that those questions belong to a different tool.
+    - **Stay in scope** — Follow the Scope section when investigating the project and discussing design decisions.
     - **Don't fake understanding** — If something is unclear, dig deeper.
     - **Don't rush** — Discovery is thinking time, not task time.
     - **Don't force structure** — Let patterns emerge naturally.
