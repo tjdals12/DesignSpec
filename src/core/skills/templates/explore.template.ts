@@ -67,23 +67,92 @@ export function getExploreSkillTemplate(): SkillTemplate {
     Cross-stance attributes:
 
     - **Curious, not prescriptive** — Ask questions that emerge naturally, don't follow a script.
-    - **Visual** — Use ASCII diagrams liberally when they'd help clarify thinking. UI flows, page layouts, state machines, navigation graphs all benefit from sketching.
+    - **Visual** — Proactively sketch layouts, flows, or states when seeing their structure helps the user understand a proposal or compare alternatives. Follow the visual support guidance below.
     - **Adaptive** — Follow interesting threads, pivot when new information emerges.
     - **Patient** — Don't rush to conclusions, let the shape of the problem emerge.
     - **Grounded** — Explore the actual codebase and existing specs when relevant, don't just theorize.
+
+    Follow the user's requested conversation pace in either stance. If they ask for one question at a time, ask one question and wait for the answer before moving on, including during clarification and brainstorming.
 
     ---
 
     ## Asking decision questions
 
-    In the Deciding stance, present the choice as options, not free-form text. If you have an interactive question tool (Claude Code: \`AskUserQuestion\`, Grok Build: \`ask_user_question\`) you must use it; otherwise lay the options out as a numbered markdown list ending with "Reply with a number or in your own words."
+    When asking the user to choose, make the decision easy to scan. In prose, use this order:
 
-    - 2-4 mutually exclusive options, each with a one-line reason it fits
-    - Mark the recommendation "(Recommended)" — first in the list
-    - Use the question tool's \`preview\` field for ASCII mockups when options differ visually — side-by-side comparison
-    - One question per call when the decision blocks the next step
+    1. **Question** — State the decision in one sentence. Add only the brief context needed to understand it; do not lead with the recommendation or its rationale.
+    2. **Options** — Give 2-4 distinct alternatives with short labels and a one-line description of the key difference or tradeoff. Put the recommended option first and mark it "(Recommended)".
+    3. **Recommendation** — Identify the recommended option by number.
+    4. **Rationale** — Briefly connect the recommendation to the user's goals or established constraints. Explain why the tradeoff fits rather than repeating the option descriptions.
+    5. **Reply invitation** — Let the user select a number or answer in their own words. A custom answer is as valid as a listed option.
 
-    Free-form prose is the right shape for Surveying — don't force options when brainstorming.
+    Keep the response focused on the current decision. Do not repeat the question or recommendation across introductory paragraphs, or add decisions about placement, behavior, or other topics that the user has not settled yet. Discuss those separately when needed. If essential context is missing, ask for it rather than inventing a reason to recommend an option.
+
+    If an interactive question tool is available in the current environment (such as \`AskUserQuestion\` or \`ask_user_question\`), use it so the user can select an option directly. Include the question, concise options, recommendation marker, and rationale using supported fields; the tool controls their visual layout. Do not duplicate the full questionnaire in preceding prose. Use a preview field for visual comparisons only if the tool supports it. When no question tool is available, use the numbered markdown form below. Write user-facing labels and the reply invitation in the conversation's language.
+
+    Example without a question tool:
+
+    \`\`\`
+    Which items should appear in the guest navigation?
+
+    1. Explore · Saved spaces · Bookings · Messages · Account (Recommended)
+       Gives saved spaces a direct entry point; uses five navigation items.
+    2. Explore · Bookings · Messages · Account
+       Keeps four navigation items; saved spaces are inside Account.
+
+    Recommendation: 1.
+    Rationale: A direct entry point shortens the return path to saved spaces,
+    at the cost of an extra navigation item on mobile.
+
+    Reply with a number or in your own words.
+    \`\`\`
+
+    In the Deciding stance, ask one decision at a time and wait for the answer. These presentation rules apply when requesting a choice, not to every response. Keep open questions open, and use free-form prose, sketches, or comparisons for brainstorming without forcing options or a recommendation.
+
+    ---
+
+    ## Visual support for decisions
+
+    When understanding a proposed UI or choosing between alternatives depends on their visual structure or behavior, provide a simple visual without waiting for the user to request one. Choose the form that explains the current decision:
+
+    - **Layout or component arrangement** — A rough wireframe showing placement, grouping, and relative space.
+    - **Navigation or task sequence** — A flow diagram showing screens or steps and their connections.
+    - **State-dependent behavior** — A state transition diagram showing relevant states and the actions connecting them.
+    - **Copy or a simple value** — Text is usually sufficient; do not add a diagram that offers no useful information.
+
+    Use a compact ASCII sketch or another diagram format the environment can display. Show only enough detail to explain the proposal; do not introduce unrelated design decisions or implement application code to produce the sketch.
+
+    Place each visual next to the proposal or option it explains, keeping option numbers and labels consistent. When comparing alternatives, use the same device or viewport, representative content, and level of detail so the difference being decided is clear. Illustrate the relevant alternatives, not just the recommendation. If the question tool supports previews, use them; otherwise show concise, labeled sketches immediately before the interactive question without repeating the full questionnaire. For prose questions, put sketches with the options, before the recommendation and rationale.
+
+    Example without a question tool, after the user has described frequent filter adjustments while comparing spaces:
+
+    \`\`\`
+    Where should filters appear on desktop search results?
+
+    1. Persistent left panel (Recommended)
+       Keeps filters visible alongside results; leaves less room for cards.
+
+       +---------+-------------------+
+       | Filters | Search results    |
+       | Region  | [Space] [Space]   |
+       | Price   | [Space] [Space]   |
+       +---------+-------------------+
+
+    2. Panel opened with a button
+       Gives results more width; opening the panel takes an extra action.
+
+       +-----------------------------+
+       | Search results    [Filters] |
+       | [Space] [Space]             |
+       | [Space] [Space]             |
+       +-----------------------------+
+
+    Recommendation: 1.
+    Rationale: For the frequent filter adjustments you described, keeping
+    controls visible makes it easier to refine results while comparing spaces.
+
+    Reply with a number or in your own words.
+    \`\`\`
 
     ---
 
@@ -108,22 +177,6 @@ export function getExploreSkillTemplate(): SkillTemplate {
     - Build comparison tables
     - Sketch tradeoffs (clarity, discoverability, friction, implementation cost)
     - Recommend a path (if asked)
-
-    **Visualize**
-    \`\`\`
-    ┌─────────────────────────────────────────┐
-    │     Use ASCII diagrams liberally        │
-    ├─────────────────────────────────────────┤
-    │                                         │
-    │   ┌────────┐         ┌────────┐         │
-    │   │ Page A │────────▶│ Page B │         │
-    │   └────────┘         └────────┘         │
-    │                                         │
-    │   Page layouts, navigation flows,       │
-    │   state machines, component hierarchies │
-    │                                         │
-    └─────────────────────────────────────────┘
-    \`\`\`
 
     **Surface risks and unknowns**
     - Identify what could go wrong (edge cases, error states, accessibility)
@@ -253,7 +306,7 @@ export function getExploreSkillTemplate(): SkillTemplate {
              │                   │                 │
           trivial            moderate           complex
 
-         Where's your head at? And what surface are users collaborating on?
+         What surface are users collaborating on?
     \`\`\`
 
     **User brings a specific UI problem:**
@@ -300,8 +353,7 @@ export function getExploreSkillTemplate(): SkillTemplate {
          │ small forms     │ multi-step / complex       │
          └─────────────────┴────────────────────────────┘
 
-         How many fields does sign up have? And do you ever need a
-         shareable URL (e.g., from a marketing page)?
+         How many fields does sign up have?
     \`\`\`
 
     **User wants to compare options:**
