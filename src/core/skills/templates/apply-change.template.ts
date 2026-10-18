@@ -18,11 +18,24 @@ export function getApplyChangeSkillTemplate(): SkillTemplate {
        Run \`design-spec list --json\` to check the currently active changes, then resolve the target in this order:
        - **Explicit name**: Use the name supplied by the user.
        - **Conversation context**: Reuse the change most recently created, selected, implemented, or verified in this conversation when it is clearly the current target and the user has not switched to another. This includes a change created by the agent during \`desx-ff\` or \`desx-new\`; the user need not repeat its name. If several targets remain plausible, treat the target as unresolved.
-       - **Unresolved target**: Show the active change list and ask the user to select, even if there is only one candidate. Do not select or recommend a target merely because it was modified most recently. Wait for a valid selection before running later steps.
+       - **Unresolved target**: Use the active changes as candidates in the selection below, even if there is only one candidate. Do not select or recommend a target merely because it was modified most recently. Wait for a valid selection before running later steps.
 
-       Validate the resolved name against the active list. If an explicit or contextual name is missing or already archived, explain that and present the active list for selection; do not silently substitute another change.
+       Validate the resolved name against the active list. If an explicit or contextual name is missing or already archived, explain that and offer the active changes through the selection below; do not silently substitute another change.
 
-       When selection is needed, show each active change's name, task progress (\`completedTask\` / \`totalTask\`, or no tasks defined), and last modification time from the list output. Do not invent schema or artifact progress from task counts, or hide candidates because they lack tasks or specs. Use an interactive question tool if available; otherwise provide a numbered list and invite a number, a change name, or a free-form clarification. Never ask for a change name without showing the available candidates. If tool option limits require a shorter selection, keep the remaining candidates accessible.
+       Build the selection options from the list results, including each change's name, last modification time, and implementation task progress (\`completedTask\` / \`totalTask\`) when \`totalTask\` is greater than zero. Omit implementation progress when there are no tasks. Do not invent schema or artifact progress from task counts, or hide candidates because they lack tasks or specs.
+
+       **Selection presentation**
+
+       Present numbered options following the example below, adapting the change names, statuses, and language to the current project.
+
+       \`\`\`text
+       Which change should I implement?
+
+       1. host-layout — modified 2 hours ago
+       2. guest-navigation — Implementation tasks: 3/8 complete · modified yesterday
+
+       Reply with a number or describe the work in your own words.
+       \`\`\`
 
        If there are no active changes, explain that and suggest starting new work with \`desx-new\` or \`desx-ff\`; do not keep requesting a nonexistent name or create a change within this skill. Stop until the user chooses a next action.
 
