@@ -19,18 +19,22 @@ export function getFastForwardSkillTemplate(): SkillTemplate {
 
        The current explicit request takes precedence over earlier context. An earlier active change does not turn an explicit request for new work into continuation. Distinguish starting new work from continuing an existing change:
        - **New work**: Use an explicit kebab-case name if supplied; otherwise derive a concise name from the established requirements (e.g., "add settings notifications page" → \`add-settings-notifications\`). Naming understood work is not guessing the target of an existing change.
-       - **Existing work**: Reuse an explicit name or an unambiguous current target from this conversation, including an agent-created change. Validate it against \`design-spec list --json\`, announce the name, and hand off to \`desx-continue\` with that name rather than creating a duplicate, then stop this skill. Do not ask for the name again.
+       - **Existing work**: Reuse an explicit name or an unambiguous current target from this conversation, including an agent-created change. Validate it against \`design-spec list --json\` and announce the name. Skip directory creation in Step 2 and proceed directly to Step 3, then fast-forward the remaining required artifacts through Step 4. Do not switch to \`desx-continue\` or ask for the name again.
        - **Unclear work or target**: Run \`design-spec list --json\` and show the active changes with their names and task progress. Ask the user to select existing work or describe new work. Use an interactive question tool if available; otherwise provide numbered candidates and allow a number, a name, or free text. Even a single candidate requires selection when context does not establish it; modification time alone is not grounds for selection or recommendation. If there are no active changes, say so and ask what they want to design, not for a nonexistent change name. Wait for clarification before creating or continuing a change.
 
-       Check the active list before creating a directory. If an explicit existing target is missing or archived, explain that and offer the active list or a new-work description; do not silently create it as new. If a name chosen for new work collides with an existing change, ask whether to continue that change or use a distinct name. Do not reuse unrelated work solely because the names match.
+       Check the active list before creating a directory. If an explicit existing target is missing or archived, explain that and offer the active list or a new-work description; do not silently create it as new. If a name chosen for new work collides with an existing change, ask whether to fast-forward that existing change or create new work under a distinct name. If the existing change is selected, proceed to Step 3 within this skill. Do not reuse unrelated work solely because the names match.
 
        Ask only for information still needed to understand the intended work; do not require the user to author the kebab-case name. Once resolved, announce the target name and proceed without a separate naming confirmation. Write user-facing guidance in the conversation's language.
 
-    2. **Create the change directory**
+    2. **Create the change directory only for new work**
+
+       For a new change, run:
        \`\`\`bash
        design-spec new --change "<name>"
        \`\`\`
        This creates a scaffolded change at \`design-spec/changes/<name>/\` with the selected schema.
+
+       For an existing change resolved in Step 1, skip creation and proceed to Step 3. Use its current artifact status as the starting point; do not restart completed artifacts. Apply updates to earlier artifacts only when required by the artifact instructions.
 
        If creation reports that the name already exists, resolve the collision as described in Step 1; never overwrite the existing change.
 
@@ -122,7 +126,7 @@ export function getFastForwardSkillTemplate(): SkillTemplate {
     - Verify each artifact file exists after writing before moving to the next.
     - Prefer reasonable decisions over stalling, but ask the user when scope is genuinely unclear.
     - **\`context\` and \`rules\` are constraints for YOU, not content for the file** — do NOT copy \`<context>\`, \`<rules>\`, or \`<project_context>\` blocks into any artifact.
-    - Resolve existing targets and name collisions using Step 1; never overwrite an existing change or silently switch unrelated work.
+    - Resolve existing targets and name collisions using Step 1; never overwrite an existing change or silently switch unrelated work. Selecting an existing change does not change the execution mode: remain in \`desx-ff\` and continue until all required artifacts are complete, subject to the clarification and blocker handling above.
     - This skill does NOT implement code. After artifacts are done, hand off to \`desx-apply\`.
     `,
   };
