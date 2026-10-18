@@ -1,3 +1,10 @@
+## [2.2.2-next.2](https://github.com/tjdals12/DesignSpec/compare/v2.2.2-next.1...v2.2.2-next.2) (2026-10-18)
+
+
+### Bug Fixes
+
+* **skills:** clarify questions and reuse change context ([#29](https://github.com/tjdals12/DesignSpec/issues/29)) ([1514f5b](https://github.com/tjdals12/DesignSpec/commit/1514f5bd249eeaeff5ae6524576e19c9431daae7))
+
 ## [2.2.2-next.1](https://github.com/tjdals12/DesignSpec/compare/v2.2.1...v2.2.2-next.1) (2026-10-18)
 
 
