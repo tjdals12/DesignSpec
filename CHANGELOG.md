@@ -1,3 +1,10 @@
+## [2.2.2-next.1](https://github.com/tjdals12/DesignSpec/compare/v2.2.1...v2.2.2-next.1) (2026-10-18)
+
+
+### Bug Fixes
+
+* align UI workflow scope and style initialization ([#28](https://github.com/tjdals12/DesignSpec/issues/28)) ([74d6753](https://github.com/tjdals12/DesignSpec/commit/74d6753ccf99892b1c72a5b766f4c20ee065de6b))
+
 ## [2.2.1](https://github.com/tjdals12/DesignSpec/compare/v2.2.0...v2.2.1) (2026-09-04)
 
 
