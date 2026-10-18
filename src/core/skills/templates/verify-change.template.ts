@@ -70,8 +70,8 @@ export function getVerifyChangeSkillTemplate(): SkillTemplate {
        For each \`pages/<name>.md\`:
        - Locate the page implementation file(s).
        - Cross-check each section:
-         - **Displayed Information** — does the rendered output expose the listed information?
-         - **Actions** — are the listed user actions wired up (handlers, navigation, mutations)?
+         - **Displayed Information** — does the rendered output expose the listed information, using existing data or realistic representative data where needed? Does user-facing copy describe the product experience, with implementation details shown only when the specs require them?
+         - **Actions** — do the listed user actions produce the specified UI behavior (event handlers, navigation, local state transitions)?
          - **Layout** — does the structure match (sections, regions, ordering)?
          - **States** — is each listed state handled (default, loading, empty, error, etc.)?
        - If divergence detected:
@@ -81,7 +81,7 @@ export function getVerifyChangeSkillTemplate(): SkillTemplate {
        **Per-component implementation mapping**:
        For each \`components/<name>.md\`:
        - Locate the component implementation file(s).
-       - Cross-check each section (Role, Displayed Information, Actions, Layout, States).
+       - Cross-check each section (Role, Displayed Information, Actions, Layout, States), applying the same data, user-facing copy, and UI behavior checks used for pages.
        - If divergence detected:
          - Add WARNING with specific file/line references and section.
 
