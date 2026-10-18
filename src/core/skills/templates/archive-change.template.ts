@@ -9,18 +9,24 @@ export function getArchiveChangeSkillTemplate(): SkillTemplate {
     instructions: dedent`
     Archive a completed change.
 
-    **Input**: Optionally specify a change name. If omitted, check if it can be inferred from conversation context. If vague or ambiguous you MUST prompt for available changes.
+    **Input**: A change name is optional. Prefer an explicit name; otherwise reuse an unambiguous current change from the conversation. Ask for selection from the active change list only when the target cannot be resolved.
 
     **Steps**
 
-    1. **If no change name provided, prompt for selection**
+    1. **Resolve the target change**
 
-       Run \`design-spec list --json\` to get available changes. Use the interactive question tool (Claude Code: \`AskUserQuestion\`, Grok Build: \`ask_user_question\`) to let the user select.
+       Run \`design-spec list --json\` to check the currently active changes, then resolve the target in this order:
+       - **Explicit name**: Use the name supplied by the user.
+       - **Conversation context**: Reuse the change most recently created, selected, implemented, or verified in this conversation when it is clearly the current target and the user has not switched to another. This includes a change created by the agent during \`desx-ff\` or \`desx-new\`; the user need not repeat its name. If several targets remain plausible, treat the target as unresolved.
+       - **Unresolved target**: Show the active change list and ask the user to select, even if there is only one candidate. Do not select or recommend a target merely because it was modified most recently. Wait for a valid selection before running later steps.
 
-       Show only active changes (not already archived).
-       Include the schema used for each change if available.
+       Validate the resolved name against the active list. If an explicit or contextual name is missing or already archived, explain that and present the active list for selection; do not silently substitute another change.
 
-       **IMPORTANT**: Do NOT guess or auto-select a change. Always let the user choose.
+       When selection is needed, show each active change's name, task progress (\`completedTask\` / \`totalTask\`, or no tasks defined), and last modification time from the list output. Do not invent schema or artifact progress from task counts, or hide candidates because they lack tasks or specs. Use an interactive question tool if available; otherwise provide a numbered list and invite a number, a change name, or a free-form clarification. Never ask for a change name without showing the available candidates. If tool option limits require a shorter selection, keep the remaining candidates accessible.
+
+       If there are no active changes, explain that and suggest starting new work with \`desx-new\` or \`desx-ff\`; do not keep requesting a nonexistent name or create a change within this skill. Stop until the user chooses a next action.
+
+       Once the target is resolved and active, announce "Using change: <name>" and proceed without asking the user to confirm the name again. Write user-facing guidance in the conversation's language. Target selection does not replace the readiness checks or confirmations in the following steps.
 
     2. **Check artifact completion status**
 
@@ -154,7 +160,7 @@ export function getArchiveChangeSkillTemplate(): SkillTemplate {
     \`\`\`
 
     **Guardrails**
-    - Always prompt for change selection if not provided.
+    - Resolve the target using Step 1. Do not repeat change selection when an explicit or unambiguous contextual target has been validated.
     - Use \`design-spec status --json\` for completion checking.
     - Don't block archive on warnings — just inform and confirm.
     - Preserve \`.design-spec.yaml\` when moving to archive (it moves with the directory).
