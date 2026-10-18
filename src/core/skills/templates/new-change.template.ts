@@ -20,7 +20,22 @@ export function getNewChangeSkillTemplate(): SkillTemplate {
        The current explicit request takes precedence over earlier context. An earlier active change does not turn an explicit request for new work into continuation. Distinguish starting new work from continuing an existing change:
        - **New work**: Use an explicit kebab-case name if supplied; otherwise derive a concise name from the established requirements (e.g., "add settings notifications page" → \`add-settings-notifications\`). Naming understood work is not guessing the target of an existing change.
        - **Existing work**: Reuse an explicit name or an unambiguous current target from this conversation, including an agent-created change. Validate it against \`design-spec list --json\`, announce the name, and hand off to \`desx-continue\` with that name rather than creating a duplicate, then stop this skill. Do not ask for the name again.
-       - **Unclear work or target**: Run \`design-spec list --json\` and show the active changes with their names and task progress. Ask the user to select existing work or describe new work. Use an interactive question tool if available; otherwise provide numbered candidates and allow a number, a name, or free text. Even a single candidate requires selection when context does not establish it; modification time alone is not grounds for selection or recommendation. If there are no active changes, say so and ask what they want to design, not for a nonexistent change name. Wait for clarification before creating or continuing a change.
+       - **Unclear work or target**: Get active change names with \`design-spec list --json\` and use them as candidates in the selection below, with an option to describe new work. Even a single candidate requires selection when context does not establish it; modification time alone is not grounds for selection or recommendation. If there are no active changes, say so and ask what they want to design, not for a nonexistent change name. Wait for clarification before creating or continuing a change.
+
+       When selection is needed, get each candidate's artifact progress with \`design-spec status --change "<name>" --json\`. Use \`progress.done\` / \`progress.total\` to indicate whether spec writing has not started, is in progress, or is complete. Omit unavailable progress or a zero-total count. These candidate lookups are unnecessary when the target is already clear.
+
+       **Selection presentation**
+
+       Present numbered options following the example below, adapting the change names, statuses, and language to the current project.
+
+       \`\`\`text
+       Continue an existing change or start new work?
+
+       1. host-layout — Specs in progress · 2/5 artifacts complete
+       2. New work — Describe the pages or flows to design
+
+       Reply with a number or describe the work in your own words.
+       \`\`\`
 
        Check the active list before creating a directory. If an explicit existing target is missing or archived, explain that and offer the active list or a new-work description; do not silently create it as new. If a name chosen for new work collides with an existing change, ask whether to continue that change or use a distinct name. Do not reuse unrelated work solely because the names match.
 
