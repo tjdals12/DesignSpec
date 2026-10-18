@@ -1,3 +1,10 @@
+## [2.2.2-next.3](https://github.com/tjdals12/DesignSpec/compare/v2.2.2-next.2...v2.2.2-next.3) (2026-10-18)
+
+
+### Bug Fixes
+
+* **skills:** preserve fast-forward mode and clarify change selection ([#30](https://github.com/tjdals12/DesignSpec/issues/30)) ([802adac](https://github.com/tjdals12/DesignSpec/commit/802adacf811ad3bdf0dac24525084e431aae3fea))
+
 ## [2.2.2-next.2](https://github.com/tjdals12/DesignSpec/compare/v2.2.2-next.1...v2.2.2-next.2) (2026-10-18)
 
 
