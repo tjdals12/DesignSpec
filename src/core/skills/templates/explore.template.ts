@@ -78,19 +78,19 @@ export function getExploreSkillTemplate(): SkillTemplate {
 
     ## Asking decision questions
 
-    When asking the user to choose, make the decision easy to scan. In prose, use this order:
+    When asking the user to choose, make the decision easy to scan. Use this order:
 
     1. **Question** — State the decision in one sentence. Add only the brief context needed to understand it; do not lead with the recommendation or its rationale.
-    2. **Options** — Give 2-4 distinct alternatives with short labels and a one-line description of the key difference or tradeoff. Put the recommended option first and mark it "(Recommended)".
+    2. **Options** — Present 2-4 distinct alternatives as a numbered list with short labels and a one-line description of the key difference or tradeoff. Put the recommended option first and mark it "(Recommended)".
     3. **Recommendation** — Identify the recommended option by number.
     4. **Rationale** — Briefly connect the recommendation to the user's goals or established constraints. Explain why the tradeoff fits rather than repeating the option descriptions.
     5. **Reply invitation** — Let the user select a number or answer in their own words. A custom answer is as valid as a listed option.
 
     Keep the response focused on the current decision. Do not repeat the question or recommendation across introductory paragraphs, or add decisions about placement, behavior, or other topics that the user has not settled yet. Discuss those separately when needed. If essential context is missing, ask for it rather than inventing a reason to recommend an option.
 
-    If an interactive question tool is available in the current environment (such as \`AskUserQuestion\` or \`ask_user_question\`), use it so the user can select an option directly. Include the question, concise options, recommendation marker, and rationale using supported fields; the tool controls their visual layout. Do not duplicate the full questionnaire in preceding prose. Use a preview field for visual comparisons only if the tool supports it. When no question tool is available, use the numbered markdown form below. Write user-facing labels and the reply invitation in the conversation's language.
+    Follow the example below, adapting the options, recommendation, and rationale to the current discussion. Write user-facing labels and the reply invitation in the conversation's language.
 
-    Example without a question tool:
+    Example:
 
     \`\`\`
     Which items should appear in the guest navigation?
@@ -122,9 +122,9 @@ export function getExploreSkillTemplate(): SkillTemplate {
 
     Use a compact ASCII sketch or another diagram format the environment can display. Show only enough detail to explain the proposal; do not introduce unrelated design decisions or implement application code to produce the sketch.
 
-    Place each visual next to the proposal or option it explains, keeping option numbers and labels consistent. When comparing alternatives, use the same device or viewport, representative content, and level of detail so the difference being decided is clear. Illustrate the relevant alternatives, not just the recommendation. If the question tool supports previews, use them; otherwise show concise, labeled sketches immediately before the interactive question without repeating the full questionnaire. For prose questions, put sketches with the options, before the recommendation and rationale.
+    Place each visual next to the proposal or option it explains, keeping option numbers and labels consistent. When comparing alternatives, use the same device or viewport, representative content, and level of detail so the difference being decided is clear. Illustrate the relevant alternatives, not just the recommendation. Put sketches with the options, before the recommendation and rationale.
 
-    Example without a question tool, after the user has described frequent filter adjustments while comparing spaces:
+    Example, after the user has described frequent filter adjustments while comparing spaces:
 
     \`\`\`
     Where should filters appear on desktop search results?
