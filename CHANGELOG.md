@@ -1,3 +1,10 @@
+## [2.2.2-next.4](https://github.com/tjdals12/DesignSpec/compare/v2.2.2-next.3...v2.2.2-next.4) (2026-10-19)
+
+
+### Bug Fixes
+
+* **explore:** keep decision questions in a consistent order ([#31](https://github.com/tjdals12/DesignSpec/issues/31)) ([41060db](https://github.com/tjdals12/DesignSpec/commit/41060db19e5e377c46efea9dc29d804a52b9f7c8))
+
 ## [2.2.2-next.3](https://github.com/tjdals12/DesignSpec/compare/v2.2.2-next.2...v2.2.2-next.3) (2026-10-18)
 
 
