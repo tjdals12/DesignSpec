@@ -9,18 +9,37 @@ export function getApplyChangeSkillTemplate(): SkillTemplate {
     instructions: dedent`
     Implement tasks from a DesignSpec change.
 
-    **Input**: Optionally specify a change name. If omitted, check if it can be inferred from conversation context. If vague or ambiguous you MUST prompt for available changes.
+    **Input**: A change name is optional. Prefer an explicit name; otherwise reuse an unambiguous current change from the conversation. Ask for selection from the active change list only when the target cannot be resolved.
 
     **Steps**
 
-    1. **Select the change**
+    1. **Resolve the target change**
 
-       If a name is provided, use it. Otherwise:
-       - Infer from conversation context if the user mentioned a change
-       - Auto-select if only one active change exists
-       - If ambiguous, run \`design-spec list --json\` to get available changes and use the interactive question tool (Claude Code: \`AskUserQuestion\`, Grok Build: \`ask_user_question\`) to let the user select
+       Run \`design-spec list --json\` to check the currently active changes, then resolve the target in this order:
+       - **Explicit name**: Use the name supplied by the user.
+       - **Conversation context**: Reuse the change most recently created, selected, implemented, or verified in this conversation when it is clearly the current target and the user has not switched to another. This includes a change created by the agent during \`desx-ff\` or \`desx-new\`; the user need not repeat its name. If several targets remain plausible, treat the target as unresolved.
+       - **Unresolved target**: Use the active changes as candidates in the selection below, even if there is only one candidate. Do not select or recommend a target merely because it was modified most recently. Wait for a valid selection before running later steps.
 
-       Always announce: "Using change: <name>" and how to override.
+       Validate the resolved name against the active list. If an explicit or contextual name is missing or already archived, explain that and offer the active changes through the selection below; do not silently substitute another change.
+
+       Build the selection options from the list results, including each change's name, last modification time, and implementation task progress (\`completedTask\` / \`totalTask\`) when \`totalTask\` is greater than zero. Omit implementation progress when there are no tasks. Do not invent schema or artifact progress from task counts, or hide candidates because they lack tasks or specs.
+
+       **Selection presentation**
+
+       Present numbered options following the example below, adapting the change names, statuses, and language to the current project.
+
+       \`\`\`text
+       Which change should I implement?
+
+       1. host-layout — modified 2 hours ago
+       2. guest-navigation — Implementation tasks: 3/8 complete · modified yesterday
+
+       Reply with a number or describe the work in your own words.
+       \`\`\`
+
+       If there are no active changes, explain that and suggest starting new work with \`desx-new\` or \`desx-ff\`; do not keep requesting a nonexistent name or create a change within this skill. Stop until the user chooses a next action.
+
+       Once the target is resolved and active, announce "Using change: <name>" and proceed without asking the user to confirm the name again. Write user-facing guidance in the conversation's language. Target selection does not replace the readiness checks or confirmations in the following steps.
 
     2. **Get apply instructions**
        \`\`\`bash
@@ -66,7 +85,9 @@ export function getApplyChangeSkillTemplate(): SkillTemplate {
 
        For each pending task in \`tasks\` (where \`completed: false\`):
        - Show which task is being worked on (the task text)
-       - Make the code changes required by the task
+       - Make the code changes required by the task, following the page and component specs
+       - For new data-dependent UI, provide realistic representative data and local state so the specified content, states, and interactions can be reviewed immediately
+       - Preserve working data connections and behavior when modifying existing UI
        - Keep changes minimal and focused on the task at hand
        - Mark the task complete in \`tasks.md\`: \`- [ ]\` → \`- [x]\` (match the exact task line)
        - Continue to the next task
@@ -143,7 +164,7 @@ export function getApplyChangeSkillTemplate(): SkillTemplate {
     **Guardrails**
     - Always read every file in \`contextFiles\` before starting implementation. The page and component design files (\`pages/*.md\`, \`components/*.md\`) are the contract — do not improvise UI decisions that conflict with them.
     - Use \`contextFiles\` from CLI output as authoritative — don't assume specific file names.
-    - The \`<project_context>\` block in the CLI output is project-wide guidance for YOU (visual personality, conventions, references). Follow it while writing code, but do NOT copy the block itself into any file.
+    - Use \`<project_context>\` and development instructions to guide implementation, keeping the context block itself out of files. User-facing content follows the page and component specs. Implementation choices belong in code or developer-facing reports unless the specs explicitly require their display in the UI.
     - Update the task checkbox in \`tasks.md\` immediately after completing each task. Do not batch checkbox updates.
     - Match the exact task line when toggling \`- [ ]\` → \`- [x]\` so the parser keeps progress in sync.
     - Keep code changes minimal and scoped to each task.

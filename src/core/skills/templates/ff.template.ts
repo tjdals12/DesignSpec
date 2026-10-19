@@ -9,26 +9,49 @@ export function getFastForwardSkillTemplate(): SkillTemplate {
     instructions: dedent`
     Fast-forward through artifact creation — generate everything needed to start implementation.
 
-    **Input**: The user's request should include a change name (kebab-case) OR a description of what they want to design or build.
+    **Input**: A change name or design description may come from the current request or the preceding conversation. Reuse established requirements; ask only when the intended work or existing target is unclear.
 
     **Steps**
 
-    1. **If no clear input provided, ask what they want to design**
+    1. **Resolve the intended work from the request and conversation**
 
-       Use the interactive question tool (Claude Code: \`AskUserQuestion\`, Grok Build: \`ask_user_question\`; open-ended, no preset options) to ask:
-       > "What design change do you want to work on? Describe the pages, flows, or shared components you want to design or update."
+       Use the current request together with the preceding conversation, including requirements settled during \`desx-explore\`. A bare invocation does not mean the input is missing. Do not ask the user to repeat an established goal or supply a change name when the intended work is already clear.
 
-       From their description, derive a kebab-case name (e.g., "add settings notifications page" → \`add-settings-notifications\`).
+       The current explicit request takes precedence over earlier context. An earlier active change does not turn an explicit request for new work into continuation. Distinguish starting new work from continuing an existing change:
+       - **New work**: Use an explicit kebab-case name if supplied; otherwise derive a concise name from the established requirements (e.g., "add settings notifications page" → \`add-settings-notifications\`). Naming understood work is not guessing the target of an existing change.
+       - **Existing work**: Reuse an explicit name or an unambiguous current target from this conversation, including an agent-created change. Validate it against \`design-spec list --json\` and announce the name. Skip directory creation in Step 2 and proceed directly to Step 3, then fast-forward the remaining required artifacts through Step 4. Do not switch to \`desx-continue\` or ask for the name again.
+       - **Unclear work or target**: Get active change names with \`design-spec list --json\` and use them as candidates in the selection below, with an option to describe new work. Even a single candidate requires selection when context does not establish it; modification time alone is not grounds for selection or recommendation. If there are no active changes, say so and ask what they want to design, not for a nonexistent change name. Wait for clarification before creating or continuing a change.
 
-       **IMPORTANT**: Do NOT proceed without understanding what the user wants to design. Reasonable assumptions about scope are fine; guesses about the change name are not.
+       When selection is needed, get each candidate's artifact progress with \`design-spec status --change "<name>" --json\`. Use \`progress.done\` / \`progress.total\` to indicate whether spec writing has not started, is in progress, or is complete. Omit unavailable progress or a zero-total count. These candidate lookups are unnecessary when the target is already clear.
 
-    2. **Create the change directory**
+       **Selection presentation**
+
+       Present numbered options following the example below, adapting the change names, statuses, and language to the current project.
+
+       \`\`\`text
+       Which change should I fast-forward?
+
+       1. host-layout — Specs in progress · 2/5 artifacts complete
+       2. New work — Describe the pages or flows to design
+
+       Reply with a number or describe the work in your own words.
+       \`\`\`
+
+       Check the active list before creating a directory. If an explicit existing target is missing or archived, explain that and offer the active list or a new-work description; do not silently create it as new. If a name chosen for new work collides with an existing change, ask whether to fast-forward that existing change or create new work under a distinct name. If the existing change is selected, proceed to Step 3 within this skill. Do not reuse unrelated work solely because the names match.
+
+       Ask only for information still needed to understand the intended work; do not require the user to author the kebab-case name. Once resolved, announce the target name and proceed without a separate naming confirmation. Write user-facing guidance in the conversation's language.
+
+    2. **Create the change directory only for new work**
+
+       For a new change, run:
        \`\`\`bash
        design-spec new --change "<name>"
        \`\`\`
        This creates a scaffolded change at \`design-spec/changes/<name>/\` with the selected schema.
 
-       If a change with that name already exists, suggest continuing it via the \`desx-continue\` skill instead. Do NOT overwrite.
+       For an existing change resolved in Step 1, skip creation and proceed to Step 3. Use its current artifact status as the starting point; do not restart completed artifacts. Apply updates to earlier artifacts only when required by the artifact instructions.
+
+       If creation reports that the name already exists, resolve the collision as described in Step 1; never overwrite the existing change.
 
     3. **Get the artifact build order**
        \`\`\`bash
@@ -81,7 +104,7 @@ export function getFastForwardSkillTemplate(): SkillTemplate {
           - Loop back to (a).
 
        **If writing an artifact surfaces a design decision that hasn't been made**:
-       - Pause the ff sweep, switch to the Deciding stance, and resolve it with one question-tool call (Claude Code: \`AskUserQuestion\`, Grok Build: \`ask_user_question\`) before continuing.
+       - Pause the ff sweep and resolve the decision with one question before continuing, using numbered options when alternatives are available.
        - Do NOT make implicit decisions and bury them in the artifact.
        - Minor wording or label choices can be decided inline — but anything that affects layout, states, slot capacity, or component shape requires a pause.
 
@@ -118,7 +141,7 @@ export function getFastForwardSkillTemplate(): SkillTemplate {
     - Verify each artifact file exists after writing before moving to the next.
     - Prefer reasonable decisions over stalling, but ask the user when scope is genuinely unclear.
     - **\`context\` and \`rules\` are constraints for YOU, not content for the file** — do NOT copy \`<context>\`, \`<rules>\`, or \`<project_context>\` blocks into any artifact.
-    - If a change with the chosen name already exists, redirect to \`desx-continue\` instead of overwriting.
+    - Resolve existing targets and name collisions using Step 1; never overwrite an existing change or silently switch unrelated work. Selecting an existing change does not change the execution mode: remain in \`desx-ff\` and continue until all required artifacts are complete, subject to the clarification and blocker handling above.
     - This skill does NOT implement code. After artifacts are done, hand off to \`desx-apply\`.
     `,
   };

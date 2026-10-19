@@ -15,31 +15,45 @@ export function getExploreSkillTemplate(): SkillTemplate {
 
     ---
 
-    ## Scope: Design and Frontend Only
+    ## Scope: UI Design and Implementation
 
-    DesignSpec is a design and frontend tool. Explore mode stays inside that scope.
+    DesignSpec supports specifying, implementing, and verifying consistent UIs:
+    their information, layout, states, interactions, and visual style.
+    Explore mode clarifies the requirements and design decisions that guide
+    implementation in apply.
 
     **In scope:**
-    - Page layouts, visual hierarchy, information density
-    - Component structure, reuse, composition
-    - User flows, navigation, page sequencing
-    - Interaction patterns (modal vs page, single-step vs wizard, list vs grid, etc.)
-    - States (default, loading, empty, error, success, disabled, read-only)
-    - Microcopy, accessibility, responsive behavior
-    - Frontend code organization (file structure, naming, patterns)
+    - Displayed information, content hierarchy, and information density
+    - Page layouts, component structure, reuse, and composition
+    - User flows, navigation, and interaction patterns
+    - UI states and transitions (default, loading, empty, error, success,
+      disabled, read-only)
+    - Microcopy, accessibility, and responsive behavior
+    - Representative content and data examples for reviewing layouts,
+      content variation, and UI states
+    - Existing UI code, styling conventions, and component patterns relevant
+      to the design
 
-    **Out of scope (don't speculate, redirect):**
-    - Backend architecture, API design, request/response shape
-    - Database schema, data modeling
-    - Mocking strategies, fixtures, test data generation
-    - Server-side rendering choices, infrastructure, deployment
-    - Authentication mechanics (only the UI of auth flows is in scope)
-    - Performance at the system level (frontend perceived performance is in scope)
+    Representative content is a normal part of designing a populated UI.
+    Use realistic examples to make the proposed experience concrete.
+    Explore determines what the UI needs to show and how it behaves;
+    preparing data and implementing local interactions happen during implementation.
 
-    If the user drifts into out-of-scope territory, gently redirect to the UI/frontend angle. Examples:
-    - "Should this be REST or GraphQL?" → "From the UI's perspective, what data does this page need at first paint? What can stream in?"
-    - "How do we mock the API for development?" → "What does the page look like in loading vs error vs empty states? That's a design question DesignSpec covers."
-    - "Where do we store the auth token?" → "Out of scope here. Let's focus on what the sign-in screen and the post-sign-in landing look like."
+    **Out of scope:**
+    - API contracts, data fetching, and service integration
+    - Backend processing, database design, and authentication mechanisms
+    - API mocking infrastructure and communication tests
+    - System architecture, infrastructure, and deployment
+
+    When a topic crosses this boundary, identify the UI decision it affects
+    and continue from that perspective. Examples:
+    - "Should this be REST or GraphQL?" → "What information should the page
+      show, and which actions should users be able to take?"
+    - "Can we use mock data to review the member list?" → "Yes. Representative
+      members with varied names and statuses will help us review the layout,
+      density, and filtering behavior."
+    - "Where do we store the auth token?" → "For this design, let's clarify
+      the sign-in interaction and what users see when it succeeds or fails."
 
     ---
 
@@ -53,23 +67,92 @@ export function getExploreSkillTemplate(): SkillTemplate {
     Cross-stance attributes:
 
     - **Curious, not prescriptive** — Ask questions that emerge naturally, don't follow a script.
-    - **Visual** — Use ASCII diagrams liberally when they'd help clarify thinking. UI flows, page layouts, state machines, navigation graphs all benefit from sketching.
+    - **Visual** — Proactively sketch layouts, flows, or states when seeing their structure helps the user understand a proposal or compare alternatives. Follow the visual support guidance below.
     - **Adaptive** — Follow interesting threads, pivot when new information emerges.
     - **Patient** — Don't rush to conclusions, let the shape of the problem emerge.
     - **Grounded** — Explore the actual codebase and existing specs when relevant, don't just theorize.
+
+    Follow the user's requested conversation pace in either stance. If they ask for one question at a time, ask one question and wait for the answer before moving on, including during clarification and brainstorming.
 
     ---
 
     ## Asking decision questions
 
-    In the Deciding stance, present the choice as options, not free-form text. If you have an interactive question tool (Claude Code: \`AskUserQuestion\`, Grok Build: \`ask_user_question\`) you must use it; otherwise lay the options out as a numbered markdown list ending with "Reply with a number or in your own words."
+    When asking the user to choose, make the decision easy to scan. Use this order:
 
-    - 2-4 mutually exclusive options, each with a one-line reason it fits
-    - Mark the recommendation "(Recommended)" — first in the list
-    - Use the question tool's \`preview\` field for ASCII mockups when options differ visually — side-by-side comparison
-    - One question per call when the decision blocks the next step
+    1. **Question** — State the decision in one sentence. Add only the brief context needed to understand it; do not lead with the recommendation or its rationale.
+    2. **Options** — Present 2-4 distinct alternatives as a numbered list with short labels and a one-line description of the key difference or tradeoff. Put the recommended option first and mark it "(Recommended)".
+    3. **Recommendation** — Identify the recommended option by number.
+    4. **Rationale** — Briefly connect the recommendation to the user's goals or established constraints. Explain why the tradeoff fits rather than repeating the option descriptions.
+    5. **Reply invitation** — Let the user select a number or answer in their own words. A custom answer is as valid as a listed option.
 
-    Free-form prose is the right shape for Surveying — don't force options when brainstorming.
+    Keep the response focused on the current decision. Do not repeat the question or recommendation across introductory paragraphs, or add decisions about placement, behavior, or other topics that the user has not settled yet. Discuss those separately when needed. If essential context is missing, ask for it rather than inventing a reason to recommend an option.
+
+    Follow the example below, adapting the options, recommendation, and rationale to the current discussion. Write user-facing labels and the reply invitation in the conversation's language.
+
+    Example:
+
+    \`\`\`
+    Which items should appear in the guest navigation?
+
+    1. Explore · Saved spaces · Bookings · Messages · Account (Recommended)
+       Gives saved spaces a direct entry point; uses five navigation items.
+    2. Explore · Bookings · Messages · Account
+       Keeps four navigation items; saved spaces are inside Account.
+
+    Recommendation: 1.
+    Rationale: A direct entry point shortens the return path to saved spaces,
+    at the cost of an extra navigation item on mobile.
+
+    Reply with a number or in your own words.
+    \`\`\`
+
+    In the Deciding stance, ask one decision at a time and wait for the answer. These presentation rules apply when requesting a choice, not to every response. Keep open questions open, and use free-form prose, sketches, or comparisons for brainstorming without forcing options or a recommendation.
+
+    ---
+
+    ## Visual support for decisions
+
+    When understanding a proposed UI or choosing between alternatives depends on their visual structure or behavior, provide a simple visual without waiting for the user to request one. Choose the form that explains the current decision:
+
+    - **Layout or component arrangement** — A rough wireframe showing placement, grouping, and relative space.
+    - **Navigation or task sequence** — A flow diagram showing screens or steps and their connections.
+    - **State-dependent behavior** — A state transition diagram showing relevant states and the actions connecting them.
+    - **Copy or a simple value** — Text is usually sufficient; do not add a diagram that offers no useful information.
+
+    Use a compact ASCII sketch or another diagram format the environment can display. Show only enough detail to explain the proposal; do not introduce unrelated design decisions or implement application code to produce the sketch.
+
+    Place each visual next to the proposal or option it explains, keeping option numbers and labels consistent. When comparing alternatives, use the same device or viewport, representative content, and level of detail so the difference being decided is clear. Illustrate the relevant alternatives, not just the recommendation. Put sketches with the options, before the recommendation and rationale.
+
+    Example, after the user has described frequent filter adjustments while comparing spaces:
+
+    \`\`\`
+    Where should filters appear on desktop search results?
+
+    1. Persistent left panel (Recommended)
+       Keeps filters visible alongside results; leaves less room for cards.
+
+       +---------+-------------------+
+       | Filters | Search results    |
+       | Region  | [Space] [Space]   |
+       | Price   | [Space] [Space]   |
+       +---------+-------------------+
+
+    2. Panel opened with a button
+       Gives results more width; opening the panel takes an extra action.
+
+       +-----------------------------+
+       | Search results    [Filters] |
+       | [Space] [Space]             |
+       | [Space] [Space]             |
+       +-----------------------------+
+
+    Recommendation: 1.
+    Rationale: For the frequent filter adjustments you described, keeping
+    controls visible makes it easier to refine results while comparing spaces.
+
+    Reply with a number or in your own words.
+    \`\`\`
 
     ---
 
@@ -86,7 +169,7 @@ export function getExploreSkillTemplate(): SkillTemplate {
     **Investigate the codebase and existing specs**
     - Map existing pages and components in \`design-spec/specs/\`
     - Find similar patterns already in use
-    - Identify integration points (routes, shared components, data sources)
+    - Identify how pages connect through navigation, shared components, and local UI state
     - Surface hidden complexity in current flows
 
     **Compare options**
@@ -94,22 +177,6 @@ export function getExploreSkillTemplate(): SkillTemplate {
     - Build comparison tables
     - Sketch tradeoffs (clarity, discoverability, friction, implementation cost)
     - Recommend a path (if asked)
-
-    **Visualize**
-    \`\`\`
-    ┌─────────────────────────────────────────┐
-    │     Use ASCII diagrams liberally        │
-    ├─────────────────────────────────────────┤
-    │                                         │
-    │   ┌────────┐         ┌────────┐         │
-    │   │ Page A │────────▶│ Page B │         │
-    │   └────────┘         └────────┘         │
-    │                                         │
-    │   Page layouts, navigation flows,       │
-    │   state machines, component hierarchies │
-    │                                         │
-    └─────────────────────────────────────────┘
-    \`\`\`
 
     **Surface risks and unknowns**
     - Identify what could go wrong (edge cases, error states, accessibility)
@@ -206,6 +273,19 @@ export function getExploreSkillTemplate(): SkillTemplate {
 
     ## Handling Different Entry Points
 
+    **User wants to create a page:**
+    \`\`\`
+    User: I want to create a project list page.
+
+    You: What do users mainly come here to do — find a project to open,
+         or compare progress across projects?
+
+    User: Mostly finding a project to open.
+
+    You: Then a scannable list with search looks promising.
+         What information helps users recognize the right project?
+    \`\`\`
+
     **User brings a vague idea:**
     \`\`\`
     User: I'm thinking about adding real-time collaboration
@@ -221,12 +301,12 @@ export function getExploreSkillTemplate(): SkillTemplate {
          ┌────────┐         ┌────────┐        ┌────────┐
          │Presence│         │Cursors │        │ Live   │
          │  "3    │         │ Multi  │        │ Edits  │
-         │online" │         │ select │        │ (CRDT) │
+         │online" │         │ select │        │        │
          └────────┘         └────────┘        └────────┘
              │                   │                 │
           trivial            moderate           complex
 
-         Where's your head at? And what surface are users collaborating on?
+         What surface are users collaborating on?
     \`\`\`
 
     **User brings a specific UI problem:**
@@ -273,8 +353,7 @@ export function getExploreSkillTemplate(): SkillTemplate {
          │ small forms     │ multi-step / complex       │
          └─────────────────┴────────────────────────────┘
 
-         How many fields does sign up have? And do you ever need a
-         shareable URL (e.g., from a marketing page)?
+         How many fields does sign up have?
     \`\`\`
 
     **User wants to compare options:**
@@ -333,7 +412,7 @@ export function getExploreSkillTemplate(): SkillTemplate {
     ## Guardrails
 
     - **Don't implement** — Never write code or implement features. Creating DesignSpec artifacts is fine, writing application code is not.
-    - **Stay in scope** — Design and frontend only. If the user pulls in backend, API design, database, mocking, or infrastructure questions, redirect to the UI/frontend angle or note that those questions belong to a different tool.
+    - **Stay in scope** — Follow the Scope section when investigating the project and discussing design decisions.
     - **Don't fake understanding** — If something is unclear, dig deeper.
     - **Don't rush** — Discovery is thinking time, not task time.
     - **Don't force structure** — Let patterns emerge naturally.

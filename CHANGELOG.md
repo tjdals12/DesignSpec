@@ -1,3 +1,31 @@
+## [2.2.2-next.4](https://github.com/tjdals12/DesignSpec/compare/v2.2.2-next.3...v2.2.2-next.4) (2026-10-19)
+
+
+### Bug Fixes
+
+* **explore:** keep decision questions in a consistent order ([#31](https://github.com/tjdals12/DesignSpec/issues/31)) ([41060db](https://github.com/tjdals12/DesignSpec/commit/41060db19e5e377c46efea9dc29d804a52b9f7c8))
+
+## [2.2.2-next.3](https://github.com/tjdals12/DesignSpec/compare/v2.2.2-next.2...v2.2.2-next.3) (2026-10-18)
+
+
+### Bug Fixes
+
+* **skills:** preserve fast-forward mode and clarify change selection ([#30](https://github.com/tjdals12/DesignSpec/issues/30)) ([802adac](https://github.com/tjdals12/DesignSpec/commit/802adacf811ad3bdf0dac24525084e431aae3fea))
+
+## [2.2.2-next.2](https://github.com/tjdals12/DesignSpec/compare/v2.2.2-next.1...v2.2.2-next.2) (2026-10-18)
+
+
+### Bug Fixes
+
+* **skills:** clarify questions and reuse change context ([#29](https://github.com/tjdals12/DesignSpec/issues/29)) ([1514f5b](https://github.com/tjdals12/DesignSpec/commit/1514f5bd249eeaeff5ae6524576e19c9431daae7))
+
+## [2.2.2-next.1](https://github.com/tjdals12/DesignSpec/compare/v2.2.1...v2.2.2-next.1) (2026-10-18)
+
+
+### Bug Fixes
+
+* align UI workflow scope and style initialization ([#28](https://github.com/tjdals12/DesignSpec/issues/28)) ([74d6753](https://github.com/tjdals12/DesignSpec/commit/74d6753ccf99892b1c72a5b766f4c20ee065de6b))
+
 ## [2.2.1](https://github.com/tjdals12/DesignSpec/compare/v2.2.0...v2.2.1) (2026-09-04)
 
 
